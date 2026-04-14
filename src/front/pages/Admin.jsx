@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-
-                          export const Admin = () => {
+export const Admin = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
     const [admins, setAdmins] = useState([]);
@@ -200,7 +199,7 @@ import { Link } from "react-router-dom";
                                             </p>
 
                                             <p className="mb-1">
-                                                <strong>Rol:</strong> {admin.role}
+                                                <strong>User ID:</strong> {admin.user_id}
                                             </p>
 
                                             <p className="mb-3">
@@ -239,4 +238,3 @@ import { Link } from "react-router-dom";
         </div>
     );
 };
-
