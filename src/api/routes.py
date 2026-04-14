@@ -25,6 +25,16 @@ def handle_hello():
 
 #     //   CRUD DE ADMIN   //
 
+#   // LEER TODOS LOS ADMINS //
+@api.route('/admins', methods=['GET'])
+def get_admins():
+    admins = User.query.filter_by(role="admin").all()
+
+    return jsonify({
+        "message": "Admins obtenidos correctamente",
+        "results": [admin.serialize() for admin in admins]
+    }), 200
+
 #  // LEER UN ADMIN //
 @api.route('/admins/<int:admin_id>', methods=['GET'])
 def get_admin(admin_id):

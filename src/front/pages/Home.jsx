@@ -46,6 +46,13 @@ export const Home = () => {
 						Loading message from the backend (make sure your python 🐍 backend is running)...
 					</span>
 				)}
+
+				<div className="mt-4">
+				  <Link to="/admin" className="btn btn-dark">
+					Ir a Admin
+				  </Link>
+			    </div>
+
 			</div>
 		</div>
 	);
