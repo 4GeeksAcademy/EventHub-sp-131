@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export const Admin = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -64,7 +65,7 @@ export const Admin = () => {
         })
             .then((resp) => resp.json())
             .then((data) => {
-                setMessage(data.message || "Operación realizada");
+                setMessage(data.message || "Operación realizada correctamente");
                 resetForm();
                 getAdmins();
             })
@@ -98,8 +99,16 @@ export const Admin = () => {
     };
 
     return (
-        <div className="container mt-5">
-            <h1 className="text-center mb-4">CRUD de Admin</h1>
+        <div className="container py-5">
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 className="fw-bold mb-1">Panel de Admin</h1>
+                    <p className="text-muted mb-0">Gestión de administradores</p>
+                </div>
+                <Link to="/" className="btn btn-outline-dark">
+                    Volver
+                </Link>
+            </div>
 
             {message && (
                 <div className="alert alert-info">
@@ -107,74 +116,86 @@ export const Admin = () => {
                 </div>
             )}
 
-            <div className="card p-4 mb-4">
-                <h3 className="mb-3">
-                    {editingId ? "Editar Admin" : "Crear Admin"}
-                </h3>
+            <div className="card shadow-sm border-0 mb-5">
+                <div className="card-body p-4">
+                    <h3 className="mb-4">
+                        {editingId ? "Editar administrador" : "Crear administrador"}
+                    </h3>
 
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="email"
-                        className="form-control mb-3"
-                        placeholder="Email"
-                        name="email"
-                        value={form.email}
-                        onChange={handleChange}
-                    />
+                    <form onSubmit={handleSubmit}>
+                        <div className="row">
+                            <div className="col-md-6 mb-3">
+                                <label className="form-label">Email</label>
+                                <input
+                                    type="email"
+                                    className="form-control"
+                                    name="email"
+                                    value={form.email}
+                                    onChange={handleChange}
+                                    placeholder="admin@test.com"
+                                    required
+                                />
+                            </div>
 
-                    <input
-                        type="password"
-                        className="form-control mb-3"
-                        placeholder="Password"
-                        name="password"
-                        value={form.password}
-                        onChange={handleChange}
-                    />
+                            <div className="col-md-6 mb-3">
+                                <label className="form-label">Password</label>
+                                <input
+                                    type="password"
+                                    className="form-control"
+                                    name="password"
+                                    value={form.password}
+                                    onChange={handleChange}
+                                    placeholder="********"
+                                    required={!editingId}
+                                />
+                            </div>
+                        </div>
 
-                    <div className="form-check mb-3">
-                        <input
-                            className="form-check-input"
-                            type="checkbox"
-                            name="is_active"
-                            checked={form.is_active}
-                            onChange={handleChange}
-                            id="isActiveCheck"
-                        />
-                        <label className="form-check-label" htmlFor="isActiveCheck">
-                            Activo
-                        </label>
-                    </div>
+                        <div className="form-check mb-4">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                name="is_active"
+                                checked={form.is_active}
+                                onChange={handleChange}
+                                id="isActiveCheck"
+                            />
+                            <label className="form-check-label" htmlFor="isActiveCheck">
+                                Activo
+                            </label>
+                        </div>
 
-                    <div className="d-flex gap-2">
-                        <button className="btn btn-primary" type="submit">
-                            {editingId ? "Actualizar" : "Crear"}
-                        </button>
+                        <div className="d-flex gap-2">
+                            <button className="btn btn-dark" type="submit">
+                                {editingId ? "Actualizar" : "Crear"}
+                            </button>
 
-                        <button
-                            className="btn btn-secondary"
-                            type="button"
-                            onClick={resetForm}
-                        >
-                            Limpiar
-                        </button>
-                    </div>
-                </form>
+                            <button
+                                className="btn btn-secondary"
+                                type="button"
+                                onClick={resetForm}
+                            >
+                                Limpiar
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <div className="row">
                 {admins.length > 0 ? (
                     admins.map((admin) => (
-                        <div className="col-md-4 mb-4" key={admin.id}>
-                            <div className="card h-100">
+                        <div className="col-md-6 col-lg-4 mb-4" key={admin.id}>
+                            <div className="card h-100 shadow-sm border-0">
                                 <div className="card-body">
-                                    <h5 className="card-title">{admin.email}</h5>
-                                    <p className="card-text mb-1">
+                                    <h5 className="fw-bold">{admin.email}</h5>
+                                    <p className="mb-1">
                                         <strong>ID:</strong> {admin.id}
                                     </p>
-                                    <p className="card-text mb-1">
+                                    <p className="mb-1">
                                         <strong>Rol:</strong> {admin.role}
                                     </p>
-                                    <p className="card-text mb-3">
+                                    <p className="mb-3">
                                         <strong>Activo:</strong> {admin.is_active ? "Sí" : "No"}
                                     </p>
 
@@ -198,7 +219,11 @@ export const Admin = () => {
                         </div>
                     ))
                 ) : (
-                    <p>No hay admins registrados</p>
+                    <div className="col-12">
+                        <div className="alert alert-secondary text-center">
+                            No hay administradores registrados.
+                        </div>
+                    </div>
                 )}
             </div>
         </div>
