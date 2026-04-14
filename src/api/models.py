@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean
+from sqlalchemy import String, Boolean, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
 db = SQLAlchemy()
