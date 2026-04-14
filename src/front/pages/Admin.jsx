@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-export const Admin = () => {
+
+                          export const Admin = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
     const [admins, setAdmins] = useState([]);
@@ -21,7 +22,7 @@ export const Admin = () => {
                 setAdmins(data.results || []);
             })
             .catch(() => {
-                setMessage("Error al cargar admins");
+                setMessage("Error al cargar administradores");
             });
     };
 
@@ -70,7 +71,7 @@ export const Admin = () => {
                 getAdmins();
             })
             .catch(() => {
-                setMessage("Error al guardar admin");
+                setMessage("Error al guardar administrador");
             });
     };
 
@@ -82,6 +83,7 @@ export const Admin = () => {
             is_active: admin.is_active
         });
         setMessage("");
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     const handleDelete = (id) => {
@@ -90,142 +92,151 @@ export const Admin = () => {
         })
             .then((resp) => resp.json())
             .then((data) => {
-                setMessage(data.message || "Admin eliminado correctamente");
+                setMessage(data.message || "Administrador eliminado correctamente");
                 getAdmins();
             })
             .catch(() => {
-                setMessage("Error al eliminar admin");
+                setMessage("Error al eliminar administrador");
             });
     };
 
     return (
         <div className="container py-5">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h1 className="fw-bold mb-1">Panel de Admin</h1>
-                    <p className="text-muted mb-0">Gestión de administradores</p>
-                </div>
-                <Link to="/" className="btn btn-outline-dark">
-                    Volver
-                </Link>
-            </div>
-
-            {message && (
-                <div className="alert alert-info">
-                    {message}
-                </div>
-            )}
-
-            <div className="card shadow-sm border-0 mb-5">
-                <div className="card-body p-4">
-                    <h3 className="mb-4">
-                        {editingId ? "Editar administrador" : "Crear administrador"}
-                    </h3>
-
-                    <form onSubmit={handleSubmit}>
-                        <div className="row">
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">Email</label>
-                                <input
-                                    type="email"
-                                    className="form-control"
-                                    name="email"
-                                    value={form.email}
-                                    onChange={handleChange}
-                                    placeholder="admin@test.com"
-                                    required
-                                />
-                            </div>
-
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">Password</label>
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    name="password"
-                                    value={form.password}
-                                    onChange={handleChange}
-                                    placeholder="********"
-                                    required={!editingId}
-                                />
-                            </div>
+            <div className="row justify-content-center">
+                <div className="col-lg-10">
+                    <div className="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1 className="fw-bold mb-1">Panel de Administración</h1>
+                            <p className="text-muted mb-0">Gestión de administradores</p>
                         </div>
 
-                        <div className="form-check mb-4">
-                            <input
-                                className="form-check-input"
-                                type="checkbox"
-                                name="is_active"
-                                checked={form.is_active}
-                                onChange={handleChange}
-                                id="isActiveCheck"
-                            />
-                            <label className="form-check-label" htmlFor="isActiveCheck">
-                                Activo
-                            </label>
+                        <Link to="/" className="btn btn-outline-dark">
+                            Volver
+                        </Link>
+                    </div>
+
+                    {message && (
+                        <div className="alert alert-info">
+                            {message}
                         </div>
+                    )}
 
-                        <div className="d-flex gap-2">
-                            <button className="btn btn-dark" type="submit">
-                                {editingId ? "Actualizar" : "Crear"}
-                            </button>
+                    <div className="card shadow-sm border-0 mb-5">
+                        <div className="card-body p-4">
+                            <h3 className="mb-4">
+                                {editingId ? "Editar administrador" : "Crear administrador"}
+                            </h3>
 
-                            <button
-                                className="btn btn-secondary"
-                                type="button"
-                                onClick={resetForm}
-                            >
-                                Limpiar
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+                            <form onSubmit={handleSubmit}>
+                                <div className="row">
+                                    <div className="col-md-6 mb-3">
+                                        <label className="form-label">Correo electrónico</label>
+                                        <input
+                                            type="email"
+                                            className="form-control"
+                                            name="email"
+                                            value={form.email}
+                                            onChange={handleChange}
+                                            placeholder="admin@test.com"
+                                            required
+                                        />
+                                    </div>
 
-            <div className="row">
-                {admins.length > 0 ? (
-                    admins.map((admin) => (
-                        <div className="col-md-6 col-lg-4 mb-4" key={admin.id}>
-                            <div className="card h-100 shadow-sm border-0">
-                                <div className="card-body">
-                                    <h5 className="fw-bold">{admin.email}</h5>
-                                    <p className="mb-1">
-                                        <strong>ID:</strong> {admin.id}
-                                    </p>
-                                    <p className="mb-1">
-                                        <strong>Rol:</strong> {admin.role}
-                                    </p>
-                                    <p className="mb-3">
-                                        <strong>Activo:</strong> {admin.is_active ? "Sí" : "No"}
-                                    </p>
-
-                                    <div className="d-flex gap-2">
-                                        <button
-                                            className="btn btn-warning btn-sm"
-                                            onClick={() => handleEdit(admin)}
-                                        >
-                                            Editar
-                                        </button>
-
-                                        <button
-                                            className="btn btn-danger btn-sm"
-                                            onClick={() => handleDelete(admin.id)}
-                                        >
-                                            Eliminar
-                                        </button>
+                                    <div className="col-md-6 mb-3">
+                                        <label className="form-label">Contraseña</label>
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            name="password"
+                                            value={form.password}
+                                            onChange={handleChange}
+                                            placeholder="********"
+                                            required={!editingId}
+                                        />
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <div className="col-12">
-                        <div className="alert alert-secondary text-center">
-                            No hay administradores registrados.
+
+                                <div className="form-check mb-4">
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        name="is_active"
+                                        checked={form.is_active}
+                                        onChange={handleChange}
+                                        id="isActiveCheck"
+                                    />
+                                    <label className="form-check-label" htmlFor="isActiveCheck">
+                                        Activo
+                                    </label>
+                                </div>
+
+                                <div className="d-flex gap-2">
+                                    <button className="btn btn-dark" type="submit">
+                                        {editingId ? "Actualizar" : "Crear"}
+                                    </button>
+
+                                    <button
+                                        className="btn btn-secondary"
+                                        type="button"
+                                        onClick={resetForm}
+                                    >
+                                        Limpiar
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                )}
+
+                    <div className="row">
+                        {admins.length > 0 ? (
+                            admins.map((admin) => (
+                                <div className="col-md-6 col-lg-4 mb-4" key={admin.id}>
+                                    <div className="card h-100 shadow-sm border-0">
+                                        <div className="card-body">
+                                            <h5 className="fw-bold mb-3">{admin.email}</h5>
+
+                                            <p className="mb-1">
+                                                <strong>ID:</strong> {admin.id}
+                                            </p>
+
+                                            <p className="mb-1">
+                                                <strong>Rol:</strong> {admin.role}
+                                            </p>
+
+                                            <p className="mb-3">
+                                                <strong>Activo:</strong> {admin.is_active ? "Sí" : "No"}
+                                            </p>
+
+                                            <div className="d-flex gap-2">
+                                                <button
+                                                    className="btn btn-warning btn-sm"
+                                                    onClick={() => handleEdit(admin)}
+                                                >
+                                                    Editar
+                                                </button>
+
+                                                <button
+                                                    className="btn btn-danger btn-sm"
+                                                    onClick={() => handleDelete(admin.id)}
+                                                >
+                                                    Eliminar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="col-12">
+                                <div className="alert alert-secondary text-center">
+                                    No hay administradores registrados.
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );
 };
+
