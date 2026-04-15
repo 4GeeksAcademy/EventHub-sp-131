@@ -2,9 +2,10 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User
+from api.models import db, User, Admin
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
+from sqlalchemy import select
 
 api = Blueprint('api', __name__)
 
@@ -28,7 +29,8 @@ def handle_hello():
 # // LEER TODOS LOS ADMINS //
 @api.route("/admins", methods=["GET"])
 def get_admins():
-    admins = Admin.query.all()
+    admins = db.session.execute(
+    select(Admin)).scalars().all()
 
     return jsonify({
         "message": "Admins obtenidos correctamente",
@@ -39,7 +41,7 @@ def get_admins():
 # // LEER UN ADMIN //
 @api.route("/admins/<int:admin_id>", methods=["GET"])
 def get_admin(admin_id):
-    admin = Admin.query.get(admin_id)
+    admin = db.session.get(Admin, admin_id)
 
     if admin is None:
         return jsonify({"message": "Admin no encontrado"}), 404
@@ -65,7 +67,8 @@ def create_admin():
     if not email or not password:
         return jsonify({"message": "Los campos email y password son obligatorios"}), 400
 
-    existing_user = User.query.filter_by(email=email).first()
+    existing_user = db.session.execute(
+    select(User).where(User.email == email)).scalar_one_or_none()
     if existing_user:
         return jsonify({"message": "Ya existe un usuario con ese email"}), 409
 
@@ -92,7 +95,7 @@ def create_admin():
 #  // EDITAR ADMIN //
 @api.route("/admins/<int:admin_id>", methods=["PUT"])
 def update_admin(admin_id):
-    admin = Admin.query.get(admin_id)
+    admin = db.session.get(Admin, admin_id)
 
     if admin is None:
         return jsonify({"message": "Admin no encontrado"}), 404
@@ -130,7 +133,7 @@ def update_admin(admin_id):
 # // ELIMINAR ADMIN //
 @api.route("/admins/<int:admin_id>", methods=["DELETE"])
 def delete_admin(admin_id):
-    admin = Admin.query.get(admin_id)
+    admin = db.session.get(Admin, admin_id)
 
     if admin is None:
         return jsonify({"message": "Admin no encontrado"}), 404
