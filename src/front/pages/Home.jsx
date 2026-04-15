@@ -1,5 +1,6 @@
 import React, { useEffect } from "react"
 import rigoImageUrl from "../assets/img/rigo-baby.jpg";
+import { Link } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
 export const Home = () => {
@@ -47,6 +48,9 @@ export const Home = () => {
 					</span>
 				)}
 			</div>
+			<Link to="/promotor">
+				<button className="btn btn-primary">Promotor CRUD</button>
+			</Link>
 		</div>
 	);
 }; 
