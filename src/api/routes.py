@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
+from sqlalchemy import select
 
 api = Blueprint('api', __name__)
 
@@ -14,25 +15,25 @@ CORS(api)
 
 @api.route('/hello', methods=['POST', 'GET'])
 def handle_hello():
-
     response_body = {
         "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
     }
-
     return jsonify(response_body), 200
+
 
 @api.route("/users", methods=["GET"])
 def get_users():
-    users = User.query.all()
+    users = db.session.execute(select(User)).scalars().all()
 
     return jsonify({
         "message": "Users obtenidos correctamente",
         "results": [user.serialize() for user in users]
     }), 200
 
+
 @api.route("/users/<int:user_id>", methods=["GET"])
 def get_user(user_id):
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
 
     if user is None:
         return jsonify({"message": "User no encontrado"}), 404
@@ -41,6 +42,7 @@ def get_user(user_id):
         "message": "User obtenido correctamente",
         "results": user.serialize()
     }), 200
+
 
 @api.route("/users", methods=["POST"])
 def create_user():
@@ -60,7 +62,10 @@ def create_user():
     if not email or not password:
         return jsonify({"message": "Email y password son obligatorios"}), 400
 
-    existing_user = User.query.filter_by(email=email).first()
+    existing_user = db.session.execute(
+        select(User).filter_by(email=email)
+    ).scalar_one_or_none()
+
     if existing_user:
         return jsonify({"message": "Ya existe un usuario con ese email"}), 409
 
@@ -82,9 +87,10 @@ def create_user():
         "results": new_user.serialize()
     }), 201
 
+
 @api.route("/users/<int:user_id>", methods=["PUT"])
 def update_user(user_id):
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
 
     if user is None:
         return jsonify({"message": "User no encontrado"}), 404
@@ -95,10 +101,12 @@ def update_user(user_id):
         return jsonify({"message": "Debes enviar un JSON válido"}), 400
 
     if "email" in body:
-        existing_user = User.query.filter(
-            User.email == body["email"],
-            User.id != user.id
-        ).first()
+        existing_user = db.session.execute(
+            select(User).where(
+                User.email == body["email"],
+                User.id != user.id
+            )
+        ).scalar_one_or_none()
 
         if existing_user:
             return jsonify({"message": "Ese email ya está en uso"}), 409
@@ -130,9 +138,10 @@ def update_user(user_id):
         "results": user.serialize()
     }), 200
 
+
 @api.route("/users/<int:user_id>", methods=["DELETE"])
 def delete_user(user_id):
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
 
     if user is None:
         return jsonify({"message": "User no encontrado"}), 404
