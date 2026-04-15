@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean, Integer
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, Boolean, Integer, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
 
@@ -25,4 +25,21 @@ class User(db.Model):
             "location": self.location,
             "age": self.age,
             "description": self.description
+        }
+    
+    # // Tabla ADMIN //
+
+class Admin(db.Model):
+    __tablename__ = "admin"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False, unique=True)
+
+    user: Mapped["User"] = relationship("User")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "email": self.user.email,
+            "is_active": self.user.is_active
         }
