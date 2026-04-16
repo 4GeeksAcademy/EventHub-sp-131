@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { Card } from "../components/Card.jsx";
 import { Link } from "react-router-dom";
@@ -8,7 +7,7 @@ export const Promotor = () => {
     const { store, dispatch } = useGlobalReducer()
     const urlAPI = import.meta.env.VITE_BACKEND_URL
     const [allPromotors, setAllPromotors] = useState([])
-    console.log(allPromotors);
+
 
     async function getPromotors() {
         try {
@@ -24,8 +23,9 @@ export const Promotor = () => {
         }
     }
 
-
-
+    useEffect(() => {
+        getPromotors()
+    }, [])
 
     return (
         <>

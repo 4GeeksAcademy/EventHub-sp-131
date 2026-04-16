@@ -10,10 +10,6 @@ import { Layout } from "./pages/Layout";
 import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
-import { Admin } from "./pages/Admin"
-import { CreateAdmin } from "./pages/CreateAdmin"
-import { EditAdmin} from "./pages/EditAdmin"
-import { AdminDetails } from "./pages/AdminDetails"
 import User from "./pages/User";
 import CreateUser from "./pages/CreateUser";
 import EditUser from "./pages/EditUser";
@@ -22,6 +18,10 @@ import { Admin } from "./pages/Admin";
 import { CreateAdmin } from "./pages/CreateAdmin";
 import { EditAdmin } from "./pages/EditAdmin";
 import { AdminDetails } from "./pages/AdminDetails";
+import { Promotor } from "./pages/Promotor"
+import { CreatePromotor } from "./pages/CreatePromotor"
+import { EditPromotor } from "./pages/EditPromotor"
+import { DeletePromotor } from "./pages/DeletePromotor"
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -48,9 +48,8 @@ export const router = createBrowserRouter(
         <Route path="/delete-user/:id" element={<DeleteUser />} />
         <Route path="/promotor" element={<Promotor/>} />
         <Route path="/promotor-create" element={<CreatePromotor/>} />
-        <Route path="/promotor-edit/:id" element={<EditarPromotor/>} />
-        <Route path="/promotor-delete/:id" element={<DeletePromotor/>} />
-        
+        <Route path="/promotor-edit/:theId" element={<EditPromotor/>} />
+        <Route path="/promotor-delete/:theId" element={<DeletePromotor/>} />
         
       </Route>
     )
