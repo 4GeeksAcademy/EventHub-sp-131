@@ -14,6 +14,10 @@ import User from "./pages/User";
 import CreateUser from "./pages/CreateUser";
 import EditUser from "./pages/EditUser";
 import DeleteUser from "./pages/DeleteUser";
+import { Admin } from "./pages/Admin";
+import { CreateAdmin } from "./pages/CreateAdmin";
+import { EditAdmin } from "./pages/EditAdmin";
+import { AdminDetails } from "./pages/AdminDetails";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(

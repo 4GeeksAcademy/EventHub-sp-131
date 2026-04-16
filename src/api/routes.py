@@ -155,12 +155,12 @@ def delete_user(user_id):
 
 #  // CRUD ADMIN //
 
-
-# // LEER TODOS LOS ADMINS //
-@api.route("/admins", methods=["GET"])
+# LEER TODOS LOS ADMINS
+@api.route("/admin-panel/admins", methods=["GET"])
 def get_admins():
     admins = db.session.execute(
-    select(Admin)).scalars().all()
+        select(Admin)
+    ).scalars().all()
 
     return jsonify({
         "message": "Admins obtenidos correctamente",
@@ -168,8 +168,8 @@ def get_admins():
     }), 200
 
 
-# // LEER UN ADMIN //
-@api.route("/admins/<int:admin_id>", methods=["GET"])
+# LEER UN ADMIN
+@api.route("/admin-panel/admins/<int:admin_id>", methods=["GET"])
 def get_admin(admin_id):
     admin = db.session.get(Admin, admin_id)
 
@@ -182,8 +182,8 @@ def get_admin(admin_id):
     }), 200
 
 
-# // CREAR ADMIN //
-@api.route("/admins", methods=["POST"])
+# CREAR ADMIN
+@api.route("/admin-panel/admins", methods=["POST"])
 def create_admin():
     body = request.get_json(silent=True)
 
@@ -197,21 +197,18 @@ def create_admin():
     if not email or not password:
         return jsonify({"message": "Los campos email y password son obligatorios"}), 400
 
-    existing_user = db.session.execute(
-    select(User).where(User.email == email)).scalar_one_or_none()
-    if existing_user:
-        return jsonify({"message": "Ya existe un usuario con ese email"}), 409
+    existing_admin = db.session.execute(
+        select(Admin).where(Admin.email == email)
+    ).scalar_one_or_none()
 
-    new_user = User(
+    if existing_admin:
+        return jsonify({"message": "Ya existe un admin con ese email"}), 409
+
+    new_admin = Admin(
         email=email,
         password=password,
         is_active=is_active
     )
-
-    db.session.add(new_user)
-    db.session.commit()
-
-    new_admin = Admin(user_id=new_user.id)
 
     db.session.add(new_admin)
     db.session.commit()
@@ -222,8 +219,8 @@ def create_admin():
     }), 201
 
 
-#  // EDITAR ADMIN //
-@api.route("/admins/<int:admin_id>", methods=["PUT"])
+# EDITAR ADMIN
+@api.route("/admin-panel/admins/<int:admin_id>", methods=["PUT"])
 def update_admin(admin_id):
     admin = db.session.get(Admin, admin_id)
 
@@ -236,21 +233,23 @@ def update_admin(admin_id):
         return jsonify({"message": "Debes enviar un JSON válido"}), 400
 
     if "email" in body:
-        existing_user = User.query.filter(
-            User.email == body["email"],
-            User.id != admin.user_id
-        ).first()
+        existing_admin = db.session.execute(
+            select(Admin).where(
+                Admin.email == body["email"],
+                Admin.id != admin_id
+            )
+        ).scalar_one_or_none()
 
-        if existing_user:
+        if existing_admin:
             return jsonify({"message": "Ese email ya está en uso"}), 409
 
-        admin.user.email = body["email"]
+        admin.email = body["email"]
 
     if "password" in body and body["password"]:
-        admin.user.password = body["password"]
+        admin.password = body["password"]
 
     if "is_active" in body:
-        admin.user.is_active = body["is_active"]
+        admin.is_active = body["is_active"]
 
     db.session.commit()
 
@@ -260,18 +259,15 @@ def update_admin(admin_id):
     }), 200
 
 
-# // ELIMINAR ADMIN //
-@api.route("/admins/<int:admin_id>", methods=["DELETE"])
+# ELIMINAR ADMIN
+@api.route("/admin-panel/admins/<int:admin_id>", methods=["DELETE"])
 def delete_admin(admin_id):
     admin = db.session.get(Admin, admin_id)
 
     if admin is None:
         return jsonify({"message": "Admin no encontrado"}), 404
 
-    user = admin.user
-
     db.session.delete(admin)
-    db.session.delete(user)
     db.session.commit()
 
     return jsonify({
