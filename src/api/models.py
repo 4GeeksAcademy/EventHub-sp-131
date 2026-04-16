@@ -33,13 +33,14 @@ class Admin(db.Model):
     __tablename__ = "admin"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False, unique=True)
-
-    user: Mapped["User"] = relationship("User")
+    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(String(255), nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=True)
 
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.user.email,
-            "is_active": self.user.is_active
+            "email": self.email,
+            "is_active": self.is_active
         }
+    

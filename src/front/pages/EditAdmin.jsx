@@ -15,7 +15,7 @@ export const EditAdmin = () => {
     });
 
     useEffect(() => {
-        fetch(`${backendUrl}/api/admins/${id}`)
+        fetch(`${backendUrl}/api/admin-panel/admins/${id}`)
             .then(async (resp) => {
                 const data = await resp.json();
                 if (!resp.ok) throw new Error(data.message || "Error al cargar administrador");
@@ -47,7 +47,7 @@ export const EditAdmin = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        fetch(`${backendUrl}/api/admins/${id}`, {
+        fetch(`${backendUrl}/api/admin-panel/admins/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -61,7 +61,7 @@ export const EditAdmin = () => {
             })
             .then((data) => {
                 setMessage(data.message || "Administrador actualizado correctamente");
-                setTimeout(() => navigate("/admin"), 800);
+                setTimeout(() => navigate("/admin"), 700);
             })
             .catch((error) => {
                 setMessage(error.message);
@@ -78,63 +78,72 @@ export const EditAdmin = () => {
 
     return (
         <div className="container py-5">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h1 className="fw-bold mb-1">Editar administrador</h1>
-                    <p className="text-muted mb-0">Actualización de datos del administrador</p>
-                </div>
-                <Link to="/admin" className="btn btn-outline-dark">
-                    Volver al panel
-                </Link>
-            </div>
-
-            {message && <div className="alert alert-info">{message}</div>}
-
-            <div className="card shadow-sm border-0">
-                <div className="card-body p-4">
-                    <form onSubmit={handleSubmit}>
-                        <div className="mb-3">
-                            <label className="form-label">Correo electrónico</label>
-                            <input
-                                type="email"
-                                className="form-control"
-                                name="email"
-                                value={form.email}
-                                onChange={handleChange}
-                                required
-                            />
+            <div className="row justify-content-center">
+                <div className="col-lg-8">
+                    <div className="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1 className="fw-bold mb-1">Editar administrador</h1>
+                            <p className="text-muted mb-0">Actualización de datos del administrador</p>
                         </div>
 
-                        <div className="mb-3">
-                            <label className="form-label">Nueva contraseña</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                name="password"
-                                value={form.password}
-                                onChange={handleChange}
-                                placeholder="Déjala vacía si no quieres cambiarla"
-                            />
-                        </div>
+                        <Link to="/admin" className="btn btn-outline-dark">
+                            Volver al panel
+                        </Link>
+                    </div>
 
-                        <div className="form-check mb-4">
-                            <input
-                                className="form-check-input"
-                                type="checkbox"
-                                name="is_active"
-                                checked={form.is_active}
-                                onChange={handleChange}
-                                id="editIsActive"
-                            />
-                            <label className="form-check-label" htmlFor="editIsActive">
-                                Activo
-                            </label>
+                    {message && (
+                        <div className="alert alert-info">
+                            {message}
                         </div>
+                    )}
 
-                        <button className="btn btn-dark" type="submit">
-                            Guardar cambios
-                        </button>
-                    </form>
+                    <div className="card shadow-sm border-0">
+                        <div className="card-body p-4">
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <label className="form-label">Correo electrónico</label>
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        name="email"
+                                        value={form.email}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label">Nueva contraseña</label>
+                                    <input
+                                        type="password"
+                                        className="form-control"
+                                        name="password"
+                                        value={form.password}
+                                        onChange={handleChange}
+                                        placeholder="Déjala vacía si no deseas cambiarla"
+                                    />
+                                </div>
+
+                                <div className="form-check mb-4">
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        name="is_active"
+                                        checked={form.is_active}
+                                        onChange={handleChange}
+                                        id="editAdminCheck"
+                                    />
+                                    <label className="form-check-label" htmlFor="editAdminCheck">
+                                        Activo
+                                    </label>
+                                </div>
+
+                                <button className="btn btn-dark" type="submit">
+                                    Guardar cambios
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
