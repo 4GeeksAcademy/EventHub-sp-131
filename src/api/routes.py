@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Admin, Promotor
+from api.models import db, User, Admin, Promotor, Category
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select
@@ -368,3 +368,102 @@ def delete_promotor_by_id(position):
     }
 
     return jsonify(response_body), 200
+  
+
+  #  // CATEGORY CRUD //
+
+@api.route("/categories", methods=["GET"])
+def get_categories():
+    categories = db.session.execute(select(Category)).scalars().all()
+    return jsonify([category.serialize() for category in categories]), 200
+
+
+@api.route("/categories/<int:category_id>", methods=["GET"])
+def get_category(category_id):
+    category = db.session.execute(
+        select(Category).where(Category.id == category_id)
+    ).scalar_one_or_none()
+
+    if category is None:
+        return jsonify({"msg": "Category no encontrada"}), 404
+
+    return jsonify(category.serialize()), 200
+
+
+@api.route("/categories", methods=["POST"])
+def create_category():
+    body = request.get_json()
+
+    if not body:
+        return jsonify({"msg": "Debes enviar datos"}), 400
+
+    name = body.get("name", "").strip()
+
+    if name == "":
+        return jsonify({"msg": "El campo name es obligatorio"}), 400
+
+    existing_category = db.session.execute(
+        select(Category).where(Category.name == name)
+    ).scalar_one_or_none()
+
+    if existing_category:
+        return jsonify({"msg": "Ya existe una categoría con ese nombre"}), 400
+
+    new_category = Category(name=name)
+    db.session.add(new_category)
+    db.session.commit()
+
+    return jsonify({
+        "msg": "Category creada correctamente",
+        "category": new_category.serialize()
+    }), 201
+
+
+@api.route("/categories/<int:category_id>", methods=["PUT"])
+def update_category(category_id):
+    body = request.get_json()
+
+    if not body:
+        return jsonify({"msg": "Debes enviar datos"}), 400
+
+    category = db.session.execute(
+        select(Category).where(Category.id == category_id)
+    ).scalar_one_or_none()
+
+    if category is None:
+        return jsonify({"msg": "Category no encontrada"}), 404
+
+    name = body.get("name", "").strip()
+
+    if name == "":
+        return jsonify({"msg": "El campo name es obligatorio"}), 400
+
+    repeated_category = db.session.execute(
+        select(Category).where(Category.name == name, Category.id != category_id)
+    ).scalar_one_or_none()
+
+    if repeated_category:
+        return jsonify({"msg": "Ya existe otra categoría con ese nombre"}), 400
+
+    category.name = name
+    db.session.commit()
+
+    return jsonify({
+        "msg": "Category actualizada correctamente",
+        "category": category.serialize()
+    }), 200
+
+
+@api.route("/categories/<int:category_id>", methods=["DELETE"])
+def delete_category(category_id):
+    category = db.session.execute(
+        select(Category).where(Category.id == category_id)
+    ).scalar_one_or_none()
+
+    if category is None:
+        return jsonify({"msg": "Category no encontrada"}), 404
+
+    db.session.delete(category)
+    db.session.commit()
+
+    return jsonify({"msg": "Category eliminada correctamente"}), 200

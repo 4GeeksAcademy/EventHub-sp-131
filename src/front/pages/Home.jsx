@@ -61,6 +61,10 @@ export const Home = () => {
 			<Link className="p-2" to="/user">
 				<button className="btn btn-primary">User CRUD</button>
 			</Link>
+			 
+			<Link to="/category-panel" className="btn btn-primary">
+						Category CRUD
+			</Link>
 		</div>
 	);
 }; 

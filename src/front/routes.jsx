@@ -22,6 +22,11 @@ import { Promotor } from "./pages/Promotor"
 import { CreatePromotor } from "./pages/CreatePromotor"
 import { EditPromotor } from "./pages/EditPromotor"
 import { DeletePromotor } from "./pages/DeletePromotor"
+import { CategoryPanel } from "./pages/Categories/CategoryPanel";
+import { CategoriesList } from "./pages/Categories/CategoriesList";
+import { CategoryCreate } from "./pages/Categories/CategoryCreate";
+import { CategoryEdit } from "./pages/Categories/CategoryEdit";
+import { CategoryDetail } from "./pages/Categories/CategoryDetail";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -50,6 +55,11 @@ export const router = createBrowserRouter(
         <Route path="/promotor-create" element={<CreatePromotor/>} />
         <Route path="/promotor-edit/:theId" element={<EditPromotor/>} />
         <Route path="/promotor-delete/:theId" element={<DeletePromotor/>} />
+        <Route path="/category-panel" element={<CategoryPanel />} />
+        <Route path="/categories" element={<CategoriesList />} />
+        <Route path="/categories/create" element={<CategoryCreate />} />
+        <Route path="/categories/edit/:id" element={<CategoryEdit />} />
+        <Route path="/categories/:id" element={<CategoryDetail />} />
         
       </Route>
     )
