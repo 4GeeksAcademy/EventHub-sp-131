@@ -18,6 +18,10 @@ import { Admin } from "./pages/Admin";
 import { CreateAdmin } from "./pages/CreateAdmin";
 import { EditAdmin } from "./pages/EditAdmin";
 import { AdminDetails } from "./pages/AdminDetails";
+import { Promotor } from "./pages/Promotor"
+import { CreatePromotor } from "./pages/CreatePromotor"
+import { EditPromotor } from "./pages/EditPromotor"
+import { DeletePromotor } from "./pages/DeletePromotor"
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -42,6 +46,11 @@ export const router = createBrowserRouter(
         <Route path="/create-user" element={<CreateUser />} />
         <Route path="/edit-user/:id" element={<EditUser />} />
         <Route path="/delete-user/:id" element={<DeleteUser />} />
+        <Route path="/promotor" element={<Promotor/>} />
+        <Route path="/promotor-create" element={<CreatePromotor/>} />
+        <Route path="/promotor-edit/:theId" element={<EditPromotor/>} />
+        <Route path="/promotor-delete/:theId" element={<DeletePromotor/>} />
+        
       </Route>
     )
 );

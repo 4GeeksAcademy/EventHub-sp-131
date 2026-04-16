@@ -40,7 +40,32 @@ class Admin(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.email,
-            "is_active": self.is_active
+            "email": self.user.email,
+            "is_active": self.user.is_active
         }
-    
+
+class Promotor(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(nullable=False)
+    location: Mapped[str] = mapped_column(String(160),nullable=False)
+    phone: Mapped[int] = mapped_column(unique=True)
+    web_page: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    verified_org: Mapped[bool] = mapped_column(Boolean(), nullable=False)
+
+    # Pending relation with EventOwnerdPromotor table
+    # Pending relation with PromotorCategory table
+
+
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "location": self.location,
+            "phone": self.phone,
+            "webPage": self.web_page,
+            "verifiedOrg": self.verified_org
+        }
