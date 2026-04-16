@@ -69,3 +69,17 @@ class Promotor(db.Model):
             "webPage": self.web_page,
             "verifiedOrg": self.verified_org
         }
+
+
+##  // TABLA CATEGORY
+class Category(db.Model):
+    __tablename__ = "category"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(120), nullable=False, unique=True)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name
+        }
