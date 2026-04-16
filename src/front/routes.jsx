@@ -1,5 +1,6 @@
 // Import necessary components and functions from react-router-dom.
 
+
 import {
     createBrowserRouter,
     createRoutesFromElements,
@@ -10,6 +11,10 @@ import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
 import { Promotor } from "./pages/Promotor"
+import User from "./pages/User";
+import CreateUser from "./pages/CreateUser";
+import EditUser from "./pages/EditUser";
+import DeleteUser from "./pages/DeleteUser";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -23,9 +28,17 @@ export const router = createBrowserRouter(
       <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>} >
 
         {/* Nested Routes: Defines sub-routes within the BaseHome component. */}
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/create" element={<CreateAdmin />} />
+        <Route path="/admin/edit/:id" element={<EditAdmin />} />
+        <Route path="/admin/details/:id" element={<AdminDetails />} />
         <Route path= "/" element={<Home />} />
         <Route path="/single/:theId" element={ <Single />} />  {/* Dynamic route for single items */}
         <Route path="/demo" element={<Demo />} />
+        <Route path="/user" element={<User />} />
+        <Route path="/create-user" element={<CreateUser />} />
+        <Route path="/edit-user/:id" element={<EditUser />} />
+        <Route path="/delete-user/:id" element={<DeleteUser />} />
         <Route path="/promotor" element={<Promotor/>} />
       </Route>
     )
