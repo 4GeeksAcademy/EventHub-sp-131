@@ -13,15 +13,6 @@ api = Blueprint('api', __name__)
 CORS(api)
 
 
-@api.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
-    response_body = {
-        "message": "The promotor has been created correctly",
-        "promotor": promotor.serialize()
-    }
-    return jsonify(response_body), 200
-
-
 @api.route("/users", methods=["GET"])
 def get_users():
     users = db.session.execute(select(User)).scalars().all()
@@ -199,11 +190,11 @@ def create_admin():
         return jsonify({"message": "Los campos email y password son obligatorios"}), 400
 
     existing_user = db.session.execute(
-        select(User).where(User.email == email)).scalar_one_or_none()
+        select(Admin).where(Admin.email == email)).scalar_one_or_none()
     if existing_user:
         return jsonify({"message": "Ya existe un usuario con ese email"}), 409
 
-    new_user = User(
+    new_user = Admin(
         email=email,
         password=password,
         is_active=is_active

@@ -55,10 +55,10 @@ export const Home = () => {
 			    </div>
 
 			</div>
-			<Link to="/promotor">
+			<Link className="p-2" to="/promotor">
 				<button className="btn btn-primary">Promotor CRUD</button>
-
-			<Link to="/user">
+			</Link>
+			<Link className="p-2" to="/user">
 				<button className="btn btn-primary">User CRUD</button>
 			</Link>
 		</div>
