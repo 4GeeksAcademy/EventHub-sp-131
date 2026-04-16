@@ -9,6 +9,10 @@ import { Layout } from "./pages/Layout";
 import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
+import { Event } from "./pages/Event";
+import { CreateEvent } from "./pages/CreateEvent";
+import { EditEvent } from "./pages/EditEvent";
+import { DeleteEvent } from "./pages/DeleteEvent";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -25,6 +29,10 @@ export const router = createBrowserRouter(
         <Route path= "/" element={<Home />} />
         <Route path="/single/:theId" element={ <Single />} />  {/* Dynamic route for single items */}
         <Route path="/demo" element={<Demo />} />
+        <Route path="/events" element={<Event />} />
+        <Route path="/create-event" element={<CreateEvent />} />
+        <Route path="/edit-event/:id" element={<EditEvent />} />
+        <Route path="/delete-event/:id" element={<DeleteEvent />} />
       </Route>
     )
 );

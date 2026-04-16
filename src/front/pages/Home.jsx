@@ -1,8 +1,11 @@
 import React, { useEffect } from "react"
 import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { useNavigate } from "react-router-dom";
 
 export const Home = () => {
+
+	const navigate = useNavigate();
 
 	const { store, dispatch } = useGlobalReducer()
 
@@ -47,6 +50,12 @@ export const Home = () => {
 					</span>
 				)}
 			</div>
+			<button 
+                className="btn btn-primary mt-3"
+                onClick={() => navigate("/events")}
+            >
+                Ir a CRUD Events
+            </button>
 		</div>
 	);
 }; 
