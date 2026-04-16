@@ -48,18 +48,22 @@ export const Home = () => {
 					</span>
 				)}
 
-				<div className="mt-4">
-				  <Link to="/admin" className="btn btn-dark">
-					Ir a Admin
-				  </Link>
-			    </div>
+				
 
 			</div>
+            <Link to="/admin" className="btn btn-primary">
+					Admin CRUD
+			</Link>
+
 			<Link className="p-2" to="/promotor">
 				<button className="btn btn-primary">Promotor CRUD</button>
 			</Link>
 			<Link className="p-2" to="/user">
 				<button className="btn btn-primary">User CRUD</button>
+			</Link>
+			 
+			<Link to="/category-panel" className="btn btn-primary">
+						Category CRUD
 			</Link>
 		</div>
 	);
