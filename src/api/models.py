@@ -93,6 +93,7 @@ class Group(db.Model):
 
     def serialize(self):
         return {
+            "id": self.id,
             "name": self.name,
             "media": self.media,
             "location": self.location,
