@@ -50,10 +50,7 @@ export const Home = () => {
 
 			
 			</div>
-
-            <Link to="/admin" className="btn btn-primary">
-					Admin CRUD
-			</Link>
+            <Link to="/admin" className="btn btn-primary">Admin CRUD</Link>
 
 			<Link className="p-2" to="/promotor">
 				<button className="btn btn-primary">Promotor CRUD</button>
@@ -70,6 +67,9 @@ export const Home = () => {
 				<button className="btn btn-primary">Ir a CRUD Events</button>
 			</Link>
 
+			<Link className="p-2" to="/group">
+				<button className="btn btn-primary">Group CRUD</button>
+			</Link>
 		</div>
 	);
 }; 

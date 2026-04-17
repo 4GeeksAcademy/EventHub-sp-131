@@ -107,3 +107,19 @@ class Event(db.Model):
             "media": self.media,
             "create_date": self.create_date.isoformat() if self.create_date else None
         }
+
+class Group(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    media: Mapped[str] = mapped_column(String(500))
+    location: Mapped[str] = mapped_column(String(160),nullable=False)
+    description: Mapped[str] = mapped_column(String(260))
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "media": self.media,
+            "location": self.location,
+            "description": self.description
+        }

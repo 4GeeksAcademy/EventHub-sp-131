@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Admin, Promotor, Category, Event
+from api.models import db, User, Admin, Promotor, Category, Event, Group
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select
@@ -14,19 +14,6 @@ api = Blueprint('api', __name__)
 CORS(api)
 
 
-@api.route("/events/<int:event_id>", methods=["DELETE"])
-def delete_event(event_id):
-    event = db.session.get(Event, event_id)
-
-    if event is None:
-        return jsonify({"message": "Evento no encontrado"}), 404
-
-    db.session.delete(event)
-    db.session.commit()
-
-    return jsonify({
-        "message": "Evento eliminado correctamente"
-    }), 200
 @api.route("/users", methods=["GET"])
 def get_users():
     users = db.session.execute(select(User)).scalars().all()
@@ -162,6 +149,8 @@ def delete_user(user_id):
 #  // CRUD ADMIN //
 
 # LEER TODOS LOS ADMINS
+
+
 @api.route("/admin-panel/admins", methods=["GET"])
 def get_admins():
     admins = db.session.execute(
@@ -320,7 +309,10 @@ def create_promotor():
     if db.session.execute(select(Promotor).where(Promotor.phone == body["phone"])).scalar_one_or_none():
         return jsonify("The phone is invalid or missing"), 400
 
-    if "password" not in body:
+    if "location" not in body or body["location"] == "":
+        return jsonify("Location missing"), 400
+    
+    if "password" not in body or body["password"] == "":
         return jsonify("Password missing"), 400
 
     promotor = Promotor(**body, verified_org=False)
@@ -334,6 +326,7 @@ def create_promotor():
     }
 
     return jsonify(response_body), 200
+
 
 @api.route('/promotor/<int:position>', methods=['PUT'])
 def edit_promotor_by_id(position):
@@ -382,9 +375,9 @@ def delete_promotor_by_id(position):
     }
 
     return jsonify(response_body), 200
-  
 
   #  // CATEGORY CRUD //
+
 
 @api.route("/categories", methods=["GET"])
 def get_categories():
@@ -453,7 +446,8 @@ def update_category(category_id):
         return jsonify({"msg": "El campo name es obligatorio"}), 400
 
     repeated_category = db.session.execute(
-        select(Category).where(Category.name == name, Category.id != category_id)
+        select(Category).where(Category.name ==
+                               name, Category.id != category_id)
     ).scalar_one_or_none()
 
     if repeated_category:
@@ -600,3 +594,107 @@ def update_event(event_id):
         "message": "Evento actualizado correctamente",
         "results": event.serialize()
     }), 200
+
+@api.route("/events/<int:event_id>", methods=["DELETE"])
+def delete_event(event_id):
+    event = db.session.get(Event, event_id)
+
+    if event is None:
+        return jsonify({"message": "Evento no encontrado"}), 404
+
+    db.session.delete(event)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Evento eliminado correctamente"
+    }), 200
+
+# // GROUPS
+
+@api.route('/group', methods=['GET'])
+def get_group():
+    groups = db.session.execute(select(Group)).scalars().all()
+
+    response_body = list(map(lambda group: group.serialize(), groups))
+
+    return jsonify(response_body), 200
+
+
+@api.route('/group/<int:position>', methods=['GET'])
+def get_group_by_id(position):
+    group = db.session.get(Group, position)
+
+    if group == None:
+        return jsonify("This group does not exist"), 404
+
+    response_body = group.serialize()
+
+    return jsonify(response_body), 200
+
+
+@api.route('/group', methods=['POST'])
+def create_group():
+
+    body = request.json
+    if db.session.execute(select(Group).where(Group.name == body["name"])).scalar_one_or_none():
+        return jsonify("The name is invalid or missing"), 400
+
+    if "location" not in body or body["location"] == "":
+        return jsonify("Location missing"), 400
+
+    group = Group(**body)
+
+    db.session.add(group)
+    db.session.commit()
+
+    response_body = {
+        "message": "The group has been created correctly",
+        "group": group.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+
+@api.route('/group/<int:position>', methods=['PUT'])
+def edit_group_by_id(position):
+
+    group = db.session.get(Group, position)
+
+    body = request.json
+
+    if group == None:
+        return jsonify("This group does not exist"), 404
+
+    if "name" in body:
+        group.name = body["name"]
+    if "location" in body:
+        group.location = body["location"]
+    if "media" in body:
+        group.media = body["media"]
+    if "description" in body:
+        group.description = body["description"]
+
+    db.session.commit()
+
+    response_body = group.serialize()
+
+    return jsonify(response_body), 200
+
+
+@api.route('/group/<int:position>', methods=['DELETE'])
+def delete_group_by_id(position):
+
+    group = db.session.get(Group, position)
+
+    if group == None:
+        return jsonify("This group does not exist"), 404
+
+    db.session.delete(group)
+    db.session.commit()
+
+    response_body = {
+        "message": "The group has been deleted correctly",
+        "group": group.serialize()
+    }
+
+    return jsonify(response_body), 200
