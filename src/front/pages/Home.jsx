@@ -67,7 +67,7 @@ export const Home = () => {
 			</Link>
 
 			<Link className="p-2" to="/events">	
-				<button className="btn btn-primary mt-3">Ir a CRUD Events</button>
+				<button className="btn btn-primary">Ir a CRUD Events</button>
 			</Link>
 
 		</div>
