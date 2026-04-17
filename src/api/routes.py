@@ -306,7 +306,10 @@ def create_promotor():
     if db.session.execute(select(Promotor).where(Promotor.phone == body["phone"])).scalar_one_or_none():
         return jsonify("The phone is invalid or missing"), 400
 
-    if "password" not in body:
+    if "location" not in body or body["location"] == "":
+        return jsonify("Location missing"), 400
+    
+    if "password" not in body or body["password"] == "":
         return jsonify("Password missing"), 400
 
     promotor = Promotor(**body, verified_org=False)
