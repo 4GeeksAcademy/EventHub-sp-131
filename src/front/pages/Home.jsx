@@ -51,9 +51,7 @@ export const Home = () => {
 				
 
 			</div>
-            <Link to="/admin" className="btn btn-primary">
-					Admin CRUD
-			</Link>
+            <Link to="/admin" className="btn btn-primary">Admin CRUD</Link>
 
 			<Link className="p-2" to="/promotor">
 				<button className="btn btn-primary">Promotor CRUD</button>
@@ -64,6 +62,9 @@ export const Home = () => {
 			 
 			<Link to="/category-panel" className="btn btn-primary">
 						Category CRUD
+			</Link>
+			<Link className="p-2" to="/group">
+				<button className="btn btn-primary">Group CRUD</button>
 			</Link>
 		</div>
 	);
