@@ -1,11 +1,9 @@
 import React, { useEffect } from "react"
+import { Link } from "react-router-dom";
 import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { useNavigate } from "react-router-dom";
 
 export const Home = () => {
-
-	const navigate = useNavigate();
 
 	const { store, dispatch } = useGlobalReducer()
 
@@ -49,13 +47,29 @@ export const Home = () => {
 						Loading message from the backend (make sure your python 🐍 backend is running)...
 					</span>
 				)}
+
+			
 			</div>
-			<button 
-                className="btn btn-primary mt-3"
-                onClick={() => navigate("/events")}
-            >
-                Ir a CRUD Events
-            </button>
+
+            <Link to="/admin" className="btn btn-primary">
+					Admin CRUD
+			</Link>
+
+			<Link className="p-2" to="/promotor">
+				<button className="btn btn-primary">Promotor CRUD</button>
+			</Link>
+			<Link className="p-2" to="/user">
+				<button className="btn btn-primary">User CRUD</button>
+			</Link>
+			 
+			<Link to="/category-panel" className="btn btn-primary">
+						Category CRUD
+			</Link>
+
+			<Link className="p-2" to="/events">	
+				<button className="btn btn-primary mt-3">Ir a CRUD Events</button>
+			</Link>
+
 		</div>
 	);
 }; 

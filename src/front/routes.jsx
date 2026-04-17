@@ -1,5 +1,6 @@
 // Import necessary components and functions from react-router-dom.
 
+
 import {
     createBrowserRouter,
     createRoutesFromElements,
@@ -9,6 +10,23 @@ import { Layout } from "./pages/Layout";
 import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
+import User from "./pages/User";
+import CreateUser from "./pages/CreateUser";
+import EditUser from "./pages/EditUser";
+import DeleteUser from "./pages/DeleteUser";
+import { Admin } from "./pages/Admin";
+import { CreateAdmin } from "./pages/CreateAdmin";
+import { EditAdmin } from "./pages/EditAdmin";
+import { AdminDetails } from "./pages/AdminDetails";
+import { Promotor } from "./pages/Promotor"
+import { CreatePromotor } from "./pages/CreatePromotor"
+import { EditPromotor } from "./pages/EditPromotor"
+import { DeletePromotor } from "./pages/DeletePromotor"
+import { CategoryPanel } from "./pages/Categories/CategoryPanel";
+import { CategoriesList } from "./pages/Categories/CategoriesList";
+import { CategoryCreate } from "./pages/Categories/CategoryCreate";
+import { CategoryEdit } from "./pages/Categories/CategoryEdit";
+import { CategoryDetail } from "./pages/Categories/CategoryDetail";
 import { Event } from "./pages/Event";
 import { CreateEvent } from "./pages/CreateEvent";
 import { EditEvent } from "./pages/EditEvent";
@@ -26,13 +44,31 @@ export const router = createBrowserRouter(
       <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>} >
 
         {/* Nested Routes: Defines sub-routes within the BaseHome component. */}
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/create" element={<CreateAdmin />} />
+        <Route path="/admin/edit/:id" element={<EditAdmin />} />
+        <Route path="/admin/details/:id" element={<AdminDetails />} />
         <Route path= "/" element={<Home />} />
         <Route path="/single/:theId" element={ <Single />} />  {/* Dynamic route for single items */}
         <Route path="/demo" element={<Demo />} />
+        <Route path="/user" element={<User />} />
+        <Route path="/create-user" element={<CreateUser />} />
+        <Route path="/edit-user/:id" element={<EditUser />} />
+        <Route path="/delete-user/:id" element={<DeleteUser />} />
+        <Route path="/promotor" element={<Promotor/>} />
+        <Route path="/promotor-create" element={<CreatePromotor/>} />
+        <Route path="/promotor-edit/:theId" element={<EditPromotor/>} />
+        <Route path="/promotor-delete/:theId" element={<DeletePromotor/>} />
+        <Route path="/category-panel" element={<CategoryPanel />} />
+        <Route path="/categories" element={<CategoriesList />} />
+        <Route path="/categories/create" element={<CategoryCreate />} />
+        <Route path="/categories/edit/:id" element={<CategoryEdit />} />
+        <Route path="/categories/:id" element={<CategoryDetail />} />
         <Route path="/events" element={<Event />} />
         <Route path="/create-event" element={<CreateEvent />} />
         <Route path="/edit-event/:id" element={<EditEvent />} />
         <Route path="/delete-event/:id" element={<DeleteEvent />} />
+        
       </Route>
     )
 );
