@@ -83,3 +83,18 @@ class Category(db.Model):
             "id": self.id,
             "name": self.name
         }
+    
+class Group(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    media: Mapped[str] = mapped_column(String(500))
+    location: Mapped[str] = mapped_column(String(160),nullable=False)
+    description: Mapped[str] = mapped_column(String(260))
+
+    def serialize(self):
+        return {
+            "name": self.name,
+            "media": self.media,
+            "location": self.location,
+            "description": self.description
+        }
