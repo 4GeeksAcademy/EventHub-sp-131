@@ -68,6 +68,9 @@ export const Group = () => {
                                                 </div>
                                                 <p className="card-text">location {item.location}</p>
                                                 <p className="card-text">{item.description}</p>
+                                                <Link to={`/group/${item.id}/detail`}>
+                                                    <button type="button" className="btn btn-primary">Ver</button>
+                                                </Link>
                                             </div>
                                         </div>
                                     </div>
