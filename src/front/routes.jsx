@@ -28,6 +28,10 @@ import { CategoriesList } from "./pages/Categories/CategoriesList";
 import { CategoryCreate } from "./pages/Categories/CategoryCreate";
 import { CategoryEdit } from "./pages/Categories/CategoryEdit";
 import { CategoryDetail } from "./pages/Categories/CategoryDetail";
+import { Event } from "./pages/Event";
+import { CreateEvent } from "./pages/CreateEvent";
+import { EditEvent } from "./pages/EditEvent";
+import { DeleteEvent } from "./pages/DeleteEvent";
 import { Group } from "./pages/Group/Group";
 import { CreateGroup } from "./pages/Group/CreateGroup"
 import { EditGroup } from "./pages/Group/EditGroup"
@@ -67,6 +71,10 @@ export const router = createBrowserRouter(
       <Route path="/categories/create" element={<CategoryCreate />} />
       <Route path="/categories/edit/:id" element={<CategoryEdit />} />
       <Route path="/categories/:id" element={<CategoryDetail />} />
+      <Route path="/events" element={<Event />} />
+      <Route path="/create-event" element={<CreateEvent />} />
+      <Route path="/edit-event/:id" element={<EditEvent />} />
+      <Route path="/delete-event/:id" element={<DeleteEvent />} />
       <Route path="/group" element={<Group />} />
       <Route path="/group-create" element={<CreateGroup />} />
       <Route path="/group-edit/:theId" element={<EditGroup />} />
