@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean, Integer, ForeignKey
+from sqlalchemy import String, Boolean, Integer, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
 from typing import Optional
@@ -136,7 +136,7 @@ class Group(db.Model):
 class PromotorCategory(db.Model):
     __tablename__ = "promotor_category"
     __table_args__ = (
-      UniqueConstraint("promotor_id", "category_id", name="uq_promotor_category"),
+        UniqueConstraint("promotor_id", "category_id", name="uq_promotor_category"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)

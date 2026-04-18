@@ -699,7 +699,7 @@ def delete_group_by_id(position):
 
     return jsonify(response_body), 200
 
-    ## // Category-Promotor CRUD //
+    ## // Promotor-Category CRUD //
 
 @api.route('/promotors', methods=['GET'])
 def get_promotors():
@@ -709,7 +709,7 @@ def get_promotors():
 
 
 @api.route('/categories', methods=['GET'])
-def get_categories():
+def get_all_categories():
     stmt = select(Category).order_by(Category.id)
     categories = db.session.execute(stmt).scalars().all()
     return jsonify([category.serialize() for category in categories]), 200
