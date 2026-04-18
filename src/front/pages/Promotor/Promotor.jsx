@@ -65,11 +65,9 @@ export const Promotor = () => {
                                                         </Link>
                                                     </div>
                                                 </div>
-                                                <p className="card-text">email: {item.email}</p>
-                                                <p className="card-text">location {item.location}</p>
-                                                <p className="card-text">Tel: {item.phone}</p>
-                                                <p className="card-text">{item.webPage}</p>
-                                                <p className="card-text">{item.verifiedOrg === true ? "Active" : "Inactive"}</p>
+                                                <Link to={`/promotor/${item.id}/detail`}>
+                                                    <button type="button" className="btn btn-primary">Ver</button>
+                                                </Link>
                                             </div>
                                         </div>
                                     </div>

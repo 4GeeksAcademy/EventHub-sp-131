@@ -40,8 +40,8 @@ class Admin(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.user.email,
-            "is_active": self.user.is_active
+            "email": self.email,
+            "is_active": self.is_active
         }
 
 class Promotor(db.Model):
