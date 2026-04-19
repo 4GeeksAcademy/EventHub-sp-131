@@ -19,6 +19,7 @@ import { CreateAdmin } from "./pages/Admin/CreateAdmin";
 import { EditAdmin } from "./pages/Admin/EditAdmin";
 import { AdminDetails } from "./pages/Admin/AdminDetails";
 import { Promotor } from "./pages/Promotor/Promotor"
+import { PromotorDetail } from "./pages/Promotor/PromotorDetail"
 import { CreatePromotor } from "./pages/Promotor/CreatePromotor"
 import { EditPromotor } from "./pages/Promotor/EditPromotor"
 import { DeletePromotor } from "./pages/Promotor/DeletePromotor"
@@ -27,10 +28,15 @@ import { CategoriesList } from "./pages/Categories/CategoriesList";
 import { CategoryCreate } from "./pages/Categories/CategoryCreate";
 import { CategoryEdit } from "./pages/Categories/CategoryEdit";
 import { CategoryDetail } from "./pages/Categories/CategoryDetail";
+import { Event } from "./pages/Event";
+import { CreateEvent } from "./pages/CreateEvent";
+import { EditEvent } from "./pages/EditEvent";
+import { DeleteEvent } from "./pages/DeleteEvent";
 import { Group } from "./pages/Group/Group";
 import { CreateGroup } from "./pages/Group/CreateGroup"
 import { EditGroup } from "./pages/Group/EditGroup"
 import { DeleteGroup } from "./pages/Group/DeleteGroup"
+import { GroupDetail } from "./pages/Group/GroupDetail"
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -59,15 +65,21 @@ export const router = createBrowserRouter(
       <Route path="/promotor-create" element={<CreatePromotor />} />
       <Route path="/promotor-edit/:theId" element={<EditPromotor />} />
       <Route path="/promotor-delete/:theId" element={<DeletePromotor />} />
+      <Route path="/promotor/:theId/detail" element={<PromotorDetail/>} />
       <Route path="/category-panel" element={<CategoryPanel />} />
       <Route path="/categories" element={<CategoriesList />} />
       <Route path="/categories/create" element={<CategoryCreate />} />
       <Route path="/categories/edit/:id" element={<CategoryEdit />} />
       <Route path="/categories/:id" element={<CategoryDetail />} />
+      <Route path="/events" element={<Event />} />
+      <Route path="/create-event" element={<CreateEvent />} />
+      <Route path="/edit-event/:id" element={<EditEvent />} />
+      <Route path="/delete-event/:id" element={<DeleteEvent />} />
       <Route path="/group" element={<Group />} />
       <Route path="/group-create" element={<CreateGroup />} />
       <Route path="/group-edit/:theId" element={<EditGroup />} />
       <Route path="/group-delete/:theId" element={<DeleteGroup />} />
+      <Route path="/group/:theId/detail" element={<GroupDetail/>} /> 
     </Route>
   )
 );
