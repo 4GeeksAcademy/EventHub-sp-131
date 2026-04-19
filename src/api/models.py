@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean, Integer, ForeignKey
+from sqlalchemy import String, Boolean, Integer, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
 from typing import Optional
@@ -56,8 +56,12 @@ class Promotor(db.Model):
     web_page: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     verified_org: Mapped[bool] = mapped_column(Boolean(), nullable=False)
 
+    promotor_categories: Mapped[list["PromotorCategory"]] = relationship(
+        back_populates="promotor",
+        cascade="all, delete-orphan"
+    )
     # Pending relation with EventOwnerdPromotor table
-    # Pending relation with PromotorCategory table
+    
 
     def serialize(self):
         return {
@@ -71,12 +75,17 @@ class Promotor(db.Model):
         }
 
 
-##  // TABLA CATEGORY
 class Category(db.Model):
     __tablename__ = "category"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False, unique=True)
+
+
+    promotor_categories: Mapped[list["PromotorCategory"]] = relationship(
+        back_populates="category",
+        cascade="all, delete-orphan"
+    )
 
     def serialize(self):
         return {
@@ -122,4 +131,26 @@ class Group(db.Model):
             "media": self.media,
             "location": self.location,
             "description": self.description
+        }
+    
+class PromotorCategory(db.Model):
+    __tablename__ = "promotor_category"
+    __table_args__ = (
+        UniqueConstraint("promotor_id", "category_id", name="uq_promotor_category"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    promotor_id: Mapped[int] = mapped_column(ForeignKey("promotor.id"), nullable=False)
+    category_id: Mapped[int] = mapped_column(ForeignKey("category.id"), nullable=False)
+
+    promotor: Mapped["Promotor"] = relationship(back_populates="promotor_categories")
+    category: Mapped["Category"] = relationship(back_populates="promotor_categories")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "promotor_id": self.promotor_id,
+            "category_id": self.category_id,
+            "promotor": self.promotor.serialize() if self.promotor else None,
+            "category": self.category.serialize() if self.category else None
         }
