@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Boolean, Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import List
 
 db = SQLAlchemy()
 
@@ -16,6 +17,10 @@ class User(db.Model):
     age: Mapped[int] = mapped_column(Integer, nullable=True)
     description: Mapped[str] = mapped_column(String(500), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
+
+    friends: Mapped[List["Friend"]] = relationship("Friend", foreign_keys=lambda: [Friend.user_id], back_populates="user", lazy="selectin")
+    friends_owned: Mapped[List["Friend"]] = relationship("Friend", foreign_keys=lambda: [Friend.friend_id], back_populates="friend", lazy="selectin")
+
 
     def serialize(self):
         return {
@@ -98,4 +103,18 @@ class Group(db.Model):
             "media": self.media,
             "location": self.location,
             "description": self.description
+        }
+    
+class Friend(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user: Mapped[List["User"]] = relationship("User", foreign_keys=[user_id], back_populates="friends")
+    friend_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    friend: Mapped[List["User"]] = relationship("User", foreign_keys=[friend_id], back_populates="friends_owned")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "friend_id": self.friend_id
         }
