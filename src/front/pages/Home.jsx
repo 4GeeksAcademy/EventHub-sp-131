@@ -70,6 +70,9 @@ export const Home = () => {
 			<Link className="p-2" to="/group">
 				<button className="btn btn-primary">Group CRUD</button>
 			</Link>
+			<Link className="p-2" to="/friend">
+				<button className="btn btn-primary">Friend CRUD</button>
+			</Link>
 		</div>
 	);
 }; 

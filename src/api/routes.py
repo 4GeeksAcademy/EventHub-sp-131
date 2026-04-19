@@ -10,8 +10,7 @@ from datetime import datetime
 
 api = Blueprint('api', __name__)
 
-# Allow CORS requests to this API
-CORS(api)
+
 
 
 @api.route("/users", methods=["GET"])
@@ -729,8 +728,10 @@ def create_friend():
     body = request.json
     if "user_id" not in body or "friend_id" not in body:
         return jsonify("Please provide a usar ID and a friend ID")
+    if body["user_id"] == "" or body["friend_id"] == "":
+        return jsonify("Please provide a valid user and a friend ID"), 400
     if body["user_id"] == body["friend_id"]:
-        return jsonify("A user cannot be friend with itself!")
+        return jsonify("A user cannot be friend with itself!"), 400
     
     if db.session.execute(select(User).where(User.id == body["user_id"])).scalar_one_or_none() == None:
         return jsonify("The user does not exist"), 400

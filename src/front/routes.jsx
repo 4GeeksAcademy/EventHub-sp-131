@@ -37,6 +37,10 @@ import { CreateGroup } from "./pages/Group/CreateGroup"
 import { EditGroup } from "./pages/Group/EditGroup"
 import { DeleteGroup } from "./pages/Group/DeleteGroup"
 import { GroupDetail } from "./pages/Group/GroupDetail"
+import { Friend } from "./pages/Friend/Friend"
+import { FriendDetail } from "./pages/Friend/FriendDetail"
+import { CreateFriend } from "./pages/Friend/CreateFriend";
+import { DeleteFriend } from "./pages/Friend/DeleteFriend";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -79,7 +83,11 @@ export const router = createBrowserRouter(
       <Route path="/group-create" element={<CreateGroup />} />
       <Route path="/group-edit/:theId" element={<EditGroup />} />
       <Route path="/group-delete/:theId" element={<DeleteGroup />} />
-      <Route path="/group/:theId/detail" element={<GroupDetail/>} /> 
+      <Route path="/group/:theId/detail" element={<GroupDetail/>} />
+      <Route path="/friend" element={<Friend/>} />
+      <Route path="/friend-create" element={<CreateFriend />} />
+      <Route path="/friend-delete/:theId" element={<DeleteFriend />} />
+      <Route path="/friend/:theId/detail" element={<FriendDetail/>} />
     </Route>
   )
 );
