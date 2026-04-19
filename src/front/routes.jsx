@@ -27,10 +27,10 @@ import { CategoriesList } from "./pages/Categories/CategoriesList";
 import { CategoryCreate } from "./pages/Categories/CategoryCreate";
 import { CategoryEdit } from "./pages/Categories/CategoryEdit";
 import { CategoryDetail } from "./pages/Categories/CategoryDetail";
-import { Event } from "./pages/Event";
-import { CreateEvent } from "./pages/CreateEvent";
-import { EditEvent } from "./pages/EditEvent";
-import { DeleteEvent } from "./pages/DeleteEvent";
+import { Event } from "./pages/Event/Event";
+import { CreateEvent } from "./pages/Event/CreateEvent";
+import { EditEvent } from "./pages/Event/EditEvent";
+import { DeleteEvent } from "./pages/Event/DeleteEvent";
 import { Group } from "./pages/Group/Group";
 import { CreateGroup } from "./pages/Group/CreateGroup"
 import { EditGroup } from "./pages/Group/EditGroup"
