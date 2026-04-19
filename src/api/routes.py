@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Admin, Promotor, Category, Group, Friend
+from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select
@@ -698,7 +698,6 @@ def delete_group_by_id(position):
 
     return jsonify(response_body), 200
 
-
 # // FRIENDS
 
 @api.route('/friend', methods=['GET'])
@@ -772,3 +771,136 @@ def delete_friend_by_id(position):
     return jsonify(response_body), 200
 
 
+    ## // Promotor-Category CRUD //
+
+@api.route('/promotors', methods=['GET'])
+def get_promotors():
+    stmt = select(Promotor).order_by(Promotor.id)
+    promotors = db.session.execute(stmt).scalars().all()
+    return jsonify([promotor.serialize() for promotor in promotors]), 200
+
+
+@api.route('/categories', methods=['GET'])
+def get_all_categories():
+    stmt = select(Category).order_by(Category.id)
+    categories = db.session.execute(stmt).scalars().all()
+    return jsonify([category.serialize() for category in categories]), 200
+
+
+@api.route('/promotor-categories', methods=['GET'])
+def get_promotor_categories():
+    stmt = select(PromotorCategory).order_by(PromotorCategory.id)
+    relations = db.session.execute(stmt).scalars().all()
+    return jsonify([relation.serialize() for relation in relations]), 200
+
+
+@api.route('/promotor-categories/<int:relation_id>', methods=['GET'])
+def get_single_promotor_category(relation_id):
+    relation = db.session.get(PromotorCategory, relation_id)
+
+    if relation is None:
+        return jsonify({"msg": "Relación no encontrada"}), 404
+
+    return jsonify(relation.serialize()), 200
+
+
+@api.route('/promotor-categories', methods=['POST'])
+def create_promotor_category():
+    body = request.get_json(silent=True)
+
+    if not body:
+        return jsonify({"msg": "Faltan datos"}), 400
+
+    promotor_id = body.get("promotor_id")
+    category_id = body.get("category_id")
+
+    if promotor_id is None or category_id is None:
+        return jsonify({"msg": "promotor_id y category_id son obligatorios"}), 400
+
+    promotor = db.session.get(Promotor, promotor_id)
+    category = db.session.get(Category, category_id)
+
+    if promotor is None:
+        return jsonify({"msg": "Promotor no encontrado"}), 404
+
+    if category is None:
+        return jsonify({"msg": "Categoría no encontrada"}), 404
+
+    duplicate_stmt = select(PromotorCategory).where(
+        PromotorCategory.promotor_id == promotor_id,
+        PromotorCategory.category_id == category_id
+    )
+    duplicate_relation = db.session.execute(duplicate_stmt).scalar_one_or_none()
+
+    if duplicate_relation is not None:
+        return jsonify({"msg": "Esta relación ya existe"}), 400
+
+    new_relation = PromotorCategory(
+        promotor_id=promotor_id,
+        category_id=category_id
+    )
+
+    db.session.add(new_relation)
+    db.session.commit()
+    db.session.refresh(new_relation)
+
+    return jsonify(new_relation.serialize()), 201
+
+
+@api.route('/promotor-categories/<int:relation_id>', methods=['PUT'])
+def update_promotor_category(relation_id):
+    relation = db.session.get(PromotorCategory, relation_id)
+
+    if relation is None:
+        return jsonify({"msg": "Relación no encontrada"}), 404
+
+    body = request.get_json(silent=True)
+
+    if not body:
+        return jsonify({"msg": "Faltan datos"}), 400
+
+    promotor_id = body.get("promotor_id")
+    category_id = body.get("category_id")
+
+    if promotor_id is None or category_id is None:
+        return jsonify({"msg": "promotor_id y category_id son obligatorios"}), 400
+
+    promotor = db.session.get(Promotor, promotor_id)
+    category = db.session.get(Category, category_id)
+
+    if promotor is None:
+        return jsonify({"msg": "Promotor no encontrado"}), 404
+
+    if category is None:
+        return jsonify({"msg": "Categoría no encontrada"}), 404
+
+    duplicate_stmt = select(PromotorCategory).where(
+        PromotorCategory.promotor_id == promotor_id,
+        PromotorCategory.category_id == category_id,
+        PromotorCategory.id != relation_id
+    )
+    duplicate_relation = db.session.execute(duplicate_stmt).scalar_one_or_none()
+
+    if duplicate_relation is not None:
+        return jsonify({"msg": "Ya existe otra relación con esos datos"}), 400
+
+    relation.promotor_id = promotor_id
+    relation.category_id = category_id
+
+    db.session.commit()
+    db.session.refresh(relation)
+
+    return jsonify(relation.serialize()), 200
+
+
+@api.route('/promotor-categories/<int:relation_id>', methods=['DELETE'])
+def delete_promotor_category(relation_id):
+    relation = db.session.get(PromotorCategory, relation_id)
+
+    if relation is None:
+        return jsonify({"msg": "Relación no encontrada"}), 404
+
+    db.session.delete(relation)
+    db.session.commit()
+
+    return jsonify({"msg": "Relación eliminada correctamente"}), 200

@@ -41,6 +41,10 @@ import { Friend } from "./pages/Friend/Friend"
 import { FriendDetail } from "./pages/Friend/FriendDetail"
 import { CreateFriend } from "./pages/Friend/CreateFriend";
 import { DeleteFriend } from "./pages/Friend/DeleteFriend";
+import { CreatePromotorCategory } from "./pages/Promotor-categories/CreatePromotorCategory";
+import { PromotorCategoryList } from "./pages/Promotor-categories/PromotorCategoryList";
+import { EditPromotorCategory } from "./pages/Promotor-categories/EditPromotorCategory";
+
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -88,6 +92,10 @@ export const router = createBrowserRouter(
       <Route path="/friend-create" element={<CreateFriend />} />
       <Route path="/friend-delete/:theId" element={<DeleteFriend />} />
       <Route path="/friend/:theId/detail" element={<FriendDetail/>} />
+      <Route path="/group/:theId/detail" element={<GroupDetail/>} /> 
+      <Route path="/promotor-category/create" element={<CreatePromotorCategory />} />
+      <Route path="/promotor-category/list" element={<PromotorCategoryList />} />
+      <Route path="/promotor-category/edit/:id" element={<EditPromotorCategory />} />
     </Route>
   )
 );
