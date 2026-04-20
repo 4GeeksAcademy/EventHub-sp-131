@@ -40,6 +40,10 @@ import { GroupDetail } from "./pages/Group/GroupDetail"
 import { CreatePromotorCategory } from "./pages/Promotor-categories/CreatePromotorCategory";
 import { PromotorCategoryList } from "./pages/Promotor-categories/PromotorCategoryList";
 import { EditPromotorCategory } from "./pages/Promotor-categories/EditPromotorCategory";
+import { SavedEvent } from "./pages/SavedEvent/SavedEvent";
+import { SavedEventDetail } from "./pages/SavedEvent/SavedEventDetails";
+import { CreateSavedEvent } from "./pages/SavedEvent/CreateSavedEvent";
+import { DeleteSavedEvent } from "./pages/SavedEvent/DeleteSavedEvent";
 
 
 export const router = createBrowserRouter(
@@ -87,6 +91,10 @@ export const router = createBrowserRouter(
       <Route path="/promotor-category/create" element={<CreatePromotorCategory />} />
       <Route path="/promotor-category/list" element={<PromotorCategoryList />} />
       <Route path="/promotor-category/edit/:id" element={<EditPromotorCategory />} />
+      <Route path="/saved_event" element={<SavedEvent />} />
+      <Route path="/saved_event-create" element={<CreateSavedEvent />} />
+      <Route path="/saved_event-delete/:theId" element={<DeleteSavedEvent />} />
+      <Route path="/saved_event/:theId/detail" element={<SavedEventDetail/>} /> 
     </Route>
   )
 );

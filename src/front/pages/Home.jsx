@@ -76,6 +76,11 @@ export const Home = () => {
                     Promotor-Category CRUD
                 </button>
             </Link>
+			<Link to="/saved_event">
+                <button className="btn btn-primary">
+                    Saved Event CRUD
+                </button>
+            </Link>
 		</div>
 	);
 }; 
