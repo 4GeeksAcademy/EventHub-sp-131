@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend, SavedEvent, Discussion
+from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend, SavedEvent, Discussion, GroupCategory
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select
@@ -1053,3 +1053,153 @@ def delete_saved_event_by_id(position):
     }
 
     return jsonify(response_body), 200
+
+# // TABLA GROUP-CATEGORY //
+
+@api.route('/group-categories', methods=['GET'])
+def get_group_categories():
+    stmt = select(GroupCategory)
+    result = db.session.execute(stmt).scalars().all()
+
+    return jsonify([item.serialize() for item in result]), 200
+
+@api.route('/group-categories/<int:id>', methods=['GET'])
+def get_one_group_category(id):
+    stmt = select(GroupCategory).where(GroupCategory.id == id)
+    result = db.session.execute(stmt).scalar_one_or_none()
+
+    if result is None:
+        return jsonify({"message": "Relación no encontrada"}), 404
+
+    return jsonify(result.serialize()), 200
+
+@api.route('/group-categories', methods=['POST'])
+def create_group_category():
+    body = request.get_json()
+
+    if body is None:
+        return jsonify({"message": "Debes enviar un body"}), 400
+
+    group_id = body.get("group_id")
+    category_id = body.get("category_id")
+
+    if group_id is None or category_id is None:
+        return jsonify({"message": "group_id y category_id son obligatorios"}), 400
+
+    # validar existencia group
+    stmt_group = select(Group).where(Group.id == group_id)
+    group = db.session.execute(stmt_group).scalar_one_or_none()
+
+    if group is None:
+        return jsonify({"message": "El grupo no existe"}), 404
+
+    # validar existencia category
+    stmt_category = select(Category).where(Category.id == category_id)
+    category = db.session.execute(stmt_category).scalar_one_or_none()
+
+    if category is None:
+        return jsonify({"message": "La categoría no existe"}), 404
+
+    # evitar duplicado
+    stmt = select(GroupCategory).where(
+        GroupCategory.group_id == group_id,
+        GroupCategory.category_id == category_id
+    )
+    existing = db.session.execute(stmt).scalar_one_or_none()
+
+    if existing:
+        return jsonify({"message": "Esa relación ya existe"}), 409
+
+    new_relation = GroupCategory(
+        group_id=group_id,
+        category_id=category_id
+    )
+
+    db.session.add(new_relation)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Relación creada",
+        "data": new_relation.serialize()
+    }), 201
+
+@api.route('/group-categories/<int:id>', methods=['PUT'])
+def update_group_category(id):
+    stmt = select(GroupCategory).where(GroupCategory.id == id)
+    relation = db.session.execute(stmt).scalar_one_or_none()
+
+    if relation is None:
+        return jsonify({"message": "Relación no encontrada"}), 404
+
+    body = request.get_json()
+
+    if body is None:
+        return jsonify({"message": "Debes enviar un body"}), 400
+
+    group_id = body.get("group_id")
+    category_id = body.get("category_id")
+
+    if group_id is None or category_id is None:
+        return jsonify({"message": "group_id y category_id son obligatorios"}), 400
+
+    # validar group
+    stmt_group = select(Group).where(Group.id == group_id)
+    group = db.session.execute(stmt_group).scalar_one_or_none()
+
+    if group is None:
+        return jsonify({"message": "El grupo no existe"}), 404
+
+    # validar category
+    stmt_category = select(Category).where(Category.id == category_id)
+    category = db.session.execute(stmt_category).scalar_one_or_none()
+
+    if category is None:
+        return jsonify({"message": "La categoría no existe"}), 404
+
+    # evitar duplicado
+    stmt = select(GroupCategory).where(
+        GroupCategory.group_id == group_id,
+        GroupCategory.category_id == category_id,
+        GroupCategory.id != id
+    )
+    existing = db.session.execute(stmt).scalar_one_or_none()
+
+    if existing:
+        return jsonify({"message": "Ya existe esa relación"}), 409
+
+    relation.group_id = group_id
+    relation.category_id = category_id
+
+    db.session.commit()
+
+    return jsonify({
+        "message": "Relación actualizada",
+        "data": relation.serialize()
+    }), 200
+
+@api.route('/group-categories/<int:id>', methods=['DELETE'])
+def delete_group_category(id):
+    stmt = select(GroupCategory).where(GroupCategory.id == id)
+    relation = db.session.execute(stmt).scalar_one_or_none()
+
+    if relation is None:
+        return jsonify({"message": "Relación no encontrada"}), 404
+
+    db.session.delete(relation)
+    db.session.commit()
+
+    return jsonify({"message": "Relación eliminada"}), 200
+
+@api.route('/groups', methods=['GET'])
+def get_groups():
+    stmt = select(Group)
+    result = db.session.execute(stmt).scalars().all()
+    return jsonify([g.serialize() for g in result]), 200
+
+
+@api.route('/categories', methods=['GET'])
+def get_categories():
+    stmt = select(Category)
+    result = db.session.execute(stmt).scalars().all()
+    return jsonify([c.serialize() for c in result]), 200
+
