@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory
+from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Discussion
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select
@@ -832,3 +832,73 @@ def delete_promotor_category(relation_id):
     db.session.commit()
 
     return jsonify({"msg": "Relación eliminada correctamente"}), 200
+
+# // DISCUSSIONS
+
+@api.route('/discussion', methods=['GET'])
+def get_discussion():
+    discussions = db.session.execute(select(Discussion)).scalars().all()
+
+    response_body = list(map(lambda discussion: discussion.serialize(), discussions))
+
+    return jsonify(response_body), 200
+
+
+@api.route('/discussion/<int:position>', methods=['GET'])
+def get_discussion_by_id(position):
+    discussion = db.session.get(Discussion, position)
+
+    if discussion == None:
+        return jsonify("There are no discussions entries"), 404
+
+    response_body = discussion.serialize()
+
+    return jsonify(response_body), 200
+
+
+@api.route('/discussion', methods=['POST'])
+def create_discussion():
+
+    body = request.json
+    if "user_id" not in body or "group_id" not in body:
+        return jsonify("Please provide a user ID and a group ID")
+    if body["user_id"] == "" or body["group_id"] == "":
+        return jsonify("Please provide a valid user and a group ID"), 400
+    
+    if db.session.execute(select(User).where(User.id == body["user_id"])).scalar_one_or_none() == None:
+        return jsonify("The user does not exist"), 400
+    
+    if db.session.execute(select(Group).where(Group.id == body["group_id"])).scalar_one_or_none() == None:
+        return jsonify("The group does not exist"), 400
+
+
+    discussion = Discussion(**body)
+
+    db.session.add(discussion)
+    db.session.commit()
+
+    response_body = {
+        "message": "The discussion has been created correctly",
+        "discussion": discussion.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+
+@api.route('/discussion/<int:position>', methods=['DELETE'])
+def delete_discussion_by_id(position):
+
+    discussion = db.session.get(Discussion, position)
+
+    if discussion == None:
+        return jsonify("This discussion does not exist"), 404
+
+    db.session.delete(discussion)
+    db.session.commit()
+
+    response_body = {
+        "message": "The discussion entry has been deleted correctly",
+        "discussion": discussion.serialize()
+    }
+
+    return jsonify(response_body), 200
