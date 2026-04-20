@@ -19,6 +19,8 @@ class User(db.Model):
     description: Mapped[str] = mapped_column(String(500), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
 
+    saved_event: Mapped[list["SavedEvent"]] = relationship(back_populates="user")
+
     def serialize(self):
         return {
             "id": self.id,
@@ -105,6 +107,8 @@ class Event(db.Model):
     media: Mapped[Optional[str]] = mapped_column(db.String(255))
     create_date: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
 
+    saved_event: Mapped[list["SavedEvent"]] = relationship(back_populates="event")
+
     def serialize(self):
         return {
             "id": self.id,
@@ -153,4 +157,18 @@ class PromotorCategory(db.Model):
             "category_id": self.category_id,
             "promotor": self.promotor.serialize() if self.promotor else None,
             "category": self.category.serialize() if self.category else None
+        }
+    
+class SavedEvent(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user: Mapped["User"] = relationship(back_populates="saved_event")
+    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"))
+    event: Mapped["Event"] = relationship(back_populates="saved_event")
+
+    def serialize(self):
+        return {
+        "id": self.id,
+        "user_id": self.id,
+        "event_id": self.id
         }
