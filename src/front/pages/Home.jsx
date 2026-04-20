@@ -101,6 +101,11 @@ export const Home = () => {
 						<button className="btn btn-primary">Friend CRUD</button>
 					</Link>
 				</div>
+				<div>
+					<Link className="p-2" to="/user_category">
+						<button className="btn btn-primary">User Category CRUD</button>
+					</Link>
+				</div>
 			</div>
 		</div>
 	);

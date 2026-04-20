@@ -52,6 +52,10 @@ import { SavedEvent } from "./pages/SavedEvent/SavedEvent";
 import { SavedEventDetail } from "./pages/SavedEvent/SavedEventDetails";
 import { CreateSavedEvent } from "./pages/SavedEvent/CreateSavedEvent";
 import { DeleteSavedEvent } from "./pages/SavedEvent/DeleteSavedEvent";
+import { UserCategroy } from "./pages/UserCategory/UserCategory";
+import { UserCategroyDetail } from "./pages/UserCategory/UserCategoryDetails";
+import { CreateUserCategroy } from "./pages/UserCategory/CreateUserCategory";
+import { DeleteUserCategroy } from "./pages/UserCategory/DeleteUserCategory";
 
 
 export const router = createBrowserRouter(
@@ -111,6 +115,10 @@ export const router = createBrowserRouter(
       <Route path="/saved_event-create" element={<CreateSavedEvent />} />
       <Route path="/saved_event-delete/:theId" element={<DeleteSavedEvent />} />
       <Route path="/saved_event/:theId/detail" element={<SavedEventDetail/>} /> 
+      <Route path="/user_category" element={<UserCategroy/>} />
+      <Route path="/user_category/:theId/detail" element={<UserCategroyDetail/>} />
+      <Route path="/user_category-create" element={<CreateUserCategroy/>} />
+      <Route path="/user_category-delete/:theId" element={<DeleteUserCategroy/>} />
     </Route>
   )
 );

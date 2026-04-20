@@ -1082,7 +1082,7 @@ def create_user_category():
 
     body = request.json
     if "user_id" not in body or "category_id" not in body:
-        return jsonify("Please provide a user ID and a category ID")
+        return jsonify("Please provide a user ID and a category ID"), 400
     
     if body["user_id"] == "" or body["category_id"] == "":
         return jsonify("Please provide a valid user and a category ID"), 400
