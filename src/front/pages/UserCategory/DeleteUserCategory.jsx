@@ -29,7 +29,7 @@ export const DeleteUserCategory = () => {
                 <Link to="/user_category">
                     <button type="button" className="btn btn-primary">Go Back</button>
                 </Link>
-                <button type="button" className="btn btn-danger" onClick={() => deleteEventCategory(theId)}>Delete</button>
+                <button type="button" className="btn btn-danger" onClick={() => deleteUserCategory(theId)}>Delete</button>
             </div>
         </div>
     );
