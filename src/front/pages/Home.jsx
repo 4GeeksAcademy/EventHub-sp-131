@@ -70,18 +70,14 @@ export const Home = () => {
 			<Link className="p-2" to="/group">
 				<button className="btn btn-primary">Group CRUD</button>
 			</Link>
-<<<<<<< HEAD
 			<Link className="p-2" to="/friend">
 				<button className="btn btn-primary">Friend CRUD</button>
 			</Link>
-=======
-
 			<Link to="/promotor-category/list">
                 <button className="btn btn-primary">
                     Promotor-Category CRUD
                 </button>
             </Link>
->>>>>>> develop
 		</div>
 	);
 }; 
