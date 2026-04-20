@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend, SavedEvent, Discussion, GroupCategory
+from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend, SavedEvent, Discussion, GroupCategory, UserCategory
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select
@@ -13,9 +13,6 @@ from api.utils import generate_sitemap, APIException
 from flask import Flask, request, jsonify, url_for, Blueprint
 
 api = Blueprint('api', __name__)
-
-
-
 
 @api.route("/users", methods=["GET"])
 def get_users():
@@ -1054,6 +1051,77 @@ def delete_saved_event_by_id(position):
 
     return jsonify(response_body), 200
 
+
+# // UserCategory
+
+@api.route('/user_category', methods=['GET'])
+def get_user_category():
+    user_categories = db.session.execute(select(UserCategory)).scalars().all()
+
+    response_body = list(
+        map(lambda user_category: user_category.serialize(), user_categories))
+
+    return jsonify(response_body), 200
+
+
+@api.route('/user_category/<int:position>', methods=['GET'])
+def get_user_category_by_id(position):
+    user_category = db.session.get(UserCategory, position)
+
+    if user_category == None:
+        return jsonify("There are no user categories entries"), 404
+
+    response_body = user_category.serialize()
+
+    return jsonify(response_body), 200
+
+
+@api.route('/user_category', methods=['POST'])
+def create_user_category():
+
+    body = request.json
+    if "user_id" not in body or "category_id" not in body:
+        return jsonify("Please provide a user ID and a category ID"), 400
+    
+    if body["user_id"] == "" or body["category_id"] == "":
+        return jsonify("Please provide a valid user and a category ID"), 400
+
+    if db.session.execute(select(User).where(User.id == body["user_id"])).scalar_one_or_none() == None:
+        return jsonify("The user does not exist"), 400
+
+    if db.session.execute(select(Category).where(Category.id == body["category_id"])).scalar_one_or_none() == None:
+        return jsonify("The category does not exist"), 400
+
+    user_category = UserCategory(**body)
+
+    db.session.add(user_category)
+    db.session.commit()
+
+    response_body = {
+        "message": "The user category has been created correctly",
+        "user_category": user_category.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+
+@api.route('/user_category/<int:position>', methods=['DELETE'])
+def delete_user_category_by_id(position):
+
+    user_category = db.session.get(UserCategory, position)
+
+    if user_category == None:
+        return jsonify("This saved event does not exist"), 404
+
+    db.session.delete(user_category)
+    db.session.commit()
+
+    response_body = {
+        "message": "The saved event entry has been deleted correctly",
+        "user_category": user_category.serialize()
+    }
+
+    return jsonify(response_body), 200
 # // TABLA GROUP-CATEGORY //
 
 @api.route('/group-categories', methods=['GET'])

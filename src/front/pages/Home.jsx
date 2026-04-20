@@ -102,12 +102,14 @@ export const Home = () => {
 					</Link>
 				</div>
 				<div>
+					<Link className="p-2" to="/user_category">
+						<button className="btn btn-primary">User Category CRUD</button>
+					</Link>
+				</div>
 					<Link className="p-2" to="/group-category">
 				      <button className="btn btn-primary">Group-Category CRUD</button>
 			        </Link>
 				</div>
-					
-			</div>
 		</div>
 	);
 }; 
