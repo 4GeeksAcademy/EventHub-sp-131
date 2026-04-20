@@ -19,8 +19,12 @@ class User(db.Model):
     description: Mapped[str] = mapped_column(String(500), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
 
+<<<<<<< HEAD
     discussion: Mapped[list["Discussion"]] = relationship(back_populates="user")
 
+=======
+    saved_event: Mapped[list["SavedEvent"]] = relationship(back_populates="user")
+>>>>>>> develop
 
     def serialize(self):
         return {
@@ -108,6 +112,8 @@ class Event(db.Model):
     media: Mapped[Optional[str]] = mapped_column(db.String(255))
     create_date: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
 
+    saved_event: Mapped[list["SavedEvent"]] = relationship(back_populates="event")
+
     def serialize(self):
         return {
             "id": self.id,
@@ -177,4 +183,18 @@ class Discussion(db.Model):
             "create_date": self.create_date,
             "user_id": self.user_id,
             "group_id": self.group_id,
+        }
+    
+class SavedEvent(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user: Mapped["User"] = relationship(back_populates="saved_event")
+    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"))
+    event: Mapped["Event"] = relationship(back_populates="saved_event")
+
+    def serialize(self):
+        return {
+        "id": self.id,
+        "user_id": self.user_id,
+        "event_id": self.event_id
         }

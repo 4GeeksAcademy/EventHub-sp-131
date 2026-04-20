@@ -85,6 +85,13 @@ export const Home = () => {
 					</Link>
 				</div>
 				<div>
+					<Link to="/saved_event">
+						<button className="btn btn-primary">
+							Saved Event CRUD
+						</button>
+					</Link>
+				</div>
+				<div>
 					<Link className="p-2" to="/discussion">
 						<button className="btn btn-primary">Discussion CRUD</button>
 					</Link>
