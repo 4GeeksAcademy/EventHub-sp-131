@@ -10,8 +10,6 @@ from datetime import datetime
 from sqlalchemy import select
 from flask_cors import CORS
 from api.utils import generate_sitemap, APIException
-from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, SavedEvent
-from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Discussion
 from flask import Flask, request, jsonify, url_for, Blueprint
 
 api = Blueprint('api', __name__)
