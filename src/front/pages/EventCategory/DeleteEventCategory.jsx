@@ -8,14 +8,14 @@ export const DeleteEventCategroy = () => {
 
     async function deleteEventCategroy(id) {
         try {
-            const response = await fetch(`${urlAPI}/api/user_category/${id}`, {
+            const response = await fetch(`${urlAPI}/api/event_category/${id}`, {
                 "method": "DELETE",
                 "Content-Type": "application/json"
             })
             if (!response.ok) {
                 throw new Error("Error on post fetch, status: ", response.status)
             }
-            navigate("/user_category")
+            navigate("/event-category")
         }
         catch (error) {
             console.log("Error on fetch: ", error.message)
@@ -26,7 +26,7 @@ export const DeleteEventCategroy = () => {
         <div>
             <h1 className="text-center">Sure you want to baish this from existance??</h1>
             <div className="d-flex gap-2 justify-content-center">
-                <Link to="/user_category">
+                <Link to="/user-category">
                     <button type="button" className="btn btn-primary">Go Back</button>
                 </Link>
                 <button type="button" className="btn btn-danger" onClick={() => deleteEventCategroy(theId)}>Delete</button>

@@ -58,7 +58,7 @@ export const UserCategoryDetail = () => {
             <div className="row justify-content-center">
                 <div className="col-lg-8">
                     <div className="d-flex justify-content-between align-items-center mb-4">
-                        <Link to="/user_category" className="btn btn-outline-dark">
+                        <Link to="/user-category" className="btn btn-outline-dark">
                             Back
                         </Link>
                     </div>

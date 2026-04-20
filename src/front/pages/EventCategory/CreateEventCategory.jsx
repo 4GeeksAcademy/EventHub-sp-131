@@ -46,7 +46,7 @@ export const CreateEventCategroy = () => {
                 throw new Error("Error on post fetch, status: ", response.status)
             }
             if (response.ok) {
-                navigate("/event_category")
+                navigate("/event-category")
             }
         }
         catch (error) {

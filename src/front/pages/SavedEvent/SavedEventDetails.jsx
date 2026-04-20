@@ -65,7 +65,7 @@ export const SavedEventDetail = () => {
             <div className="row justify-content-center">
                 <div className="col-lg-8">
                     <div className="d-flex justify-content-between align-items-center mb-4">
-                        <Link to="/saved_event" className="btn btn-outline-dark">
+                        <Link to="/saved-event" className="btn btn-outline-dark">
                             Back
                         </Link>
                     </div>

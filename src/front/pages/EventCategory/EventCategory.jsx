@@ -31,7 +31,7 @@ export const EventCategory = () => {
                 <div className="d-flex justify-content-between">
                     <div className="d-flex gap-2 mt-3">
                         <button type="button" className="btn btn-primary" onClick={getEventCategories}>Get all saved events</button>
-                        <Link to="/event_category-create">
+                        <Link to="/event-category-create">
                             <button type="button" className="btn btn-primary">Create saved event</button>
                         </Link>
                     </div>
@@ -52,14 +52,14 @@ export const EventCategory = () => {
                                                 <div className="d-flex justify-content-between">
                                                     <h6 className="card-title">EventCategories number {item.id}</h6>
                                                     <div className="d-flex gap-1">
-                                                        <Link to={`/event_category-delete/${item.id}`}>
+                                                        <Link to={`/event-category-delete/${item.id}`}>
                                                             <button type="button" className="btn btn-outline-dark">
                                                                 <i className="fa-regular fa-trash-can"></i>
                                                             </button>
                                                         </Link>
                                                     </div>
                                                 </div>
-                                                <Link to={`/event_category/${item.id}/detail`}>
+                                                <Link to={`/event-category/${item.id}/detail`}>
                                                     <button type="button" className="btn btn-primary">Ver</button>
                                                 </Link>
                                             </div>

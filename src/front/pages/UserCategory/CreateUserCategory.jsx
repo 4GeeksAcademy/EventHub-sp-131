@@ -46,7 +46,7 @@ export const CreateUserCategory = () => {
                 throw new Error("Error on post fetch, status: ", response.status)
             }
             if (response.ok) {
-                navigate("/user_category")
+                navigate("/user-category")
             }
         }
         catch (error) {

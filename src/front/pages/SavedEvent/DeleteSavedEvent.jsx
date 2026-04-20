@@ -15,7 +15,7 @@ export const DeleteSavedEvent = () => {
             if (!response.ok) {
                 throw new Error("Error on post fetch, status: ", response.status)
             }
-            navigate("/saved_event")
+            navigate("/saved-event")
         }
         catch (error) {
             console.log("Error on fetch: ", error.message)
@@ -26,7 +26,7 @@ export const DeleteSavedEvent = () => {
         <div>
             <h1 className="text-center">Sure you want to baish this from existance??</h1>
             <div className="d-flex gap-2 justify-content-center">
-                <Link to="/saved_event">
+                <Link to="/saved-event">
                     <button type="button" className="btn btn-primary">Go Back</button>
                 </Link>
                 <button type="button" className="btn btn-danger" onClick={() => deleteSavedEvent(theId)}>Delete</button>

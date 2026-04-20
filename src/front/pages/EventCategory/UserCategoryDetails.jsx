@@ -58,7 +58,7 @@ export const EventCategroyDetail = () => {
             <div className="row justify-content-center">
                 <div className="col-lg-8">
                     <div className="d-flex justify-content-between align-items-center mb-4">
-                        <Link to="/event_category" className="btn btn-outline-dark">
+                        <Link to="/event-category" className="btn btn-outline-dark">
                             Back
                         </Link>
                     </div>

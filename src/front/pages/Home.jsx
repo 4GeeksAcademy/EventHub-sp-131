@@ -85,7 +85,7 @@ export const Home = () => {
 					</Link>
 				</div>
 				<div>
-					<Link to="/saved_event">
+					<Link to="/saved-event">
 						<button className="btn btn-primary">
 							Saved Event CRUD
 						</button>
@@ -102,7 +102,7 @@ export const Home = () => {
 					</Link>
 				</div>
 				<div>
-					<Link className="p-2" to="/user_category">
+					<Link className="p-2" to="/user-category">
 						<button className="btn btn-primary">User Category CRUD</button>
 					</Link>
 				</div>

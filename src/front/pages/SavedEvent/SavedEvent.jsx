@@ -31,7 +31,7 @@ export const SavedEvent = () => {
                 <div className="d-flex justify-content-between">
                     <div className="d-flex gap-2 mt-3">
                         <button type="button" className="btn btn-primary" onClick={getSavedEvents}>Get all saved events</button>
-                        <Link to="/saved_event-create">
+                        <Link to="/saved-event-create">
                             <button type="button" className="btn btn-primary">Create saved event</button>
                         </Link>
                     </div>
@@ -52,14 +52,14 @@ export const SavedEvent = () => {
                                                 <div className="d-flex justify-content-between">
                                                     <h6 className="card-title">SavedEvent number {item.id}</h6>
                                                     <div className="d-flex gap-1">
-                                                        <Link to={`/saved_event-delete/${item.id}`}>
+                                                        <Link to={`/saved-event-delete/${item.id}`}>
                                                             <button type="button" className="btn btn-outline-dark">
                                                                 <i className="fa-regular fa-trash-can"></i>
                                                             </button>
                                                         </Link>
                                                     </div>
                                                 </div>
-                                                <Link to={`/saved_event/${item.id}/detail`}>
+                                                <Link to={`/saved-event/${item.id}/detail`}>
                                                     <button type="button" className="btn btn-primary">Ver</button>
                                                 </Link>
                                             </div>
