@@ -21,7 +21,7 @@ import { AdminDetails } from "./pages/Admin/AdminDetails";
 import { Promotor } from "./pages/Promotor/Promotor"
 import { PromotorDetail } from "./pages/Promotor/PromotorDetail"
 import { CreatePromotor } from "./pages/Promotor/CreatePromotor"
-import { EditPromotor } from "./pages/Promotor/EditPromotSavedEventor"
+import { EditPromotor } from "./pages/Promotor/EditPromotor"
 import { DeletePromotor } from "./pages/Promotor/DeletePromotor"
 import { CategoryPanel } from "./pages/Categories/CategoryPanel";
 import { CategoriesList } from "./pages/Categories/CategoriesList";
