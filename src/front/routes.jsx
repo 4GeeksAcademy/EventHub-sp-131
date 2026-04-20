@@ -52,13 +52,17 @@ import { SavedEvent } from "./pages/SavedEvent/SavedEvent";
 import { SavedEventDetail } from "./pages/SavedEvent/SavedEventDetails";
 import { CreateSavedEvent } from "./pages/SavedEvent/CreateSavedEvent";
 import { DeleteSavedEvent } from "./pages/SavedEvent/DeleteSavedEvent";
-import { UserCategroy } from "./pages/UserCategory/UserCategory";
-import { UserCategroyDetail } from "./pages/UserCategory/UserCategoryDetails";
-import { CreateUserCategroy } from "./pages/UserCategory/CreateUserCategory";
-import { DeleteUserCategroy } from "./pages/UserCategory/DeleteUserCategory";
+import { UserCategory } from "./pages/UserCategory/UserCategory";
+import { UserCategoryDetail } from "./pages/UserCategory/UserCategoryDetails";
+import { CreateUserCategory } from "./pages/UserCategory/CreateUserCategory";
+import { DeleteUserCategory } from "./pages/UserCategory/DeleteUserCategory";
 import { GroupCategoryList } from "./pages/Group-categories/GroupCategoryList";
 import { AddGroupCategory } from "./pages/Group-categories/AddGroupCategory";
 import { EditGroupCategory } from "./pages/Group-categories/EditGroupCategory";
+import { EventCategory } from "./pages/EventCategory/EventCategory";
+import { EventCategroyDetail } from "./pages/EventCategory/UserCategoryDetails";
+import { DeleteEventCategroy } from "./pages/EventCategory/DeleteEventCategory";
+import { CreateEventCategroy } from "./pages/EventCategory/CreateEventCategory";
 
 
 export const router = createBrowserRouter(
@@ -118,13 +122,17 @@ export const router = createBrowserRouter(
       <Route path="/saved_event-create" element={<CreateSavedEvent />} />
       <Route path="/saved_event-delete/:theId" element={<DeleteSavedEvent />} />
       <Route path="/saved_event/:theId/detail" element={<SavedEventDetail/>} /> 
-      <Route path="/user_category" element={<UserCategroy/>} />
-      <Route path="/user_category/:theId/detail" element={<UserCategroyDetail/>} />
-      <Route path="/user_category-create" element={<CreateUserCategroy/>} />
-      <Route path="/user_category-delete/:theId" element={<DeleteUserCategroy/>} />
+      <Route path="/user_category" element={<UserCategory/>} />
+      <Route path="/user_category/:theId/detail" element={<UserCategoryDetail/>} />
+      <Route path="/user_category-create" element={<CreateUserCategory/>} />
+      <Route path="/user_category-delete/:theId" element={<DeleteUserCategory/>} />
       <Route path="/group-category" element={<GroupCategoryList />} />
       <Route path="/add-group-category" element={<AddGroupCategory />} />
       <Route path="/edit-group-category/:id" element={<EditGroupCategory />} />
+      <Route path="/event_category" element={<EventCategory/>} />
+      <Route path="/event_category/:theId/detail" element={<EventCategroyDetail/>} />
+      <Route path="/event_category-delete" element={<DeleteEventCategroy/>} />
+      <Route path="/event_category-create" element={<CreateEventCategroy/>} />
     </Route>
   )
 );

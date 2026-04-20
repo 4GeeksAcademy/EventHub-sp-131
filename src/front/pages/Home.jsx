@@ -106,10 +106,17 @@ export const Home = () => {
 						<button className="btn btn-primary">User Category CRUD</button>
 					</Link>
 				</div>
+				<div>
 					<Link className="p-2" to="/group-category">
-				      <button className="btn btn-primary">Group-Category CRUD</button>
-			        </Link>
+						<button className="btn btn-primary">Group-Category CRUD</button>
+					</Link>
 				</div>
+				<div>
+					<Link className="p-2" to="/event-category">
+						<button className="btn btn-primary">Event Category CRUD</button>
+					</Link>
+				</div>
+			</div>
 		</div>
 	);
 }; 

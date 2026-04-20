@@ -109,6 +109,7 @@ class Category(db.Model):
     )
 
     userCats: Mapped[list["UserCategory"]] = relationship(back_populates="category")
+    eventCats: Mapped[list["EventCategory"]] = relationship(back_populates="category")
 
     def serialize(self):
         return {
@@ -132,6 +133,8 @@ class Event(db.Model):
 
     saved_event: Mapped[list["SavedEvent"]
         ] = relationship(back_populates="event")
+    
+    categories: Mapped[list["EventCategory"]] = relationship(back_populates="event")
 
     def serialize(self):
         return {
@@ -272,3 +275,18 @@ class GroupCategory(db.Model):
 
     group: Mapped["Group"] = relationship("Group")
     category: Mapped["Category"] = relationship("Category")
+
+
+class EventCategory(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"))
+    event: Mapped["Event"] = relationship(back_populates="categories")
+    category_id: Mapped[int] = mapped_column(ForeignKey("category.id"))
+    category: Mapped["Category"] = relationship(back_populates="eventCats")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "event_id": self.event_id,
+            "category_id": self.category_id
+        }

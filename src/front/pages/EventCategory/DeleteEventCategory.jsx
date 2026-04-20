@@ -1,12 +1,12 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-export const DeleteUserCategory = () => {
+export const DeleteEventCategroy = () => {
 
     const urlAPI = import.meta.env.VITE_BACKEND_URL
     const { theId } = useParams()
     const navigate = useNavigate()
 
-    async function deleteUserCategory(id) {
+    async function deleteEventCategroy(id) {
         try {
             const response = await fetch(`${urlAPI}/api/user_category/${id}`, {
                 "method": "DELETE",
@@ -29,7 +29,7 @@ export const DeleteUserCategory = () => {
                 <Link to="/user_category">
                     <button type="button" className="btn btn-primary">Go Back</button>
                 </Link>
-                <button type="button" className="btn btn-danger" onClick={() => deleteEventCategory(theId)}>Delete</button>
+                <button type="button" className="btn btn-danger" onClick={() => deleteEventCategroy(theId)}>Delete</button>
             </div>
         </div>
     );
