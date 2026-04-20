@@ -59,7 +59,9 @@ import { DeleteUserCategroy } from "./pages/UserCategory/DeleteUserCategory";
 import { GroupCategoryList } from "./pages/Group-categories/GroupCategoryList";
 import { AddGroupCategory } from "./pages/Group-categories/AddGroupCategory";
 import { EditGroupCategory } from "./pages/Group-categories/EditGroupCategory";
-
+import { GroupEventList } from "./pages/Group-event/GroupEventList";
+import { CreateGroupEvent } from "./pages/Group-event/CreateGroupEvent";
+import { EditGroupEvent } from "./pages/Group-event/EditGroupEvent";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -125,6 +127,9 @@ export const router = createBrowserRouter(
       <Route path="/group-category" element={<GroupCategoryList />} />
       <Route path="/add-group-category" element={<AddGroupCategory />} />
       <Route path="/edit-group-category/:id" element={<EditGroupCategory />} />
+      <Route path="/group-event" element={<GroupEventList />} />
+      <Route path="/create-group-event" element={<CreateGroupEvent />} />
+      <Route path="/edit-group-event/:id" element={<EditGroupEvent />} />
     </Route>
   )
 );

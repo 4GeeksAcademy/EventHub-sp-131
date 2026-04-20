@@ -110,6 +110,12 @@ export const Home = () => {
 				      <button className="btn btn-primary">Group-Category CRUD</button>
 			        </Link>
 				</div>
+				<div>
+				<Link className="p-2" to="/group-event">
+	              <button className="btn btn-primary">Group-Event CRUD</button>
+                </Link>
+				</div>
+				
 		</div>
 	);
 }; 
