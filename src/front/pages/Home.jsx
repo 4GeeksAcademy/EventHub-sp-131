@@ -96,6 +96,11 @@ export const Home = () => {
 						<button className="btn btn-primary">Discussion CRUD</button>
 					</Link>
 				</div>
+				<div>
+					<Link className="p-2" to="/friend">
+						<button className="btn btn-primary">Friend CRUD</button>
+					</Link>
+				</div>
 			</div>
 		</div>
 	);

@@ -21,7 +21,7 @@ import { AdminDetails } from "./pages/Admin/AdminDetails";
 import { Promotor } from "./pages/Promotor/Promotor"
 import { PromotorDetail } from "./pages/Promotor/PromotorDetail"
 import { CreatePromotor } from "./pages/Promotor/CreatePromotor"
-import { EditPromotor } from "./pages/Promotor/EditPromotor"
+import { EditPromotor } from "./pages/Promotor/EditPromotSavedEventor"
 import { DeletePromotor } from "./pages/Promotor/DeletePromotor"
 import { CategoryPanel } from "./pages/Categories/CategoryPanel";
 import { CategoriesList } from "./pages/Categories/CategoriesList";
@@ -37,6 +37,10 @@ import { CreateGroup } from "./pages/Group/CreateGroup"
 import { EditGroup } from "./pages/Group/EditGroup"
 import { DeleteGroup } from "./pages/Group/DeleteGroup"
 import { GroupDetail } from "./pages/Group/GroupDetail"
+import { Friend } from "./pages/Friend/Friend"
+import { FriendDetail } from "./pages/Friend/FriendDetail"
+import { CreateFriend } from "./pages/Friend/CreateFriend";
+import { DeleteFriend } from "./pages/Friend/DeleteFriend";
 import { CreatePromotorCategory } from "./pages/Promotor-categories/CreatePromotorCategory";
 import { PromotorCategoryList } from "./pages/Promotor-categories/PromotorCategoryList";
 import { EditPromotorCategory } from "./pages/Promotor-categories/EditPromotorCategory";
@@ -91,7 +95,11 @@ export const router = createBrowserRouter(
       <Route path="/group-create" element={<CreateGroup />} />
       <Route path="/group-edit/:theId" element={<EditGroup />} />
       <Route path="/group-delete/:theId" element={<DeleteGroup />} />
-      <Route path="/group/:theId/detail" element={<GroupDetail />} />
+      <Route path="/group/:theId/detail" element={<GroupDetail/>} />
+      <Route path="/friend" element={<Friend/>} />
+      <Route path="/friend-create" element={<CreateFriend />} />
+      <Route path="/friend-delete/:theId" element={<DeleteFriend />} />
+      <Route path="/friend/:theId/detail" element={<FriendDetail/>} />
       <Route path="/promotor-category/create" element={<CreatePromotorCategory />} />
       <Route path="/promotor-category/list" element={<PromotorCategoryList />} />
       <Route path="/promotor-category/edit/:id" element={<EditPromotorCategory />} />

@@ -19,6 +19,8 @@ static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../dist/')
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+
+# Allow CORS requests to this API
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # database condiguration

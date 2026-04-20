@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Boolean, Integer, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import List
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -19,12 +20,13 @@ class User(db.Model):
     description: Mapped[str] = mapped_column(String(500), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
 
-<<<<<<< HEAD
     discussion: Mapped[list["Discussion"]] = relationship(back_populates="user")
 
-=======
     saved_event: Mapped[list["SavedEvent"]] = relationship(back_populates="user")
->>>>>>> develop
+
+    friends: Mapped[List["Friend"]] = relationship("Friend", foreign_keys=lambda: [Friend.user_id], back_populates="user", lazy="selectin")
+    friends_owned: Mapped[List["Friend"]] = relationship("Friend", foreign_keys=lambda: [Friend.friend_id], back_populates="friend", lazy="selectin")
+
 
     def serialize(self):
         return {
@@ -197,4 +199,19 @@ class SavedEvent(db.Model):
         "id": self.id,
         "user_id": self.user_id,
         "event_id": self.event_id
+        }
+
+
+class Friend(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user: Mapped[List["User"]] = relationship("User", foreign_keys=[user_id], back_populates="friends")
+    friend_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    friend: Mapped[List["User"]] = relationship("User", foreign_keys=[friend_id], back_populates="friends_owned")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "friend_id": self.friend_id
         }

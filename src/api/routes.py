@@ -1,6 +1,11 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+from flask import Flask, request, jsonify, url_for, Blueprint
+from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend, SavedEvent, Discussion
+from api.utils import generate_sitemap, APIException
+from flask_cors import CORS
+from sqlalchemy import select
 from datetime import datetime
 from sqlalchemy import select
 from flask_cors import CORS
@@ -8,14 +13,10 @@ from api.utils import generate_sitemap, APIException
 from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, SavedEvent
 from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Discussion
 from flask import Flask, request, jsonify, url_for, Blueprint
-<< << << < HEAD
-== == == =
->>>>>> > develop
 
 api = Blueprint('api', __name__)
 
-# Allow CORS requests to this API
-CORS(api)
+
 
 
 @api.route("/users", methods=["GET"])
@@ -704,8 +705,80 @@ def delete_group_by_id(position):
 
     return jsonify(response_body), 200
 
-    # // Promotor-Category CRUD //
+# // FRIENDS
 
+@api.route('/friend', methods=['GET'])
+def get_friend():
+    friends = db.session.execute(select(Friend)).scalars().all()
+
+    response_body = list(map(lambda friend: friend.serialize(), friends))
+
+    return jsonify(response_body), 200
+
+
+@api.route('/friend/<int:position>', methods=['GET'])
+def get_friend_by_id(position):
+    friend = db.session.get(Friend, position)
+
+    if friend == None:
+        return jsonify("There are no friends entries"), 404
+
+    response_body = friend.serialize()
+
+    return jsonify(response_body), 200
+
+
+@api.route('/friend', methods=['POST'])
+def create_friend():
+
+    body = request.json
+    if "user_id" not in body or "friend_id" not in body:
+        return jsonify("Please provide a usar ID and a friend ID")
+    if body["user_id"] == "" or body["friend_id"] == "":
+        return jsonify("Please provide a valid user and a friend ID"), 400
+    if body["user_id"] == body["friend_id"]:
+        return jsonify("A user cannot be friend with itself!"), 400
+    
+    if db.session.execute(select(User).where(User.id == body["user_id"])).scalar_one_or_none() == None:
+        return jsonify("The user does not exist"), 400
+    
+    if db.session.execute(select(User).where(User.id == body["friend_id"])).scalar_one_or_none() == None:
+        return jsonify("The user you're trying to add as freind does not exist"), 400
+
+
+    friend = Friend(**body)
+
+    db.session.add(friend)
+    db.session.commit()
+
+    response_body = {
+        "message": "The friend has been created correctly",
+        "friend": friend.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+
+@api.route('/friend/<int:position>', methods=['DELETE'])
+def delete_friend_by_id(position):
+
+    friend = db.session.get(Friend, position)
+
+    if friend == None:
+        return jsonify("This friend entry does not exist"), 404
+
+    db.session.delete(friend)
+    db.session.commit()
+
+    response_body = {
+        "message": "The friend entry has been deleted correctly",
+        "friend": friend.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+
+    ## // Promotor-Category CRUD //
 
 @api.route('/promotors', methods=['GET'])
 def get_promotors():
@@ -841,8 +914,8 @@ def delete_promotor_category(relation_id):
 
     return jsonify({"msg": "Relación eliminada correctamente"}), 200
 
+    
     # // DISCUSSIONS
-
 
 @api.route('/discussion', methods=['GET'])
 def get_discussion():
