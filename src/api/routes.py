@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory
+from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, SavedEvent
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select
@@ -832,3 +832,73 @@ def delete_promotor_category(relation_id):
     db.session.commit()
 
     return jsonify({"msg": "Relación eliminada correctamente"}), 200
+
+# // SavedEvent
+
+@api.route('/saved_event', methods=['GET'])
+def get_saved_event():
+    saved_event = db.session.execute(select(SavedEvent)).scalars().all()
+
+    response_body = list(map(lambda discussion: discussion.serialize(), saved_event))
+
+    return jsonify(response_body), 200
+
+
+@api.route('/saved_event/<int:position>', methods=['GET'])
+def get_saved_event_by_id(position):
+    saved_event = db.session.get(SavedEvent, position)
+
+    if saved_event == None:
+        return jsonify("There are no saved_event entries"), 404
+
+    response_body = saved_event.serialize()
+
+    return jsonify(response_body), 200
+
+
+@api.route('/saved_event', methods=['POST'])
+def create_saved_event():
+
+    body = request.json
+    if "user_id" not in body or "event_id" not in body:
+        return jsonify("Please provide a user ID and a event ID")
+    if body["user_id"] == "" or body["event_id"] == "":
+        return jsonify("Please provide a valid user and a event ID"), 400
+    
+    if db.session.execute(select(User).where(User.id == body["user_id"])).scalar_one_or_none() == None:
+        return jsonify("The user does not exist"), 400
+    
+    if db.session.execute(select(Event).where(Event.id == body["event_id"])).scalar_one_or_none() == None:
+        return jsonify("The event does not exist"), 400
+
+
+    saved_event = SavedEvent(**body)
+
+    db.session.add(saved_event)
+    db.session.commit()
+
+    response_body = {
+        "message": "The saved event has been created correctly",
+        "saved_event": saved_event.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+
+@api.route('/saved_event/<int:position>', methods=['DELETE'])
+def delete_saved_event_by_id(position):
+
+    saved_event = db.session.get(SavedEvent, position)
+
+    if saved_event == None:
+        return jsonify("This saved event does not exist"), 404
+
+    db.session.delete(saved_event)
+    db.session.commit()
+
+    response_body = {
+        "message": "The saved event entry has been deleted correctly",
+        "saved_event": saved_event.serialize()
+    }
+
+    return jsonify(response_body), 200

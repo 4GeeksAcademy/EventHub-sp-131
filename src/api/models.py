@@ -169,6 +169,6 @@ class SavedEvent(db.Model):
     def serialize(self):
         return {
         "id": self.id,
-        "user_id": self.id,
-        "event_id": self.id
+        "user_id": self.user_id,
+        "event_id": self.event_id
         }
