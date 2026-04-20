@@ -1190,16 +1190,8 @@ def delete_group_category(id):
 
     return jsonify({"message": "Relación eliminada"}), 200
 
-@api.route('/groups', methods=['GET'])
-def get_groups():
-    stmt = select(Group)
-    result = db.session.execute(stmt).scalars().all()
-    return jsonify([g.serialize() for g in result]), 200
 
 
-@api.route('/categories', methods=['GET'])
-def get_categories():
-    stmt = select(Category)
-    result = db.session.execute(stmt).scalars().all()
-    return jsonify([c.serialize() for c in result]), 200
+
+
 

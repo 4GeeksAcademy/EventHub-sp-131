@@ -52,6 +52,9 @@ import { SavedEvent } from "./pages/SavedEvent/SavedEvent";
 import { SavedEventDetail } from "./pages/SavedEvent/SavedEventDetails";
 import { CreateSavedEvent } from "./pages/SavedEvent/CreateSavedEvent";
 import { DeleteSavedEvent } from "./pages/SavedEvent/DeleteSavedEvent";
+import { GroupCategoryList } from "./pages/Group-categories/GroupCategoryList";
+import { AddGroupCategory } from "./pages/Group-categories/AddGroupCategory";
+import { EditGroupCategory } from "./pages/Group-categories/EditGroupCategory";
 
 
 export const router = createBrowserRouter(
@@ -111,6 +114,9 @@ export const router = createBrowserRouter(
       <Route path="/saved_event-create" element={<CreateSavedEvent />} />
       <Route path="/saved_event-delete/:theId" element={<DeleteSavedEvent />} />
       <Route path="/saved_event/:theId/detail" element={<SavedEventDetail/>} /> 
+      <Route path="/group-category" element={<GroupCategoryList />} />
+      <Route path="/add-group-category" element={<AddGroupCategory />} />
+      <Route path="/edit-group-category/:id" element={<EditGroupCategory />} />
     </Route>
   )
 );
