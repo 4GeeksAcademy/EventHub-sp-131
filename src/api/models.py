@@ -7,26 +7,34 @@ from typing import Optional
 
 db = SQLAlchemy()
 
+
 class User(db.Model):
     __tablename__ = "user"
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
     name: Mapped[str] = mapped_column(String(100), nullable=False)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
     location: Mapped[str] = mapped_column(String(150), nullable=True)
     age: Mapped[int] = mapped_column(Integer, nullable=True)
     description: Mapped[str] = mapped_column(String(500), nullable=True)
-    is_active: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
+    is_active: Mapped[bool] = mapped_column(
+        Boolean(), default=True, nullable=False)
 
-    discussion: Mapped[list["Discussion"]] = relationship(back_populates="user")
+    discussion: Mapped[list["Discussion"]
+        ] = relationship(back_populates="user")
 
-    saved_event: Mapped[list["SavedEvent"]] = relationship(back_populates="user")
+    saved_event: Mapped[list["SavedEvent"]
+        ] = relationship(back_populates="user")
 
-    friends: Mapped[List["Friend"]] = relationship("Friend", foreign_keys=lambda: [Friend.user_id], back_populates="user", lazy="selectin")
-    friends_owned: Mapped[List["Friend"]] = relationship("Friend", foreign_keys=lambda: [Friend.friend_id], back_populates="friend", lazy="selectin")
-
+    friends: Mapped[List["Friend"]] = relationship("Friend", foreign_keys=lambda: [
+                                                   Friend.user_id], back_populates="user", lazy="selectin")
+    friends_owned: Mapped[List["Friend"]] = relationship("Friend", foreign_keys=lambda: [
+                                                         Friend.friend_id], back_populates="friend", lazy="selectin")
+    
+    categories: Mapped[list["UserCategory"]] = relationship(back_populates="user")
 
     def serialize(self):
         return {
@@ -37,16 +45,19 @@ class User(db.Model):
             "age": self.age,
             "description": self.description
         }
-    
+
     # // Tabla ADMIN //
+
 
 class Admin(db.Model):
     __tablename__ = "admin"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(255), nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=True)
+    is_active: Mapped[bool] = mapped_column(
+        Boolean(), nullable=False, default=True)
 
     def serialize(self):
         return {
@@ -55,14 +66,17 @@ class Admin(db.Model):
             "is_active": self.is_active
         }
 
+
 class Promotor(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
-    location: Mapped[str] = mapped_column(String(160),nullable=False)
+    location: Mapped[str] = mapped_column(String(160), nullable=False)
     phone: Mapped[int] = mapped_column(unique=True)
-    web_page: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    web_page: Mapped[str] = mapped_column(
+        String(120), unique=True, nullable=False)
     verified_org: Mapped[bool] = mapped_column(Boolean(), nullable=False)
 
     promotor_categories: Mapped[list["PromotorCategory"]] = relationship(
@@ -70,7 +84,6 @@ class Promotor(db.Model):
         cascade="all, delete-orphan"
     )
     # Pending relation with EventOwnerdPromotor table
-    
 
     def serialize(self):
         return {
@@ -90,18 +103,20 @@ class Category(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False, unique=True)
 
-
     promotor_categories: Mapped[list["PromotorCategory"]] = relationship(
         back_populates="category",
         cascade="all, delete-orphan"
     )
+
+    userCats: Mapped[list["UserCategory"]] = relationship(back_populates="category")
 
     def serialize(self):
         return {
             "id": self.id,
             "name": self.name
         }
-    
+
+
 class Event(db.Model):
     __tablename__ = "event"
 
@@ -112,9 +127,11 @@ class Event(db.Model):
     date_event: Mapped[datetime] = mapped_column(nullable=False)
     capacity: Mapped[int] = mapped_column()
     media: Mapped[Optional[str]] = mapped_column(db.String(255))
-    create_date: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
+    create_date: Mapped[datetime] = mapped_column(
+        default=lambda: datetime.now(timezone.utc))
 
-    saved_event: Mapped[list["SavedEvent"]] = relationship(back_populates="event")
+    saved_event: Mapped[list["SavedEvent"]
+        ] = relationship(back_populates="event")
 
     def serialize(self):
         return {
@@ -128,14 +145,16 @@ class Event(db.Model):
             "create_date": self.create_date.isoformat() if self.create_date else None
         }
 
+
 class Group(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     media: Mapped[str] = mapped_column(String(500))
-    location: Mapped[str] = mapped_column(String(160),nullable=False)
+    location: Mapped[str] = mapped_column(String(160), nullable=False)
     description: Mapped[str] = mapped_column(String(260))
 
-    discussion: Mapped[list["Discussion"]] = relationship(back_populates="group")
+    discussion: Mapped[list["Discussion"]
+        ] = relationship(back_populates="group")
 
     def serialize(self):
         return {
@@ -145,19 +164,25 @@ class Group(db.Model):
             "location": self.location,
             "description": self.description
         }
-    
+
+
 class PromotorCategory(db.Model):
     __tablename__ = "promotor_category"
     __table_args__ = (
-        UniqueConstraint("promotor_id", "category_id", name="uq_promotor_category"),
+        UniqueConstraint("promotor_id", "category_id",
+                         name="uq_promotor_category"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    promotor_id: Mapped[int] = mapped_column(ForeignKey("promotor.id"), nullable=False)
-    category_id: Mapped[int] = mapped_column(ForeignKey("category.id"), nullable=False)
+    promotor_id: Mapped[int] = mapped_column(
+        ForeignKey("promotor.id"), nullable=False)
+    category_id: Mapped[int] = mapped_column(
+        ForeignKey("category.id"), nullable=False)
 
-    promotor: Mapped["Promotor"] = relationship(back_populates="promotor_categories")
-    category: Mapped["Category"] = relationship(back_populates="promotor_categories")
+    promotor: Mapped["Promotor"] = relationship(
+        back_populates="promotor_categories")
+    category: Mapped["Category"] = relationship(
+        back_populates="promotor_categories")
 
     def serialize(self):
         return {
@@ -172,7 +197,8 @@ class PromotorCategory(db.Model):
 class Discussion(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     message: Mapped[str] = mapped_column(String(260))
-    create_date: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
+    create_date: Mapped[datetime] = mapped_column(
+        default=lambda: datetime.now(timezone.utc))
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = relationship(back_populates="discussion")
     group_id: Mapped[int] = mapped_column(ForeignKey("group.id"))
@@ -186,7 +212,8 @@ class Discussion(db.Model):
             "user_id": self.user_id,
             "group_id": self.group_id,
         }
-    
+
+
 class SavedEvent(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
@@ -205,13 +232,29 @@ class SavedEvent(db.Model):
 class Friend(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    user: Mapped[List["User"]] = relationship("User", foreign_keys=[user_id], back_populates="friends")
+    user: Mapped[List["User"]] = relationship(
+        "User", foreign_keys=[user_id], back_populates="friends")
     friend_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    friend: Mapped[List["User"]] = relationship("User", foreign_keys=[friend_id], back_populates="friends_owned")
+    friend: Mapped[List["User"]] = relationship(
+        "User", foreign_keys=[friend_id], back_populates="friends_owned")
 
     def serialize(self):
         return {
             "id": self.id,
             "user_id": self.user_id,
             "friend_id": self.friend_id
+        }
+
+class UserCategory(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user: Mapped["User"] = relationship(back_populates="categories")
+    category_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    category: Mapped["Category"] = relationship(back_populates="userCats")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "category_id": self.category_id
         }
