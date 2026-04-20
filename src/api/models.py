@@ -249,7 +249,7 @@ class UserCategory(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = relationship(back_populates="categories")
-    category_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    category_id: Mapped[int] = mapped_column(ForeignKey("category.id"))
     category: Mapped["Category"] = relationship(back_populates="userCats")
 
     def serialize(self):

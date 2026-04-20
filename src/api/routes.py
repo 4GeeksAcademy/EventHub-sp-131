@@ -1077,38 +1077,39 @@ def get_user_category_by_id(position):
     return jsonify(response_body), 200
 
 
-@api.route('/saved_event', methods=['POST'])
+@api.route('/user_category', methods=['POST'])
 def create_user_category():
 
     body = request.json
-    if "user_id" not in body or "event_id" not in body:
-        return jsonify("Please provide a user ID and a event ID")
-    if body["user_id"] == "" or body["event_id"] == "":
-        return jsonify("Please provide a valid user and a event ID"), 400
+    if "user_id" not in body or "category_id" not in body:
+        return jsonify("Please provide a user ID and a category ID")
+    
+    if body["user_id"] == "" or body["category_id"] == "":
+        return jsonify("Please provide a valid user and a category ID"), 400
 
     if db.session.execute(select(User).where(User.id == body["user_id"])).scalar_one_or_none() == None:
         return jsonify("The user does not exist"), 400
 
-    if db.session.execute(select(Event).where(Event.id == body["event_id"])).scalar_one_or_none() == None:
-        return jsonify("The event does not exist"), 400
+    if db.session.execute(select(Category).where(Category.id == body["category_id"])).scalar_one_or_none() == None:
+        return jsonify("The category does not exist"), 400
 
-    saved_event = SavedEvent(**body)
+    user_category = UserCategory(**body)
 
-    db.session.add(saved_event)
+    db.session.add(user_category)
     db.session.commit()
 
     response_body = {
-        "message": "The saved event has been created correctly",
-        "saved_event": saved_event.serialize()
+        "message": "The user category has been created correctly",
+        "user_category": user_category.serialize()
     }
 
     return jsonify(response_body), 200
 
 
-@api.route('/saved_event/<int:position>', methods=['DELETE'])
+@api.route('/user_category/<int:position>', methods=['DELETE'])
 def delete_user_category_by_id(position):
 
-    user_category = db.session.get(SavedEvent, position)
+    user_category = db.session.get(UserCategory, position)
 
     if user_category == None:
         return jsonify("This saved event does not exist"), 404
@@ -1118,7 +1119,7 @@ def delete_user_category_by_id(position):
 
     response_body = {
         "message": "The saved event entry has been deleted correctly",
-        "saved_event": user_category.serialize()
+        "user_category": user_category.serialize()
     }
 
     return jsonify(response_body), 200
