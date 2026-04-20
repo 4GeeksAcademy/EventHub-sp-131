@@ -20,6 +20,10 @@ class User(db.Model):
     description: Mapped[str] = mapped_column(String(500), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
 
+    discussion: Mapped[list["Discussion"]] = relationship(back_populates="user")
+
+    saved_event: Mapped[list["SavedEvent"]] = relationship(back_populates="user")
+
     friends: Mapped[List["Friend"]] = relationship("Friend", foreign_keys=lambda: [Friend.user_id], back_populates="user", lazy="selectin")
     friends_owned: Mapped[List["Friend"]] = relationship("Friend", foreign_keys=lambda: [Friend.friend_id], back_populates="friend", lazy="selectin")
 
@@ -110,6 +114,8 @@ class Event(db.Model):
     media: Mapped[Optional[str]] = mapped_column(db.String(255))
     create_date: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
 
+    saved_event: Mapped[list["SavedEvent"]] = relationship(back_populates="event")
+
     def serialize(self):
         return {
             "id": self.id,
@@ -128,6 +134,8 @@ class Group(db.Model):
     media: Mapped[str] = mapped_column(String(500))
     location: Mapped[str] = mapped_column(String(160),nullable=False)
     description: Mapped[str] = mapped_column(String(260))
+
+    discussion: Mapped[list["Discussion"]] = relationship(back_populates="group")
 
     def serialize(self):
         return {
@@ -159,6 +167,40 @@ class PromotorCategory(db.Model):
             "promotor": self.promotor.serialize() if self.promotor else None,
             "category": self.category.serialize() if self.category else None
         }
+
+
+class Discussion(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    message: Mapped[str] = mapped_column(String(260))
+    create_date: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user: Mapped["User"] = relationship(back_populates="discussion")
+    group_id: Mapped[int] = mapped_column(ForeignKey("group.id"))
+    group: Mapped["Group"] = relationship(back_populates="discussion")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "message": self.message,
+            "create_date": self.create_date,
+            "user_id": self.user_id,
+            "group_id": self.group_id,
+        }
+    
+class SavedEvent(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user: Mapped["User"] = relationship(back_populates="saved_event")
+    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"))
+    event: Mapped["Event"] = relationship(back_populates="saved_event")
+
+    def serialize(self):
+        return {
+        "id": self.id,
+        "user_id": self.user_id,
+        "event_id": self.event_id
+        }
+
 
 class Friend(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)

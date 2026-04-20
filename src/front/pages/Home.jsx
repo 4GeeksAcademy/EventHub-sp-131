@@ -47,37 +47,61 @@ export const Home = () => {
 						Loading message from the backend (make sure your python 🐍 backend is running)...
 					</span>
 				)}
-
-			
 			</div>
-            <Link to="/admin" className="btn btn-primary">Admin CRUD</Link>
-
-			<Link className="p-2" to="/promotor">
-				<button className="btn btn-primary">Promotor CRUD</button>
-			</Link>
-			<Link className="p-2" to="/user">
-				<button className="btn btn-primary">User CRUD</button>
-			</Link>
-			 
-			<Link to="/category-panel" className="btn btn-primary">
-						Category CRUD
-			</Link>
-
-			<Link className="p-2" to="/events">	
-				<button className="btn btn-primary">Ir a CRUD Events</button>
-			</Link>
-
-			<Link className="p-2" to="/group">
-				<button className="btn btn-primary">Group CRUD</button>
-			</Link>
-			<Link className="p-2" to="/friend">
-				<button className="btn btn-primary">Friend CRUD</button>
-			</Link>
-			<Link to="/promotor-category/list">
-                <button className="btn btn-primary">
-                    Promotor-Category CRUD
-                </button>
-            </Link>
+			<div className="row row-cols-1 row-cols-sm-6 g-3">
+				<div>
+					<Link className="p-2" to="/admin" >
+						<button className="btn btn-primary">Admin CRUD</button>
+					</Link>
+				</div>
+				<div>
+					<Link className="p-2" to="/promotor">
+						<button className="btn btn-primary">Promotor CRUD</button>
+					</Link>
+				</div>
+				<div>
+					<Link className="p-2" to="/user">
+						<button className="btn btn-primary">User CRUD</button>
+					</Link>
+				</div>
+				<div>
+					<Link to="/category-panel">
+						<button className="btn btn-primary">Category CRUD</button>
+					</Link>
+				</div>
+				<div>
+					<Link className="p-2" to="/events">
+						<button className="btn btn-primary">Ir a CRUD Events</button>
+					</Link>
+				</div>
+				<div>
+					<Link className="p-2" to="/group">
+						<button className="btn btn-primary">Group CRUD</button>
+					</Link>
+				</div>
+				<div>
+					<Link className="p-2" to="/promotor-category/list">
+						<button className="btn btn-primary">Promotor-Category CRUD</button>
+					</Link>
+				</div>
+				<div>
+					<Link to="/saved_event">
+						<button className="btn btn-primary">
+							Saved Event CRUD
+						</button>
+					</Link>
+				</div>
+				<div>
+					<Link className="p-2" to="/discussion">
+						<button className="btn btn-primary">Discussion CRUD</button>
+					</Link>
+				</div>
+				<div>
+					<Link className="p-2" to="/friend">
+						<button className="btn btn-primary">Friend CRUD</button>
+					</Link>
+				</div>
+			</div>
 		</div>
 	);
 }; 

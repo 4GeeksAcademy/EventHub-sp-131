@@ -2,11 +2,17 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend
+from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend, SavedEvent, Discussion
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select
 from datetime import datetime
+from sqlalchemy import select
+from flask_cors import CORS
+from api.utils import generate_sitemap, APIException
+from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, SavedEvent
+from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Discussion
+from flask import Flask, request, jsonify, url_for, Blueprint
 
 api = Blueprint('api', __name__)
 
@@ -310,7 +316,7 @@ def create_promotor():
 
     if "location" not in body or body["location"] == "":
         return jsonify("Location missing"), 400
-    
+
     if "password" not in body or body["password"] == "":
         return jsonify("Password missing"), 400
 
@@ -476,7 +482,6 @@ def delete_category(category_id):
     return jsonify({"msg": "Category eliminada correctamente"}), 200
 
 
-
 @api.route("/events", methods=["GET"])
 def get_events():
     events = db.session.execute(select(Event)).scalars().all()
@@ -594,6 +599,7 @@ def update_event(event_id):
         "results": event.serialize()
     }), 200
 
+
 @api.route("/events/<int:event_id>", methods=["DELETE"])
 def delete_event(event_id):
     event = db.session.get(Event, event_id)
@@ -609,6 +615,7 @@ def delete_event(event_id):
     }), 200
 
 # // GROUPS
+
 
 @api.route('/group', methods=['GET'])
 def get_group():
@@ -830,7 +837,8 @@ def create_promotor_category():
         PromotorCategory.promotor_id == promotor_id,
         PromotorCategory.category_id == category_id
     )
-    duplicate_relation = db.session.execute(duplicate_stmt).scalar_one_or_none()
+    duplicate_relation = db.session.execute(
+        duplicate_stmt).scalar_one_or_none()
 
     if duplicate_relation is not None:
         return jsonify({"msg": "Esta relación ya existe"}), 400
@@ -879,7 +887,8 @@ def update_promotor_category(relation_id):
         PromotorCategory.category_id == category_id,
         PromotorCategory.id != relation_id
     )
-    duplicate_relation = db.session.execute(duplicate_stmt).scalar_one_or_none()
+    duplicate_relation = db.session.execute(
+        duplicate_stmt).scalar_one_or_none()
 
     if duplicate_relation is not None:
         return jsonify({"msg": "Ya existe otra relación con esos datos"}), 400
@@ -904,3 +913,145 @@ def delete_promotor_category(relation_id):
     db.session.commit()
 
     return jsonify({"msg": "Relación eliminada correctamente"}), 200
+
+    
+    # // DISCUSSIONS
+
+@api.route('/discussion', methods=['GET'])
+def get_discussion():
+    discussions = db.session.execute(select(Discussion)).scalars().all()
+
+    response_body = list(
+        map(lambda discussion: discussion.serialize(), discussions))
+
+    return jsonify(response_body), 200
+
+
+@api.route('/discussion/<int:position>', methods=['GET'])
+def get_discussion_by_id(position):
+    discussion = db.session.get(Discussion, position)
+
+    if discussion == None:
+        return jsonify("There are no discussions entries"), 404
+
+    response_body = discussion.serialize()
+
+    return jsonify(response_body), 200
+
+
+@api.route('/discussion', methods=['POST'])
+def create_discussion():
+
+    body = request.json
+    if "user_id" not in body or "group_id" not in body:
+        return jsonify("Please provide a user ID and a group ID")
+    if body["user_id"] == "" or body["group_id"] == "":
+        return jsonify("Please provide a valid user and a group ID"), 400
+
+    if db.session.execute(select(User).where(User.id == body["user_id"])).scalar_one_or_none() == None:
+        return jsonify("The user does not exist"), 400
+
+    if db.session.execute(select(Group).where(Group.id == body["group_id"])).scalar_one_or_none() == None:
+        return jsonify("The group does not exist"), 400
+
+    discussion = Discussion(**body)
+
+    db.session.add(discussion)
+    db.session.commit()
+
+    response_body = {
+        "message": "The discussion has been created correctly",
+        "discussion": discussion.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+
+@api.route('/discussion/<int:position>', methods=['DELETE'])
+def delete_discussion_by_id(position):
+
+    discussion = db.session.get(Discussion, position)
+
+    if discussion == None:
+        return jsonify("This discussion does not exist"), 404
+
+    db.session.delete(discussion)
+    db.session.commit()
+
+    response_body = {
+        "message": "The discussion entry has been deleted correctly",
+        "discussion": discussion.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+# // SavedEvent
+
+
+@api.route('/saved_event', methods=['GET'])
+def get_saved_event():
+    saved_event = db.session.execute(select(SavedEvent)).scalars().all()
+
+    response_body = list(
+        map(lambda discussion: discussion.serialize(), saved_event))
+
+    return jsonify(response_body), 200
+
+
+@api.route('/saved_event/<int:position>', methods=['GET'])
+def get_saved_event_by_id(position):
+    saved_event = db.session.get(SavedEvent, position)
+
+    if saved_event == None:
+        return jsonify("There are no saved_event entries"), 404
+
+    response_body = saved_event.serialize()
+
+    return jsonify(response_body), 200
+
+
+@api.route('/saved_event', methods=['POST'])
+def create_saved_event():
+
+    body = request.json
+    if "user_id" not in body or "event_id" not in body:
+        return jsonify("Please provide a user ID and a event ID")
+    if body["user_id"] == "" or body["event_id"] == "":
+        return jsonify("Please provide a valid user and a event ID"), 400
+
+    if db.session.execute(select(User).where(User.id == body["user_id"])).scalar_one_or_none() == None:
+        return jsonify("The user does not exist"), 400
+
+    if db.session.execute(select(Event).where(Event.id == body["event_id"])).scalar_one_or_none() == None:
+        return jsonify("The event does not exist"), 400
+
+    saved_event = SavedEvent(**body)
+
+    db.session.add(saved_event)
+    db.session.commit()
+
+    response_body = {
+        "message": "The saved event has been created correctly",
+        "saved_event": saved_event.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+
+@api.route('/saved_event/<int:position>', methods=['DELETE'])
+def delete_saved_event_by_id(position):
+
+    saved_event = db.session.get(SavedEvent, position)
+
+    if saved_event == None:
+        return jsonify("This saved event does not exist"), 404
+
+    db.session.delete(saved_event)
+    db.session.commit()
+
+    response_body = {
+        "message": "The saved event entry has been deleted correctly",
+        "saved_event": saved_event.serialize()
+    }
+
+    return jsonify(response_body), 200

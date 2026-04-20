@@ -21,17 +21,17 @@ import { AdminDetails } from "./pages/Admin/AdminDetails";
 import { Promotor } from "./pages/Promotor/Promotor"
 import { PromotorDetail } from "./pages/Promotor/PromotorDetail"
 import { CreatePromotor } from "./pages/Promotor/CreatePromotor"
-import { EditPromotor } from "./pages/Promotor/EditPromotor"
+import { EditPromotor } from "./pages/Promotor/EditPromotSavedEventor"
 import { DeletePromotor } from "./pages/Promotor/DeletePromotor"
 import { CategoryPanel } from "./pages/Categories/CategoryPanel";
 import { CategoriesList } from "./pages/Categories/CategoriesList";
 import { CategoryCreate } from "./pages/Categories/CategoryCreate";
 import { CategoryEdit } from "./pages/Categories/CategoryEdit";
 import { CategoryDetail } from "./pages/Categories/CategoryDetail";
-import { Event } from "./pages/Event";
-import { CreateEvent } from "./pages/CreateEvent";
-import { EditEvent } from "./pages/EditEvent";
-import { DeleteEvent } from "./pages/DeleteEvent";
+import { Event } from "./pages/Event/Event";
+import { CreateEvent } from "./pages/Event/CreateEvent";
+import { EditEvent } from "./pages/Event/EditEvent";
+import { DeleteEvent } from "./pages/Event/DeleteEvent";
 import { Group } from "./pages/Group/Group";
 import { CreateGroup } from "./pages/Group/CreateGroup"
 import { EditGroup } from "./pages/Group/EditGroup"
@@ -44,6 +44,14 @@ import { DeleteFriend } from "./pages/Friend/DeleteFriend";
 import { CreatePromotorCategory } from "./pages/Promotor-categories/CreatePromotorCategory";
 import { PromotorCategoryList } from "./pages/Promotor-categories/PromotorCategoryList";
 import { EditPromotorCategory } from "./pages/Promotor-categories/EditPromotorCategory";
+import { Discussion } from "./pages/Discussion/Discussion";
+import { CreateDiscussion } from "./pages/Discussion/CreateDiscussion";
+import { DeleteDiscussion } from "./pages/Discussion/DeleteDiscussion";
+import { DiscussionDetail } from "./pages/Discussion/DiscussionDetail";
+import { SavedEvent } from "./pages/SavedEvent/SavedEvent";
+import { SavedEventDetail } from "./pages/SavedEvent/SavedEventDetails";
+import { CreateSavedEvent } from "./pages/SavedEvent/CreateSavedEvent";
+import { DeleteSavedEvent } from "./pages/SavedEvent/DeleteSavedEvent";
 
 
 export const router = createBrowserRouter(
@@ -73,7 +81,7 @@ export const router = createBrowserRouter(
       <Route path="/promotor-create" element={<CreatePromotor />} />
       <Route path="/promotor-edit/:theId" element={<EditPromotor />} />
       <Route path="/promotor-delete/:theId" element={<DeletePromotor />} />
-      <Route path="/promotor/:theId/detail" element={<PromotorDetail/>} />
+      <Route path="/promotor/:theId/detail" element={<PromotorDetail />} />
       <Route path="/category-panel" element={<CategoryPanel />} />
       <Route path="/categories" element={<CategoriesList />} />
       <Route path="/categories/create" element={<CategoryCreate />} />
@@ -92,10 +100,17 @@ export const router = createBrowserRouter(
       <Route path="/friend-create" element={<CreateFriend />} />
       <Route path="/friend-delete/:theId" element={<DeleteFriend />} />
       <Route path="/friend/:theId/detail" element={<FriendDetail/>} />
-      <Route path="/group/:theId/detail" element={<GroupDetail/>} /> 
       <Route path="/promotor-category/create" element={<CreatePromotorCategory />} />
       <Route path="/promotor-category/list" element={<PromotorCategoryList />} />
       <Route path="/promotor-category/edit/:id" element={<EditPromotorCategory />} />
+      <Route path="/discussion" element={<Discussion />} />
+      <Route path="/discussion-create" element={<CreateDiscussion />} />
+      <Route path="/discussion-delete/:theId" element={<DeleteDiscussion />} />
+      <Route path="/discussion/:theId/detail" element={<DiscussionDetail />} />
+      <Route path="/saved_event" element={<SavedEvent />} />
+      <Route path="/saved_event-create" element={<CreateSavedEvent />} />
+      <Route path="/saved_event-delete/:theId" element={<DeleteSavedEvent />} />
+      <Route path="/saved_event/:theId/detail" element={<SavedEventDetail/>} /> 
     </Route>
   )
 );
