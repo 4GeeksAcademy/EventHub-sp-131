@@ -56,6 +56,9 @@ import { UserCategroy } from "./pages/UserCategory/UserCategory";
 import { UserCategroyDetail } from "./pages/UserCategory/UserCategoryDetails";
 import { CreateUserCategroy } from "./pages/UserCategory/CreateUserCategory";
 import { DeleteUserCategroy } from "./pages/UserCategory/DeleteUserCategory";
+import { GroupCategoryList } from "./pages/Group-categories/GroupCategoryList";
+import { AddGroupCategory } from "./pages/Group-categories/AddGroupCategory";
+import { EditGroupCategory } from "./pages/Group-categories/EditGroupCategory";
 
 
 export const router = createBrowserRouter(
@@ -119,6 +122,9 @@ export const router = createBrowserRouter(
       <Route path="/user_category/:theId/detail" element={<UserCategroyDetail/>} />
       <Route path="/user_category-create" element={<CreateUserCategroy/>} />
       <Route path="/user_category-delete/:theId" element={<DeleteUserCategroy/>} />
+      <Route path="/group-category" element={<GroupCategoryList />} />
+      <Route path="/add-group-category" element={<AddGroupCategory />} />
+      <Route path="/edit-group-category/:id" element={<EditGroupCategory />} />
     </Route>
   )
 );

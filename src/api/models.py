@@ -258,3 +258,17 @@ class UserCategory(db.Model):
             "user_id": self.user_id,
             "category_id": self.category_id
         }
+
+class GroupCategory(db.Model):
+    __tablename__ = "group_category"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    group_id: Mapped[int] = mapped_column(ForeignKey("group.id"), nullable=False)
+    category_id: Mapped[int] = mapped_column(ForeignKey("category.id"), nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint("group_id", "category_id", name="uq_group_category"),
+    )
+
+    group: Mapped["Group"] = relationship("Group")
+    category: Mapped["Category"] = relationship("Category")
