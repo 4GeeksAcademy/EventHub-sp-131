@@ -96,6 +96,8 @@ class Event(db.Model):
     media: Mapped[Optional[str]] = mapped_column(db.String(255))
     create_date: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
 
+    comments = relationship("Comment", back_populates="event")
+
     def serialize(self):
         return {
             "id": self.id,
@@ -122,4 +124,26 @@ class Group(db.Model):
             "media": self.media,
             "location": self.location,
             "description": self.description
+        }
+    
+class Comment(db.Model):
+    __tablename__ = "comment"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    message: Mapped[str] = mapped_column(db.String(255), nullable=False)
+    create_date: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
+
+    user_id: Mapped[int] = mapped_column(db.ForeignKey("user.id"), nullable=False)
+    event_id: Mapped[int] = mapped_column(db.ForeignKey("event.id"), nullable=False)
+
+    user = relationship("User")
+    event = relationship("Event", back_populates="comments")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "message": self.message,
+            "create_date": self.create_date,
+            "user_id": self.user_id,
+            "event_id": self.event_id
         }

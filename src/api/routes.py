@@ -2,11 +2,11 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Admin, Promotor, Category, Event, Group
+from api.models import db, User, Admin, Promotor, Category, Event, Group, Comment
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select
-from datetime import datetime
+from datetime import datetime, timezone
 
 api = Blueprint('api', __name__)
 
@@ -698,3 +698,70 @@ def delete_group_by_id(position):
     }
 
     return jsonify(response_body), 200
+
+# // Comments
+
+@api.route('/comments', methods=['GET'])
+def get_comments():
+    result = db.session.execute(db.select(Comment))
+    comments = result.scalars().all()
+
+    return jsonify([c.serialize() for c in comments]), 200
+
+@api.route('/comments/<int:id>', methods=['GET'])
+def get_comment(id):
+    comment = db.session.get(Comment, id)
+
+    if comment is None:
+        return jsonify({"msg": "Comment not found"}), 404
+
+    return jsonify(comment.serialize()), 200
+
+@api.route('/comments', methods=['POST'])
+def create_comment():
+    body = request.json
+
+    user = db.session.get(User, body.get("user_id"))
+    event = db.session.get(Event, body.get("event_id"))
+
+    if not user or not event:
+        return jsonify({"msg": "Invalid user or event"}), 400
+
+    new_comment = Comment(
+        message=body["message"],
+        create_date=datetime.now(timezone.utc),
+        user_id=body["user_id"],
+        event_id=body["event_id"]
+    )
+
+    db.session.add(new_comment)
+    db.session.commit()
+
+    return jsonify(new_comment.serialize()), 201
+
+@api.route('/comments/<int:id>', methods=['PUT'])
+def update_comment(id):
+    comment = db.session.get(Comment, id)
+
+    if comment is None:
+        return jsonify({"msg": "Comment not found"}), 404
+
+    body = request.json
+
+    comment.message = body.get("message", comment.message)
+
+    db.session.commit()
+
+    return jsonify(comment.serialize()), 200
+
+@api.route('/comments/<int:id>', methods=['DELETE'])
+def delete_comment(id):
+    comment = db.session.get(Comment, id)
+
+    if comment is None:
+        return jsonify({"msg": "Comment not found"}), 404
+
+    db.session.delete(comment)
+    db.session.commit()
+
+    return jsonify({"msg": "Deleted"}), 200
