@@ -19,7 +19,7 @@ class User(db.Model):
     description: Mapped[str] = mapped_column(String(500), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
 
-    discussion: Mapped["Discussion"] = relationship(back_populates="user")
+    discussion: Mapped[list["Discussion"]] = relationship(back_populates="user")
 
 
     def serialize(self):
@@ -127,7 +127,7 @@ class Group(db.Model):
     location: Mapped[str] = mapped_column(String(160),nullable=False)
     description: Mapped[str] = mapped_column(String(260))
 
-    discussion: Mapped["Discussion"] = relationship(back_populates="group")
+    discussion: Mapped[list["Discussion"]] = relationship(back_populates="group")
 
     def serialize(self):
         return {
