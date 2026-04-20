@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -12,18 +13,19 @@ export const CreateComment = () => {
 
     // 🔹 cargar usuarios
     useEffect(() => {
-        fetch(`${backendUrl}/api/users`)
-            .then(res => res.json())
-            .then(data => setUsers(data))
-            .catch(err => console.log(err));
+    fetch(`${backendUrl}/api/users`)
+        .then(res => res.json())
+        .then(data => setUsers(data.results))
+        .catch(err => console.log(err));
     }, []);
+
 
     // 🔹 cargar eventos
     useEffect(() => {
-        fetch(`${backendUrl}/api/events`)
-            .then(res => res.json())
-            .then(data => setEvents(data))
-            .catch(err => console.log(err));
+    fetch(`${backendUrl}/api/events`)
+        .then(res => res.json())
+        .then(data => setEvents(data.results))
+        .catch(err => console.log(err));
     }, []);
 
     // 🔹 submit
@@ -64,8 +66,13 @@ export const CreateComment = () => {
 
     return (
         <div className="container mt-5">
-            <h2>Crear Comentario</h2>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+                <h2>Crear Comentario</h2>
 
+                    <Link to="/comments" className="btn btn-secondary">
+                        Volver
+                    </Link>
+            </div>
             <form onSubmit={handleSubmit}>
 
                 {/* 🔹 SELECT USER */}
@@ -116,7 +123,7 @@ export const CreateComment = () => {
                 </div>
 
                 {/* 🔹 BOTÓN */}
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-success">
                     Crear Comentario
                 </button>
 
