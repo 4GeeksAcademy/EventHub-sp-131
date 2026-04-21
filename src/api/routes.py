@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend, SavedEvent, Discussion, GroupCategory, UserCategory, Comment, EventCategory
+from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend, SavedEvent, Discussion, GroupCategory, UserCategory, Comment, EventCategory, EventAssistUser
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select
@@ -1397,5 +1397,85 @@ def delete_event_category_by_id(position):
     return jsonify(response_body), 200
 
 
+# // EventAssisUser
 
+@api.route("/event-assists", methods=["GET"])
+def get_event_assists():
+    stmt = select(EventAssistUser)
+    assists = db.session.execute(stmt).scalars().all()
+
+    return jsonify([
+        {
+            "id": a.id,
+            "user_id": a.user_id,
+            "event_id": a.event_id,
+            "user_name": a.user.name if a.user else None,
+            "event_name": a.event.name if a.event else None
+        }
+        for a in assists
+    ]), 200
+
+@api.route("/event-assists/<int:assist_id>", methods=["GET"])
+def get_event_assist(assist_id):
+    stmt = select(EventAssistUser).where(EventAssistUser.id == assist_id)
+    assist = db.session.execute(stmt).scalar_one_or_none()
+
+    if not assist:
+        return jsonify({"error": "Assist not found"}), 404
+
+    return jsonify({
+        "id": assist.id,
+        "user_name": assist.user.name if assist.user else None,
+        "event_name": assist.event.name if assist.event else None
+    }), 200
+
+@api.route("/event-assists", methods=["POST"])
+def create_event_assist():
+    data = request.get_json()
+
+    user_id = data.get("user_id")
+    event_id = data.get("event_id")
+
+    # validar existencia
+    user = db.session.get(User, user_id)
+    event = db.session.get(Event, event_id)
+
+    if not user or not event:
+        return jsonify({"error": "User or Event not found"}), 404
+
+    # evitar duplicados
+    stmt = select(EventAssistUser).where(
+        EventAssistUser.user_id == user_id,
+        EventAssistUser.event_id == event_id
+    )
+    existing = db.session.execute(stmt).scalar_one_or_none()
+
+    if existing:
+        return jsonify({"error": "User already assigned to this event"}), 400
+
+    assist = EventAssistUser(
+        user_id=user_id,
+        event_id=event_id
+    )
+
+    db.session.add(assist)
+    db.session.commit()
+
+    return jsonify({
+        "id": assist.id,
+        "user_name": user.name,
+        "event_name": event.name
+    }), 201
+
+@api.route("/event-assists/<int:assist_id>", methods=["DELETE"])
+def delete_event_assist(assist_id):
+    assist = db.session.get(EventAssistUser, assist_id)
+
+    if not assist:
+        return jsonify({"error": "Assist not found"}), 404
+
+    db.session.delete(assist)
+    db.session.commit()
+
+    return jsonify({"message": "Deleted successfully"}), 200
 

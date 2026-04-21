@@ -123,6 +123,11 @@ export const Home = () => {
 						<button className="btn btn-primary">Event Category CRUD</button>
 					</Link>
 				</div>
+				<div>
+					<Link className="p-2" to="/event-assists">
+						<button className="btn btn-primary">Event Assist CRUD</button>
+					</Link>
+				</div>
 			</div>
 		</div>
 	);
