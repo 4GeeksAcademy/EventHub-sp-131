@@ -37,6 +37,8 @@ import { CreateGroup } from "./pages/Group/CreateGroup"
 import { EditGroup } from "./pages/Group/EditGroup"
 import { DeleteGroup } from "./pages/Group/DeleteGroup"
 import { GroupDetail } from "./pages/Group/GroupDetail"
+import { Comments } from "./pages/Comments/Comments";
+import { CreateComment } from "./pages/Comments/CreateComment";
 import { Friend } from "./pages/Friend/Friend"
 import { FriendDetail } from "./pages/Friend/FriendDetail"
 import { CreateFriend } from "./pages/Friend/CreateFriend";
@@ -107,6 +109,8 @@ export const router = createBrowserRouter(
       <Route path="/group-edit/:theId" element={<EditGroup />} />
       <Route path="/group-delete/:theId" element={<DeleteGroup />} />
       <Route path="/group/:theId/detail" element={<GroupDetail/>} />
+      <Route path="/comments" element={<Comments />} /> 
+      <Route path="/create-comment" element={<CreateComment />} />
       <Route path="/friend" element={<Friend/>} />
       <Route path="/friend-create" element={<CreateFriend />} />
       <Route path="/friend-delete/:theId" element={<DeleteFriend />} />
