@@ -13,14 +13,9 @@ export const EditGroupEvent = () => {
 	const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 	const getGroups = () => {
-		fetch(`${backendUrl}/api/groups`)
-			.then((resp) => {
-				if (!resp.ok) throw new Error("Error al traer groups");
-				return resp.json();
-			})
-			.then((data) => {
-				setGroups(Array.isArray(data) ? data : []);
-			})
+		fetch(`${backendUrl}/api/group`)
+			.then((resp) => resp.json())
+			.then((data) => setGroups(Array.isArray(data) ? data : []))
 			.catch((error) => {
 				console.log(error);
 				setGroups([]);
@@ -29,13 +24,8 @@ export const EditGroupEvent = () => {
 
 	const getEvents = () => {
 		fetch(`${backendUrl}/api/events`)
-			.then((resp) => {
-				if (!resp.ok) throw new Error("Error al traer events");
-				return resp.json();
-			})
-			.then((data) => {
-				setEvents(Array.isArray(data) ? data : []);
-			})
+			.then((resp) => resp.json())
+			.then((data) => setEvents(Array.isArray(data) ? data : []))
 			.catch((error) => {
 				console.log(error);
 				setEvents([]);
@@ -44,10 +34,7 @@ export const EditGroupEvent = () => {
 
 	const getOneRelation = () => {
 		fetch(`${backendUrl}/api/group-event/${id}`)
-			.then((resp) => {
-				if (!resp.ok) throw new Error("Error al traer la relación");
-				return resp.json();
-			})
+			.then((resp) => resp.json())
 			.then((data) => {
 				setGroupId(data.group_id?.toString() || "");
 				setEventId(data.event_id?.toString() || "");
@@ -74,10 +61,7 @@ export const EditGroupEvent = () => {
 				event_id: parseInt(eventId)
 			})
 		})
-			.then((resp) => {
-				if (!resp.ok) throw new Error("Error al actualizar");
-				return resp.json();
-			})
+			.then((resp) => resp.json())
 			.then(() => navigate("/group-event"))
 			.catch((error) => console.log(error));
 	};

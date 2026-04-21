@@ -10,13 +10,8 @@ export const GroupEventList = () => {
 
 	const getRelations = () => {
 		fetch(`${backendUrl}/api/group-event`)
-			.then((resp) => {
-				if (!resp.ok) throw new Error("Error al traer group-event");
-				return resp.json();
-			})
-			.then((data) => {
-				setRelations(Array.isArray(data) ? data : []);
-			})
+			.then((resp) => resp.json())
+			.then((data) => setRelations(Array.isArray(data) ? data : []))
 			.catch((error) => {
 				console.log(error);
 				setRelations([]);
@@ -24,14 +19,9 @@ export const GroupEventList = () => {
 	};
 
 	const getGroups = () => {
-		fetch(`${backendUrl}/api/groups`)
-			.then((resp) => {
-				if (!resp.ok) throw new Error("Error al traer groups");
-				return resp.json();
-			})
-			.then((data) => {
-				setGroups(Array.isArray(data) ? data : []);
-			})
+		fetch(`${backendUrl}/api/group`)
+			.then((resp) => resp.json())
+			.then((data) => setGroups(Array.isArray(data) ? data : []))
 			.catch((error) => {
 				console.log(error);
 				setGroups([]);
@@ -40,13 +30,8 @@ export const GroupEventList = () => {
 
 	const getEvents = () => {
 		fetch(`${backendUrl}/api/events`)
-			.then((resp) => {
-				if (!resp.ok) throw new Error("Error al traer events");
-				return resp.json();
-			})
-			.then((data) => {
-				setEvents(Array.isArray(data) ? data : []);
-			})
+			.then((resp) => resp.json())
+			.then((data) => setEvents(Array.isArray(data) ? data : []))
 			.catch((error) => {
 				console.log(error);
 				setEvents([]);
@@ -63,10 +48,7 @@ export const GroupEventList = () => {
 		fetch(`${backendUrl}/api/group-event/${id}`, {
 			method: "DELETE"
 		})
-			.then((resp) => {
-				if (!resp.ok) throw new Error("Error al eliminar");
-				return resp.json();
-			})
+			.then((resp) => resp.json())
 			.then(() => getRelations())
 			.catch((error) => console.log(error));
 	};
@@ -112,6 +94,7 @@ export const GroupEventList = () => {
 								>
 									Editar
 								</Link>
+
 								<button
 									className="btn btn-danger btn-sm"
 									onClick={() => handleDelete(item.id)}
