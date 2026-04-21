@@ -61,6 +61,9 @@ import { DeleteUserCategory } from "./pages/UserCategory/DeleteUserCategory";
 import { GroupCategoryList } from "./pages/Group-categories/GroupCategoryList";
 import { AddGroupCategory } from "./pages/Group-categories/AddGroupCategory";
 import { EditGroupCategory } from "./pages/Group-categories/EditGroupCategory";
+import { GroupEventList } from "./pages/Group-event/GroupEventList";
+import { CreateGroupEvent } from "./pages/Group-event/CreateGroupEvent";
+import { EditGroupEvent } from "./pages/Group-event/EditGroupEvent";
 import { EventCategory } from "./pages/EventCategory/EventCategory";
 import { EventCategroyDetail } from "./pages/EventCategory/UserCategoryDetails";
 import { DeleteEventCategroy } from "./pages/EventCategory/DeleteEventCategory";
@@ -135,9 +138,12 @@ export const router = createBrowserRouter(
       <Route path="/group-category" element={<GroupCategoryList />} />
       <Route path="/add-group-category" element={<AddGroupCategory />} />
       <Route path="/edit-group-category/:id" element={<EditGroupCategory />} />
-      <Route path="/event-category" element={<EventCategory />} />
-      <Route path="/event-category/:theId/detail" element={<EventCategroyDetail />} />
-      <Route path="/event-category-delete/:theId" element={<DeleteEventCategroy />} />
+      <Route path="/group-event" element={<GroupEventList />} />
+      <Route path="/create-group-event" element={<CreateGroupEvent />} />
+      <Route path="/edit-group-event/:id" element={<EditGroupEvent />} />
+      <Route path="/event-category" element={<EventCategory/>} />
+      <Route path="/event-category/:theId/detail" element={<EventCategroyDetail/>} />
+      <Route path="/event-category-delete/:theId" element={<DeleteEventCategroy/>} />
       <Route path="/event-category-create" element={<CreateEventCategroy />} />
       <Route path="/promotor/login" element={<LoginPromotor />} />
       <Route path="/promotor/private" element={<PrivatePromotor />} />
