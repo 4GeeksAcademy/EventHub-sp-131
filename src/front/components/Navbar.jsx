@@ -2,11 +2,20 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 
 export const Navbar = () => {
-    const location = useLocation();
+
+	const location = useLocation();
 	const { store, dispatch } = useGlobalReducer()
 	console.log(store);
 	
 	const navigate = useNavigate()
+
+	function logOutPromotor() {
+		localStorage.removeItem("token")
+		localStorage.removeItem("promotorAuth")
+		dispatch({ type: "PROMOTOR_LOGOUT" })
+		navigate('/promotor/login');
+	}
+
 	function logOutUser() {
 		localStorage.removeItem("tokenUser");
 		dispatch({ type: "USER_LOGOUT" });
@@ -19,13 +28,32 @@ export const Navbar = () => {
 				<Link to="/">
 					<span className="navbar-brand mb-0 h1">React Boilerplate</span>
 				</Link>
+				{
+					store.promotorAuth === false ?
+						location.pathname &&
+							!location.pathname.includes("login") ?
+							<div className="gap-3">
+								<div className="ml-auto">
+									<Link to="/promotor/login">
+										<button className="btn btn-primary">Promotor Login</button>
+									</Link>
+								</div>
+							</div>
+							: null
+						:
+						<div className="gap-3">
+							<div className="ml-auto">
+									<button className="btn btn-primary" onClick={logOutPromotor}>Log Out</button>
+							</div>
+						</div>
+				}
 
 				{
 						store.userAuth === false
 							? location.pathname &&
 							  !location.pathname.includes("login") && (
 									<Link to="/user/login">
-										<button className="btn btn-success">User Login</button>
+										<button className="btn btn-primary">User Login</button>
 									</Link>
 							  )
 							: (

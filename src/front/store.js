@@ -1,14 +1,33 @@
-export const initialStore=()=>{
-  return{
-     tokenUser: "",
+export const initialStore = () => {
+  return {
+    tokenPromotor: "",
+    promotorAuth: false,
+    tokenUser: "",
     userAuth: false,
     privateUser: null
   };
 };
 
 export default function storeReducer(store, action = {}) {
-  switch(action.type){
-    case "ADD_TOKEN_USER":
+  switch (action.type) {
+    case "ADD_TOKEN_PROMOTOR":
+      return {
+        ...store,
+        tokenPromotor: action.payload,
+      };
+    case "ADD_LOGIN_STATUS_PROMOTOR":
+      return {
+        ...store,
+        promotorAuth: action.payload,
+      };
+    case "PROMOTOR_LOGOUT":
+      return {
+        ...store,
+        tokenPromotor: "",
+        promotorAuth: false,
+      };
+      
+     case "ADD_TOKEN_USER":
       return {
         ...store,
         tokenUser: action.payload,

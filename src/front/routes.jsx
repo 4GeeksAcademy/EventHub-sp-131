@@ -67,6 +67,9 @@ import { DeleteEventCategroy } from "./pages/EventCategory/DeleteEventCategory";
 import { CreateEventCategroy } from "./pages/EventCategory/CreateEventCategory";
 import { LoginUser } from "./pages/AuthUser/LoginUser";
 import { PrivateUser } from "./pages/AuthUser/PrivateUser";
+import { LoginPromotor } from "./pages/AuthPromotor/LoginPromotor";
+import { PrivatePromotor } from "./pages/AuthPromotor/PrivatePromotor";
+
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -109,13 +112,13 @@ export const router = createBrowserRouter(
       <Route path="/group-create" element={<CreateGroup />} />
       <Route path="/group-edit/:theId" element={<EditGroup />} />
       <Route path="/group-delete/:theId" element={<DeleteGroup />} />
-      <Route path="/group/:theId/detail" element={<GroupDetail/>} />
-      <Route path="/comments" element={<Comments />} /> 
+      <Route path="/group/:theId/detail" element={<GroupDetail />} />
+      <Route path="/comments" element={<Comments />} />
       <Route path="/create-comment" element={<CreateComment />} />
-      <Route path="/friend" element={<Friend/>} />
+      <Route path="/friend" element={<Friend />} />
       <Route path="/friend-create" element={<CreateFriend />} />
       <Route path="/friend-delete/:theId" element={<DeleteFriend />} />
-      <Route path="/friend/:theId/detail" element={<FriendDetail/>} />
+      <Route path="/friend/:theId/detail" element={<FriendDetail />} />
       <Route path="/promotor-category/create" element={<CreatePromotorCategory />} />
       <Route path="/promotor-category/list" element={<PromotorCategoryList />} />
       <Route path="/promotor-category/edit/:id" element={<EditPromotorCategory />} />
@@ -126,11 +129,11 @@ export const router = createBrowserRouter(
       <Route path="/saved-event" element={<SavedEvent />} />
       <Route path="/saved-event-create" element={<CreateSavedEvent />} />
       <Route path="/saved-event-delete/:theId" element={<DeleteSavedEvent />} />
-      <Route path="/saved-event/:theId/detail" element={<SavedEventDetail/>} /> 
-      <Route path="/user-category" element={<UserCategory/>} />
-      <Route path="/user-category/:theId/detail" element={<UserCategoryDetail/>} />
-      <Route path="/user-category-create" element={<CreateUserCategory/>} />
-      <Route path="/user-category-delete/:theId" element={<DeleteUserCategory/>} />
+      <Route path="/saved-event/:theId/detail" element={<SavedEventDetail />} />
+      <Route path="/user-category" element={<UserCategory />} />
+      <Route path="/user-category/:theId/detail" element={<UserCategoryDetail />} />
+      <Route path="/user-category-create" element={<CreateUserCategory />} />
+      <Route path="/user-category-delete/:theId" element={<DeleteUserCategory />} />
       <Route path="/group-category" element={<GroupCategoryList />} />
       <Route path="/add-group-category" element={<AddGroupCategory />} />
       <Route path="/edit-group-category/:id" element={<EditGroupCategory />} />
@@ -140,6 +143,8 @@ export const router = createBrowserRouter(
       <Route path="/event-category-create" element={<CreateEventCategroy/>} />
       <Route path="/user/login" element={<LoginUser />} />
       <Route path="/user/private" element={<PrivateUser />} />
+      <Route path="/promotor/login" element={<LoginPromotor />} />
+      <Route path="/promotor/private" element={<PrivatePromotor />} />
     </Route>
   )
 );
