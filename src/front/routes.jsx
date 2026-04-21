@@ -65,7 +65,8 @@ import { EventCategory } from "./pages/EventCategory/EventCategory";
 import { EventCategroyDetail } from "./pages/EventCategory/UserCategoryDetails";
 import { DeleteEventCategroy } from "./pages/EventCategory/DeleteEventCategory";
 import { CreateEventCategroy } from "./pages/EventCategory/CreateEventCategory";
-
+import { LoginUser } from "./pages/AuthUser/LoginUser";
+import { PrivateUser } from "./pages/AuthUser/PrivateUser";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -137,6 +138,8 @@ export const router = createBrowserRouter(
       <Route path="/event-category/:theId/detail" element={<EventCategroyDetail/>} />
       <Route path="/event-category-delete/:theId" element={<DeleteEventCategroy/>} />
       <Route path="/event-category-create" element={<CreateEventCategroy/>} />
+      <Route path="/user/login" element={<LoginUser />} />
+      <Route path="/user/private" element={<PrivateUser />} />
     </Route>
   )
 );

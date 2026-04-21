@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from sqlalchemy import select
 from flask_cors import CORS
 from api.utils import generate_sitemap, APIException
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from flask import Flask, request, jsonify, url_for, Blueprint
 
 api = Blueprint('api', __name__)
@@ -1395,6 +1396,80 @@ def delete_event_category_by_id(position):
     }
 
     return jsonify(response_body), 200
+
+ # // USER-LOGIN //
+@api.route('user/login', methods=['POST'])
+def login_user():
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+
+    users = db.session.execute(select(User)).scalars().all()
+
+    if email is None or password is None:
+        return jsonify({"msg": "Bad email or password"}), 401
+
+    for user in users:
+        print(email == user.email)
+        print(password)
+        print(user.password)
+        print(password == user.password)
+
+        if email == user.email and password == user.password:
+            access_token = create_access_token(identity=email)
+            return jsonify({
+                "token": access_token,
+                "user": user.serialize()
+            }), 200
+
+    return jsonify({"msg": "Bad email or password"}), 401
+
+@api.route('user/private', methods=['GET'])
+@jwt_required()
+def private_user():
+    current_user_email = get_jwt_identity()
+
+    userDb = db.session.execute(
+        select(User).where(User.email == current_user_email)
+    ).scalars().all()
+
+    user = db.session.get(User, userDb[0].id)
+
+    return jsonify({
+        "msg": "Token valid",
+        "user": user.serialize()
+    }), 200
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
