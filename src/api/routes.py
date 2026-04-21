@@ -14,6 +14,10 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 
 api = Blueprint('api', __name__)
 
+@api.route('/hello', methods=['GET'])
+def hello():
+    return jsonify({"message": "Backend conectado correctamente"}), 200
+
 @api.route("/users", methods=["GET"])
 def get_users():
     users = db.session.execute(select(User)).scalars().all()

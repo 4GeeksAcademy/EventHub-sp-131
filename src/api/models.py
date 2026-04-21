@@ -277,7 +277,6 @@ class GroupCategory(db.Model):
     group: Mapped["Group"] = relationship("Group")
     category: Mapped["Category"] = relationship("Category")
 
-<<<<<<< HEAD
 class GroupEvent(db.Model):
     __tablename__ = "group_event"
 
@@ -288,25 +287,27 @@ class GroupEvent(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     group_id: Mapped[int] = mapped_column(ForeignKey("group.id"), nullable=False)
     event_id: Mapped[int] = mapped_column(ForeignKey("event.id"), nullable=False)
-=======
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "group_id": self.group_id,
+            "event_id": self.event_id
+        }
+    
 class EventCategory(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     event_id: Mapped[int] = mapped_column(ForeignKey("event.id"))
     event: Mapped["Event"] = relationship(back_populates="categories")
     category_id: Mapped[int] = mapped_column(ForeignKey("category.id"))
     category: Mapped["Category"] = relationship(back_populates="eventCats")
->>>>>>> develop
 
     def serialize(self):
-        return {
-            "id": self.id,
-<<<<<<< HEAD
-            "group_id": self.group_id,
-            "event_id": self.event_id
-=======
-            "event_id": self.event_id,
-            "category_id": self.category_id
-        }
+      return {
+        "id": self.id,
+        "event_id": self.event_id,
+        "category_id": self.category_id
+      }
 
 class Comment(db.Model):
     __tablename__ = "comment"
@@ -338,5 +339,4 @@ class Comment(db.Model):
                 "id": self.event.id,
                 "name": self.event.name
             } if self.event else None
->>>>>>> develop
         }
