@@ -277,6 +277,24 @@ class GroupCategory(db.Model):
     group: Mapped["Group"] = relationship("Group")
     category: Mapped["Category"] = relationship("Category")
 
+class GroupEvent(db.Model):
+    __tablename__ = "group_event"
+
+    __table_args__ = (
+        UniqueConstraint("group_id", "event_id", name="uq_group_event"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    group_id: Mapped[int] = mapped_column(ForeignKey("group.id"), nullable=False)
+    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"), nullable=False)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "group_id": self.group_id,
+            "event_id": self.event_id
+        }
+    
 class EventCategory(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     event_id: Mapped[int] = mapped_column(ForeignKey("event.id"))
@@ -285,11 +303,11 @@ class EventCategory(db.Model):
     category: Mapped["Category"] = relationship(back_populates="eventCats")
 
     def serialize(self):
-        return {
-            "id": self.id,
-            "event_id": self.event_id,
-            "category_id": self.category_id
-        }
+      return {
+        "id": self.id,
+        "event_id": self.event_id,
+        "category_id": self.category_id
+      }
 
 class Comment(db.Model):
     __tablename__ = "comment"
