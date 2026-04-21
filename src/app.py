@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
+from flask_jwt_extended import JWTManager
 from api.models import db
 from api.routes import api
 from api.admin import setup_admin
@@ -43,6 +44,9 @@ setup_commands(app)
 
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
+
+app.config["JWT_SECRET_KEY"] = "super-secret-status-python-flask-token-secure-private"
+jwt = JWTManager(app)
 
 # Handle/serialize errors like a JSON object
 
