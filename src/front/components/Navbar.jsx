@@ -1,6 +1,22 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 export const Navbar = () => {
+
+	const location = useLocation();
+	const { store, dispatch } = useGlobalReducer()
+	console.log(store);
+	
+	const navigate = useNavigate()
+
+	function logOutPromotor() {
+		localStorage.removeItem("token")
+		localStorage.removeItem("promotorAuth")
+		dispatch({ type: "PROMOTOR_LOGOUT" })
+		navigate('/promotor/login');
+	}
+
+
 
 	return (
 		<nav className="navbar navbar-light bg-light">
@@ -8,6 +24,25 @@ export const Navbar = () => {
 				<Link to="/">
 					<span className="navbar-brand mb-0 h1">React Boilerplate</span>
 				</Link>
+				{
+					store.promotorAuth === false ?
+						location.pathname &&
+							!location.pathname.includes("login") ?
+							<div className="gap-3">
+								<div className="ml-auto">
+									<Link to="/promotor/login">
+										<button className="btn btn-primary">Promotor Login</button>
+									</Link>
+								</div>
+							</div>
+							: null
+						:
+						<div className="gap-3">
+							<div className="ml-auto">
+									<button className="btn btn-primary" onClick={logOutPromotor}>Log Out</button>
+							</div>
+						</div>
+				}
 				<div className="ml-auto">
 					<Link to="/demo">
 						<button className="btn btn-primary">Check the Context in action</button>
