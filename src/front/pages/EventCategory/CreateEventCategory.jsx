@@ -3,13 +3,13 @@ import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { use } from "react";
 
-export const CreateUserCategory = () => {
+export const CreateEventCategroy = () => {
 
     const urlAPI = import.meta.env.VITE_BACKEND_URL
-    const [selectedIDUser, setSelectedIDUser] = useState("")
-    const [selectedIDCategory, setSelectedIDCategory] = useState("")
-    const [allUsers, setAllUsers] = useState([])
-    const [allCategory, setAllCategory] = useState([])
+    const [selectedIDEvent, setSelectedIDEvent] = useState("")
+    const [selectedIDCategroy, setSelectedIDCategroy] = useState("")
+    const [allEvents, setAllEvents] = useState([])
+    const [allCategroy, setAllCategroy] = useState([])
     const [message, setMessage] = useState("");
 
     const navigate = useNavigate()
@@ -17,27 +17,27 @@ export const CreateUserCategory = () => {
     const handleInput = e => {
         e.preventDefault();
         switch (e.target.id) {
-            case 'userId':
-                setSelectedIDUser(e.target.value)
+            case 'eventId':
+                setSelectedIDEvent(e.target.value)
                 break;
             case 'categroyId':
-                setSelectedIDCategory(e.target.value)
+                setSelectedIDCategroy(e.target.value)
                 break;
             default:
                 break;
         }
     }
 
-    async function createUserCategory() {
+    async function createEventCategroy() {
         try {
-            const response = await fetch(`${urlAPI}api/user_category`, {
+            const response = await fetch(`${urlAPI}api/event_category`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    "user_id": selectedIDUser,
-                    "category_id": selectedIDCategory,
+                    "event_id": selectedIDEvent,
+                    "category_id": selectedIDCategroy,
                 })
             })
             const data = await response.json()
@@ -46,7 +46,7 @@ export const CreateUserCategory = () => {
                 throw new Error("Error on post fetch, status: ", response.status)
             }
             if (response.ok) {
-                navigate("/user-category")
+                navigate("/event-category")
             }
         }
         catch (error) {
@@ -60,11 +60,11 @@ export const CreateUserCategory = () => {
                 "Content-Type": "application/json"
             })
             const data = await response.json()
-            if (str === "users") {
-                setAllUsers(data.results)
+            if (str === "events") {
+                setAllEvents(data.results)
             }
             if (str === "categories") {
-                setAllCategory(data)
+                setAllCategroy(data)
             }
             return response
         }
@@ -74,7 +74,7 @@ export const CreateUserCategory = () => {
     }
 
     useEffect(() => {
-        getData("users")
+        getData("events")
         getData("categories")
     }, [])
 
@@ -89,23 +89,23 @@ export const CreateUserCategory = () => {
                 </div>
                 :
                 null}
-            <select className="form-select mb-3" aria-label="User id selector" id="userId" onChange={handleInput}>
-                <option defaultValue>Select the ID of the user</option>
-                {allUsers.map((user) => {
+            <select className="form-select mb-3" aria-label="Event id selector" id="eventId" onChange={handleInput}>
+                <option defaultValue>Select the ID of the event</option>
+                {allEvents.map((event) => {
                     return (
-                        <option key={user.id} value={user.id} >{user.name}</option>
+                        <option key={event.id} value={event.id} >{event.name}</option>
                     )
                 })}
             </select>
-            <select className="form-select mb-3" aria-label="Category id selector" id="categroyId" onChange={handleInput}>
+            <select className="form-select mb-3" aria-label="Categroy id selector" id="categroyId" onChange={handleInput}>
                 <option defaultValue>Select the ID of the categroy</option>
-                {allCategory.map((categroy) => {
+                {allCategroy.map((categroy) => {
                     return (
                         <option key={categroy.id} value={categroy.id}>{categroy.name}</option>
                     )
                 })}
             </select>
-            <button type="button" className="btn btn-primary" onClick={createUserCategory}>Create</button>
+            <button type="button" className="btn btn-primary" onClick={createEventCategroy}>Create</button>
         </div>
     );
 }

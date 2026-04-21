@@ -29,6 +29,8 @@ class User(db.Model):
     saved_event: Mapped[list["SavedEvent"]
         ] = relationship(back_populates="user")
 
+    comments: Mapped[list["Comment"]] = relationship("Comment", back_populates="user")
+
     friends: Mapped[List["Friend"]] = relationship("Friend", foreign_keys=lambda: [
                                                    Friend.user_id], back_populates="user", lazy="selectin")
     friends_owned: Mapped[List["Friend"]] = relationship("Friend", foreign_keys=lambda: [
@@ -109,6 +111,7 @@ class Category(db.Model):
     )
 
     userCats: Mapped[list["UserCategory"]] = relationship(back_populates="category")
+    eventCats: Mapped[list["EventCategory"]] = relationship(back_populates="category")
 
     def serialize(self):
         return {
@@ -130,8 +133,9 @@ class Event(db.Model):
     create_date: Mapped[datetime] = mapped_column(
         default=lambda: datetime.now(timezone.utc))
 
-    saved_event: Mapped[list["SavedEvent"]
-        ] = relationship(back_populates="event")
+    comments: Mapped[List["Comment"]] = relationship(back_populates="event")
+    saved_event: Mapped[list["SavedEvent"]] = relationship(back_populates="event")
+    categories: Mapped[list["EventCategory"]] = relationship(back_populates="event")
 
     def serialize(self):
         return {
@@ -273,6 +277,7 @@ class GroupCategory(db.Model):
     group: Mapped["Group"] = relationship("Group")
     category: Mapped["Category"] = relationship("Category")
 
+<<<<<<< HEAD
 class GroupEvent(db.Model):
     __tablename__ = "group_event"
 
@@ -283,10 +288,55 @@ class GroupEvent(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     group_id: Mapped[int] = mapped_column(ForeignKey("group.id"), nullable=False)
     event_id: Mapped[int] = mapped_column(ForeignKey("event.id"), nullable=False)
+=======
+class EventCategory(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"))
+    event: Mapped["Event"] = relationship(back_populates="categories")
+    category_id: Mapped[int] = mapped_column(ForeignKey("category.id"))
+    category: Mapped["Category"] = relationship(back_populates="eventCats")
+>>>>>>> develop
 
     def serialize(self):
         return {
             "id": self.id,
+<<<<<<< HEAD
             "group_id": self.group_id,
             "event_id": self.event_id
+=======
+            "event_id": self.event_id,
+            "category_id": self.category_id
+        }
+
+class Comment(db.Model):
+    __tablename__ = "comment"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    message: Mapped[str] = mapped_column(db.String(255), nullable=False)
+    create_date: Mapped[datetime] = mapped_column(
+        default=lambda: datetime.now(timezone.utc)
+    )
+
+    user_id: Mapped[int] = mapped_column(db.ForeignKey("user.id"), nullable=False)
+    event_id: Mapped[int] = mapped_column(db.ForeignKey("event.id"), nullable=False)
+
+    user = relationship("User", back_populates="comments")
+    event = relationship("Event", back_populates="comments")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "message": self.message,
+            "create_date": self.create_date.isoformat(),
+
+            "user": {
+                "id": self.user.id,
+                "name": self.user.name
+            } if self.user else None,
+
+            "event": {
+                "id": self.event.id,
+                "name": self.event.name
+            } if self.event else None
+>>>>>>> develop
         }

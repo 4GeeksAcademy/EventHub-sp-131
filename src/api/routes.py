@@ -2,11 +2,11 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend, SavedEvent, Discussion, GroupCategory, UserCategory, GroupEvent
+from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend, SavedEvent, Discussion, GroupCategory, UserCategory, Comment, EventCategory, GroupEvent
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import select
 from flask_cors import CORS
 from api.utils import generate_sitemap, APIException
@@ -700,6 +700,72 @@ def delete_group_by_id(position):
 
     return jsonify(response_body), 200
 
+# // Comments
+
+@api.route('/comments', methods=['GET'])
+def get_comments():
+    result = db.session.execute(db.select(Comment))
+    comments = result.scalars().all()
+
+    return jsonify([c.serialize() for c in comments]), 200
+
+@api.route('/comments/<int:id>', methods=['GET'])
+def get_comment(id):
+    comment = db.session.get(Comment, id)
+
+    if comment is None:
+        return jsonify({"msg": "Comment not found"}), 404
+
+    return jsonify(comment.serialize()), 200
+
+@api.route('/comments', methods=['POST'])
+def create_comment():
+    body = request.json
+
+    user = db.session.get(User, body.get("user_id"))
+    event = db.session.get(Event, body.get("event_id"))
+
+    if not user or not event:
+        return jsonify({"msg": "Invalid user or event"}), 400
+
+    new_comment = Comment(
+        message=body["message"],
+        create_date=datetime.now(timezone.utc),
+        user_id=body["user_id"],
+        event_id=body["event_id"]
+    )
+
+    db.session.add(new_comment)
+    db.session.commit()
+
+    return jsonify(new_comment.serialize()), 201
+
+@api.route('/comments/<int:id>', methods=['PUT'])
+def update_comment(id):
+    comment = db.session.get(Comment, id)
+
+    if comment is None:
+        return jsonify({"msg": "Comment not found"}), 404
+
+    body = request.json
+
+    comment.message = body.get("message", comment.message)
+
+    db.session.commit()
+
+    return jsonify(comment.serialize()), 200
+
+@api.route('/comments/<int:id>', methods=['DELETE'])
+def delete_comment(id):
+    comment = db.session.get(Comment, id)
+
+    if comment is None:
+        return jsonify({"msg": "Comment not found"}), 404
+
+    db.session.delete(comment)
+    db.session.commit()
+
+    return jsonify({"msg": "Deleted"}), 200
 # // FRIENDS
 
 @api.route('/friend', methods=['GET'])
@@ -1123,7 +1189,7 @@ def delete_user_category_by_id(position):
 
     return jsonify(response_body), 200
 
-# //  GROUP-CATEGORY //
+# // GROUP-CATEGORY //
 
 @api.route('/group-categories', methods=['GET'])
 def get_group_categories():
@@ -1355,6 +1421,77 @@ def delete_group_event(id):
     db.session.commit()
 
     return jsonify({"msg": "Relacion eliminada correctamente"}), 200
+# // EventCategory
+
+@api.route('/event_category', methods=['GET'])
+def get_event_category():
+    event_categories = db.session.execute(select(EventCategory)).scalars().all()
+
+    response_body = list(
+        map(lambda event_category: event_category.serialize(), event_categories))
+
+    return jsonify(response_body), 200
+
+
+@api.route('/event_category/<int:position>', methods=['GET'])
+def get_event_category_by_id(position):
+    event_category = db.session.get(EventCategory, position)
+
+    if event_category == None:
+        return jsonify("There are no event categories entries"), 404
+
+    response_body = event_category.serialize()
+
+    return jsonify(response_body), 200
+
+
+@api.route('/event_category', methods=['POST'])
+def create_event_category():
+
+    body = request.json
+    if "event_id" not in body or "category_id" not in body:
+        return jsonify("Please provide a event ID and a category ID"), 400
+    
+    if body["event_id"] == "" or body["category_id"] == "":
+        return jsonify("Please provide a valid event and a category ID"), 400
+
+    if db.session.execute(select(Event).where(Event.id == body["event_id"])).scalar_one_or_none() == None:
+        return jsonify("The event does not exist"), 400
+
+    if db.session.execute(select(Category).where(Category.id == body["category_id"])).scalar_one_or_none() == None:
+        return jsonify("The category does not exist"), 400
+
+    event_category = EventCategory(**body)
+
+    db.session.add(event_category)
+    db.session.commit()
+
+    response_body = {
+        "message": "The event category has been created correctly",
+        "event_category": event_category.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+
+@api.route('/event_category/<int:position>', methods=['DELETE'])
+def delete_event_category_by_id(position):
+
+    event_category = db.session.get(EventCategory, position)
+
+    if event_category == None:
+        return jsonify("This event category does not exist"), 404
+
+    db.session.delete(event_category)
+    db.session.commit()
+
+    response_body = {
+        "message": "The event category has been deleted correctly",
+        "event_category": event_category.serialize()
+    }
+
+    return jsonify(response_body), 200
+
 
 
 

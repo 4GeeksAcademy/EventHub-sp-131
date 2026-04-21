@@ -46,7 +46,7 @@ export const CreateSavedEvent = () => {
                 throw new Error("Error on post fetch, status: ", response.status)
             }
             if (response.ok) {
-                navigate("/saved_event")
+                navigate("/saved-event")
             }
         }
         catch (error) {
@@ -80,7 +80,7 @@ export const CreateSavedEvent = () => {
 
     return (
         <div style={{ "width": "60%", "margin": "auto", marginTop: "4rem" }}>
-            <Link to="/saved_event">
+            <Link to="/saved-event">
                 <button type="button" className="btn btn-outline-secondary my-4">Back</button>
             </Link>
             {message ?
