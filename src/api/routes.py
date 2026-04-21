@@ -1259,16 +1259,11 @@ def delete_group_category(id):
     return jsonify({"message": "Relación eliminada"}), 200
 
 #  // Group-event //
-
-@api.route("/group-event/<int:id>", methods=["GET"])
-def get_one_group_event(id):
-    stmt = select(GroupEvent).where(GroupEvent.id == id)
-    group_event = db.session.execute(stmt).scalar_one_or_none()
-
-    if group_event is None:
-        return jsonify({"msg": "Relacion no encontrada"}), 404
-
-    return jsonify(group_event.serialize()), 200
+@api.route("/group-event", methods=["GET"])
+def get_all_group_event():
+    stmt = select(GroupEvent)
+    group_events = db.session.execute(stmt).scalars().all()
+    return jsonify([item.serialize() for item in group_events]), 200
 
 @api.route("/group-event/<int:id>", methods=["GET"])
 def get_one_group_event(id):
