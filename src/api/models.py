@@ -38,6 +38,8 @@ class User(db.Model):
     
     categories: Mapped[list["UserCategory"]] = relationship(back_populates="user")
 
+    eventAssistUsers: Mapped[List["EventAssistUser"]] = relationship(back_populates="user")
+
     def serialize(self):
         return {
             "id": self.id,
@@ -138,6 +140,7 @@ class Event(db.Model):
     saved_event: Mapped[list["SavedEvent"]] = relationship(back_populates="event")
     categories: Mapped[list["EventCategory"]] = relationship(back_populates="event")
     eventPromotors: Mapped[list["EventPromotor"]] = relationship(back_populates="event")
+    eventAssistUsers: Mapped[List["EventAssistUser"]] = relationship(back_populates="event")
 
     def serialize(self):
         return {
@@ -365,5 +368,30 @@ class EventPromotor(db.Model):
             "promotor_id": self.promotor_id,
             "event_id": self.event_id,
             "promotor_name": self.promotor.name if self.promotor else None,
+            "event_name": self.event.name if self.event else None
+        }
+    
+class EventAssistUser(db.Model):
+    __tablename__ = "event_assist_users"
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "event_id", name="uq_user_event"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user: Mapped["User"] = relationship(back_populates="eventAssistUsers")
+    
+    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"))
+    event: Mapped["Event"] = relationship(back_populates="eventAssistUsers")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "event_id": self.event_id,
+            "user_name": self.user.name if self.user else None,
             "event_name": self.event.name if self.event else None
         }

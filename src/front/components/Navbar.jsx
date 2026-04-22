@@ -4,9 +4,7 @@ import useGlobalReducer from "../hooks/useGlobalReducer";
 export const Navbar = () => {
 
 	const location = useLocation();
-	const { store, dispatch } = useGlobalReducer()
-	console.log(store);
-	
+	const { store, dispatch } = useGlobalReducer()	
 	const navigate = useNavigate()
 
 	function logOutPromotor() {
@@ -16,7 +14,11 @@ export const Navbar = () => {
 		navigate('/promotor/login');
 	}
 
-
+	function logOutUser() {
+		localStorage.removeItem("tokenUser");
+		dispatch({ type: "USER_LOGOUT" });
+		navigate("/user/login");
+	}
 
 	return (
 		<nav className="navbar navbar-light bg-light">
@@ -43,6 +45,21 @@ export const Navbar = () => {
 							</div>
 						</div>
 				}
+
+				{
+						store.userAuth === false
+							? location.pathname &&
+							  !location.pathname.includes("login") && (
+									<Link to="/user/login">
+										<button className="btn btn-primary">User Login</button>
+									</Link>
+							  )
+							: (
+									<button className="btn btn-success" onClick={logOutUser}>
+										User Log Out
+									</button>
+							  )
+					}
 				<div className="ml-auto">
 					<Link to="/demo">
 						<button className="btn btn-primary">Check the Context in action</button>
