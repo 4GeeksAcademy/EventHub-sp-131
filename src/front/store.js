@@ -2,8 +2,8 @@ export const initialStore = () => {
   return {
     tokenPromotor: "",
     promotorAuth: false,
-    tokenUser: "",
-    userAuth: false,
+    tokenUser: localStorage.getItem("tokenUser") || "",
+    userAuth: localStorage.getItem("userAuth") === "true",
     privateUser: null
   };
 };

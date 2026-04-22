@@ -25,10 +25,22 @@ export const PrivateUser = () => {
 			.then(({ ok, data }) => {
 				if (!ok) {
 					localStorage.removeItem("tokenUser");
+					localStorage.removeItem("userAuth");
+
 					dispatch({ type: "USER_LOGOUT" });
 					navigate("/user/login");
 					return;
 				}
+
+				dispatch({
+					type: "ADD_TOKEN_USER",
+					payload: token
+				});
+
+				dispatch({
+					type: "ADD_LOGIN_STATUS_USER",
+					payload: true
+				});
 
 				dispatch({
 					type: "GET_PRIVATE_USER",
