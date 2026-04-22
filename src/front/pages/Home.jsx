@@ -7,33 +7,7 @@ export const Home = () => {
 
 	const { store, dispatch } = useGlobalReducer()
 
-	const loadMessage = async () => {
-		try {
-			const backendUrl = import.meta.env.VITE_BACKEND_URL
-
-			if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
-
-			const response = await fetch(backendUrl + "/api/hello")
-			const data = await response.json()
-
-			if (response.ok) dispatch({ type: "set_hello", payload: data.message })
-
-			return data
-
-		} catch (error) {
-			if (error.message) 
-				console.log("No se pudo cargar el mensaje");
-                return;
-			
-		}
-
-	}
-
-	useEffect(() => {
-		loadMessage()
-	}, [])
-
-	return (
+return (
 		<div className="text-center mt-5">
 			<h1 className="display-4">Hello Rigo!!</h1>
 			<p className="lead">
@@ -100,13 +74,11 @@ export const Home = () => {
 					<Link className="p-2" to="/friend">
 						<button className="btn btn-primary">Friend CRUD</button>
 					</Link>
-
 				</div>
 				<div>
 					<Link className="p-2" to="/comments">
 						<button className="btn btn-primary">Comments CRUD</button>
 					</Link>
-					
 				</div>
 				<div>
 					<Link className="p-2" to="/user-category">
@@ -119,11 +91,21 @@ export const Home = () => {
 					</Link>
 				</div>
 				<div>
+				    <Link className="p-2" to="/group-event">
+	                   <button className="btn btn-primary">Group-Event CRUD</button>
+                     </Link>
+				</div>
+				<div>	
 					<Link className="p-2" to="/event-category">
 						<button className="btn btn-primary">Event Category CRUD</button>
 					</Link>
 				</div>
+				<div>
+					<Link className="p-2" to="/event-assists">
+						<button className="btn btn-primary">Event Assist CRUD</button>
+					</Link>
+				</div>
 			</div>
 		</div>
-	);
+	)
 }; 

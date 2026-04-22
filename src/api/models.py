@@ -38,6 +38,8 @@ class User(db.Model):
     
     categories: Mapped[list["UserCategory"]] = relationship(back_populates="user")
 
+    eventAssistUsers: Mapped[List["EventAssistUser"]] = relationship(back_populates="user")
+
     def serialize(self):
         return {
             "id": self.id,
@@ -136,6 +138,7 @@ class Event(db.Model):
     comments: Mapped[List["Comment"]] = relationship(back_populates="event")
     saved_event: Mapped[list["SavedEvent"]] = relationship(back_populates="event")
     categories: Mapped[list["EventCategory"]] = relationship(back_populates="event")
+    eventAssistUsers: Mapped[List["EventAssistUser"]] = relationship(back_populates="event")
 
     def serialize(self):
         return {
@@ -277,6 +280,24 @@ class GroupCategory(db.Model):
     group: Mapped["Group"] = relationship("Group")
     category: Mapped["Category"] = relationship("Category")
 
+class GroupEvent(db.Model):
+    __tablename__ = "group_event"
+
+    __table_args__ = (
+        UniqueConstraint("group_id", "event_id", name="uq_group_event"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    group_id: Mapped[int] = mapped_column(ForeignKey("group.id"), nullable=False)
+    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"), nullable=False)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "group_id": self.group_id,
+            "event_id": self.event_id
+        }
+    
 class EventCategory(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     event_id: Mapped[int] = mapped_column(ForeignKey("event.id"))
@@ -285,11 +306,11 @@ class EventCategory(db.Model):
     category: Mapped["Category"] = relationship(back_populates="eventCats")
 
     def serialize(self):
-        return {
-            "id": self.id,
-            "event_id": self.event_id,
-            "category_id": self.category_id
-        }
+      return {
+        "id": self.id,
+        "event_id": self.event_id,
+        "category_id": self.category_id
+      }
 
 class Comment(db.Model):
     __tablename__ = "comment"
@@ -321,4 +342,29 @@ class Comment(db.Model):
                 "id": self.event.id,
                 "name": self.event.name
             } if self.event else None
+        }
+    
+class EventAssistUser(db.Model):
+    __tablename__ = "event_assist_users"
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "event_id", name="uq_user_event"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user: Mapped["User"] = relationship(back_populates="eventAssistUsers")
+    
+    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"))
+    event: Mapped["Event"] = relationship(back_populates="eventAssistUsers")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "event_id": self.event_id,
+            "user_name": self.user.name if self.user else None,
+            "event_name": self.event.name if self.event else None
         }
