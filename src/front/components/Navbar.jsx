@@ -17,9 +17,11 @@ export const Navbar = () => {
 	}
 
 	function logOutUser() {
-		localStorage.removeItem("tokenUser");
-		dispatch({ type: "USER_LOGOUT" });
-		navigate("/user/login");
+	   localStorage.removeItem("tokenUser");
+	   localStorage.removeItem("userAuth");
+	   dispatch({ type: "USER_LOGOUT" });
+	   navigate("/user/login");
+
 	}
 
 	return (

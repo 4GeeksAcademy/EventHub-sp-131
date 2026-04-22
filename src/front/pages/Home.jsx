@@ -21,10 +21,10 @@ export const Home = () => {
 			return data
 
 		} catch (error) {
-			if (error.message) throw new Error(
-				`Could not fetch the message from the backend.
-				Please check if the backend is running and the backend port is public.`
-			);
+			if (error.message) 
+				console.log("No se pudo cargar el mensaje");
+                return;
+			
 		}
 
 	}
