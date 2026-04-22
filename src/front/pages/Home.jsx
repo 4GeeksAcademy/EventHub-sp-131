@@ -7,7 +7,7 @@ export const Home = () => {
 
 	const { store, dispatch } = useGlobalReducer()
 
-	return (
+return (
 		<div className="text-center mt-5">
 			<h1 className="display-4">Hello Rigo!!</h1>
 			<p className="lead">
@@ -100,12 +100,17 @@ export const Home = () => {
 						<button className="btn btn-primary">Event Category CRUD</button>
 					</Link>
 				</div>
+				<div>	
+					<Link className="p-2" to="/event-promotor">
+						<button className="btn btn-primary">Event Promotor CRUD</button>
+					</Link>
+				</div>
+			</div> 
 				<div>
 					<Link className="p-2" to="/event-assists">
 						<button className="btn btn-primary">Event Assist CRUD</button>
 					</Link>
 				</div>
 			</div>
-		</div>
 	)
 }; 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 
@@ -7,8 +7,14 @@ export const LoginUser = () => {
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
 
-	const { dispatch } = useGlobalReducer();
+	const { store, dispatch } = useGlobalReducer();
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (store.userAuth && localStorage.getItem("tokenUser")) {
+			navigate("/user/private");
+		}
+	}, [store.userAuth, navigate]);
 
 	function handleLogin(e) {
 		e.preventDefault();
@@ -31,6 +37,7 @@ export const LoginUser = () => {
 				}
 
 				localStorage.setItem("tokenUser", data.token);
+				localStorage.setItem("userAuth", "true");
 
 				dispatch({
 					type: "ADD_TOKEN_USER",
@@ -79,11 +86,17 @@ export const LoginUser = () => {
 								/>
 							</div>
 
-							<button className="btn btn-success w-100">Login</button>
+							<button className="btn btn-success w-100">
+								Login
+							</button>
+
 							<button
 								type="button"
 								className="btn btn-secondary w-100 mt-2"
-								onClick={() => navigate("/")}>Volver</button>
+								onClick={() => navigate("/")}
+							>
+								Volver
+							</button>
 						</form>
 					</div>
 				</div>
