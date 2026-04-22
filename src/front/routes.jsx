@@ -71,6 +71,8 @@ import { CreateEventCategroy } from "./pages/EventCategory/CreateEventCategory";
 import EventAssistUser from "./pages/EventAssist/EventAssistUser";
 import CreateEventAssist from "./pages/EventAssist/CreateEventAssist";
 import DeleteEventAssist from "./pages/EventAssist/DeleteEventAssist";
+import { LoginUser } from "./pages/AuthUser/LoginUser";
+import { PrivateUser } from "./pages/AuthUser/PrivateUser";
 import { LoginPromotor } from "./pages/AuthPromotor/LoginPromotor";
 import { PrivatePromotor } from "./pages/AuthPromotor/PrivatePromotor";
 
@@ -141,6 +143,8 @@ export const router = createBrowserRouter(
       <Route path="/group-category" element={<GroupCategoryList />} />
       <Route path="/add-group-category" element={<AddGroupCategory />} />
       <Route path="/edit-group-category/:id" element={<EditGroupCategory />} />
+      <Route path="/user/login" element={<LoginUser />} />
+      <Route path="/user/private" element={<PrivateUser />} />
       <Route path="/group-event" element={<GroupEventList />} />
       <Route path="/create-group-event" element={<CreateGroupEvent />} />
       <Route path="/edit-group-event/:id" element={<EditGroupEvent />} />
