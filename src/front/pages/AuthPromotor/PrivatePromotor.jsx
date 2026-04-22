@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 
 export const PrivatePromotor = () => {
   const { store, dispatch } = useGlobalReducer()
-  console.log(store);
-  
   const navigate = useNavigate()
   const [tokenApi, setTokenApi] = useState("")
   const urlApi = import.meta.env.VITE_BACKEND_URL
@@ -20,7 +18,6 @@ export const PrivatePromotor = () => {
   },[])
 
   async function authUser(token) {
-    console.log("Esto es tokenAPI en authUser",token);
     try {
       const response = await fetch(`${urlApi}api/promotor/private`, {
         method: "GET",
