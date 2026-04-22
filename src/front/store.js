@@ -1,38 +1,60 @@
-export const initialStore=()=>{
-  return{
-    message: null,
-    todos: [
-      {
-        id: 1,
-        title: "Make the bed",
-        background: null,
-      },
-      {
-        id: 2,
-        title: "Do my homework",
-        background: null,
-      }
-    ]
-  }
-}
+export const initialStore = () => {
+  return {
+    tokenPromotor: "",
+    promotorAuth: false,
+    tokenUser: localStorage.getItem("tokenUser") || "",
+    userAuth: localStorage.getItem("userAuth") === "true",
+    privateUser: null
+  };
+};
 
 export default function storeReducer(store, action = {}) {
-  switch(action.type){
-    case 'set_hello':
+  switch (action.type) {
+    case "ADD_TOKEN_PROMOTOR":
       return {
         ...store,
-        message: action.payload
+        tokenPromotor: action.payload,
+      };
+    case "ADD_LOGIN_STATUS_PROMOTOR":
+      return {
+        ...store,
+        promotorAuth: action.payload,
+      };
+    case "PROMOTOR_LOGOUT":
+      return {
+        ...store,
+        tokenPromotor: "",
+        promotorAuth: false,
       };
       
-    case 'add_task':
-
-      const { id,  color } = action.payload
-
+     case "ADD_TOKEN_USER":
       return {
         ...store,
-        todos: store.todos.map((todo) => (todo.id === id ? { ...todo, background: color } : todo))
+        tokenUser: action.payload,
       };
+
+    case "ADD_LOGIN_STATUS_USER":
+      return {
+        ...store,
+        userAuth: action.payload,
+      };
+
+    case "GET_PRIVATE_USER":
+      return {
+        ...store,
+        privateUser: action.payload,
+      };
+
+    case "USER_LOGOUT":
+      return {
+        ...store,
+        tokenUser: "",
+        userAuth: false,
+        privateUser: null,
+      };
+
     default:
-      throw Error('Unknown action.');
-  }    
+      throw Error("Unknown action.");
+  }
 }
+   

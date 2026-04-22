@@ -2,21 +2,16 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend, SavedEvent, Discussion, GroupCategory, UserCategory, Comment, EventCategory, GroupEvent
+from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend, SavedEvent, Discussion, GroupCategory, UserCategory, Comment, EventCategory, GroupEvent, EventAssistUser, EventPromotor
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select
 from datetime import datetime, timezone
-from sqlalchemy import select
-from flask_cors import CORS
 from api.utils import generate_sitemap, APIException
-from flask import Flask, request, jsonify, url_for, Blueprint
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 api = Blueprint('api', __name__)
 
-@api.route('/hello', methods=['GET'])
-def hello():
-    return jsonify({"message": "Backend conectado correctamente"}), 200
 
 @api.route("/users", methods=["GET"])
 def get_users():
@@ -1502,6 +1497,276 @@ def delete_event_category_by_id(position):
 
     return jsonify(response_body), 200
 
+# // Promotor Login
+
+@api.route('promotor/login', methods=['POST'])
+def login_promotor():
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+
+    promotors = db.session.execute(select(Promotor)).scalars().all()
+
+    if email == None or password == None:
+        return jsonify({"msg": "Bad email or password"}), 401
+    for promot in promotors:
+        print(email in promot.email)
+        print(password)
+        print(promot.password)
+        print(password == promot.password)
+        if email in promot.email and password == promot.password:
+            access_token = create_access_token(identity=email)
+            return jsonify(access_token=access_token), 200
+
+    return jsonify({"msg": "Bad email or password"}), 401
+
+@api.route('promotor/private', methods=['GET'])
+@jwt_required()
+def private_promotor():
+    current_user_email = get_jwt_identity()
+    promotDb = db.session.execute(select(Promotor).where(Promotor.email == current_user_email)).scalars().all()
+    
+    promot = db.session.get(Promotor, promotDb[0].id)
+
+    return jsonify({
+        "msg": "Token valid",
+        "user": promot.serialize()
+    }), 200
+
+# // CRUD EventPromotor
+
+@api.route("/event-promotor", methods=["GET"])
+def get_event_promotors():
+    relations = db.session.execute(select(EventPromotor)).scalars().all()
+
+    return jsonify({
+        "message": "Relaciones obtenidas correctamente",
+        "results": [r.serialize() for r in relations]
+    }), 200
+
+@api.route("/event-promotor/<int:id>", methods=["GET"])
+def get_event_promotor(id):
+    relation = db.session.get(EventPromotor, id)
+
+    if relation is None:
+        return jsonify({"message": "Relación no encontrada"}), 404
+
+    return jsonify({
+        "message": "Relación obtenida correctamente",
+        "results": relation.serialize()
+    }), 200
+
+@api.route("/event-promotor", methods=["POST"])
+def create_event_promotor():
+    body = request.get_json(silent=True)
+
+    if body is None:
+        return jsonify({"message": "Debes enviar un JSON válido"}), 400
+
+    promotor_id = body.get("promotor_id")
+    event_id = body.get("event_id")
+
+    if not promotor_id or not event_id:
+        return jsonify({"message": "promotor_id y event_id son obligatorios"}), 400
+
+    # validar existencia
+    promotor = db.session.get(Promotor, promotor_id)
+    event = db.session.get(Event, event_id)
+
+    if not promotor or not event:
+        return jsonify({"message": "Promotor o Event no existen"}), 404
+
+    # evitar duplicados
+    existing = db.session.execute(
+        select(EventPromotor).where(
+            EventPromotor.promotor_id == promotor_id,
+            EventPromotor.event_id == event_id
+        )
+    ).scalar_one_or_none()
+
+    if existing:
+        return jsonify({"message": "La relación ya existe"}), 409
+
+    new_relation = EventPromotor(
+        promotor_id=promotor_id,
+        event_id=event_id
+    )
+
+    db.session.add(new_relation)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Relación creada correctamente",
+        "results": new_relation.serialize()
+    }), 201
+
+@api.route("/event-promotor/<int:id>", methods=["PUT"])
+def update_event_promotor(id):
+    relation = db.session.get(EventPromotor, id)
+
+    if relation is None:
+        return jsonify({"message": "Relación no encontrada"}), 404
+
+    body = request.get_json(silent=True)
+
+    if body is None:
+        return jsonify({"message": "Debes enviar un JSON válido"}), 400
+
+    if "promotor_id" in body:
+        promotor = db.session.get(Promotor, body["promotor_id"])
+        if not promotor:
+            return jsonify({"message": "Promotor no válido"}), 404
+        relation.promotor_id = body["promotor_id"]
+
+    if "event_id" in body:
+        event = db.session.get(Event, body["event_id"])
+        if not event:
+            return jsonify({"message": "Event no válido"}), 404
+        relation.event_id = body["event_id"]
+
+    db.session.commit()
+
+    return jsonify({
+        "message": "Relación actualizada correctamente",
+        "results": relation.serialize()
+    }), 200
+
+@api.route("/event-promotor/<int:id>", methods=["DELETE"])
+def delete_event_promotor(id):
+    relation = db.session.get(EventPromotor, id)
+
+    if relation is None:
+        return jsonify({"message": "Relación no encontrada"}), 404
+
+    db.session.delete(relation)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Relación eliminada correctamente"
+    }), 200
+
+  # // USER -LOGIN //
+
+@api.route('user/login', methods=['POST'])
+def login_user():
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+
+    users = db.session.execute(select(User)).scalars().all()
+
+    if email is None or password is None:
+        return jsonify({"msg": "Bad email or password"}), 401
+
+    for user in users:
+        print(email == user.email)
+        print(password)
+        print(user.password)
+        print(password == user.password)
+
+        if email == user.email and password == user.password:
+            access_token = create_access_token(identity=email)
+            return jsonify({
+                "token": access_token,
+                "user": user.serialize()
+            }), 200
+
+    return jsonify({"msg": "Bad email or password"}), 401
+
+@api.route('user/private', methods=['GET'])
+@jwt_required()
+def private_user():
+    current_user_email = get_jwt_identity()
+
+    userDb = db.session.execute(
+        select(User).where(User.email == current_user_email)
+    ).scalars().all()
+
+    user = db.session.get(User, userDb[0].id)
+
+    return jsonify({
+        "msg": "Token valid",
+        "user": user.serialize()
+    }), 200
 
 
+# // EventAssisUser
+
+@api.route("/event-assists", methods=["GET"])
+def get_event_assists():
+    stmt = select(EventAssistUser)
+    assists = db.session.execute(stmt).scalars().all()
+
+    return jsonify([
+        {
+            "id": a.id,
+            "user_id": a.user_id,
+            "event_id": a.event_id,
+            "user_name": a.user.name if a.user else None,
+            "event_name": a.event.name if a.event else None
+        }
+        for a in assists
+    ]), 200
+
+@api.route("/event-assists/<int:assist_id>", methods=["GET"])
+def get_event_assist(assist_id):
+    stmt = select(EventAssistUser).where(EventAssistUser.id == assist_id)
+    assist = db.session.execute(stmt).scalar_one_or_none()
+
+    if not assist:
+        return jsonify({"error": "Assist not found"}), 404
+
+    return jsonify({
+        "id": assist.id,
+        "user_name": assist.user.name if assist.user else None,
+        "event_name": assist.event.name if assist.event else None
+    }), 200
+
+@api.route("/event-assists", methods=["POST"])
+def create_event_assist():
+    data = request.get_json()
+
+    user_id = data.get("user_id")
+    event_id = data.get("event_id")
+
+    # validar existencia
+    user = db.session.get(User, user_id)
+    event = db.session.get(Event, event_id)
+
+    if not user or not event:
+        return jsonify({"error": "User or Event not found"}), 404
+
+    # evitar duplicados
+    stmt = select(EventAssistUser).where(
+        EventAssistUser.user_id == user_id,
+        EventAssistUser.event_id == event_id
+    )
+    existing = db.session.execute(stmt).scalar_one_or_none()
+
+    if existing:
+        return jsonify({"error": "User already assigned to this event"}), 400
+
+    assist = EventAssistUser(
+        user_id=user_id,
+        event_id=event_id
+    )
+
+    db.session.add(assist)
+    db.session.commit()
+
+    return jsonify({
+        "id": assist.id,
+        "user_name": user.name,
+        "event_name": event.name
+    }), 201
+
+@api.route("/event-assists/<int:assist_id>", methods=["DELETE"])
+def delete_event_assist(assist_id):
+    assist = db.session.get(EventAssistUser, assist_id)
+
+    if not assist:
+        return jsonify({"error": "Assist not found"}), 404
+
+    db.session.delete(assist)
+    db.session.commit()
+
+    return jsonify({"message": "Deleted successfully"}), 200
 
