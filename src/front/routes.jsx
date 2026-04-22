@@ -68,6 +68,9 @@ import { EventCategory } from "./pages/EventCategory/EventCategory";
 import { EventCategroyDetail } from "./pages/EventCategory/UserCategoryDetails";
 import { DeleteEventCategroy } from "./pages/EventCategory/DeleteEventCategory";
 import { CreateEventCategroy } from "./pages/EventCategory/CreateEventCategory";
+import EventAssistUser from "./pages/EventAssist/EventAssistUser";
+import CreateEventAssist from "./pages/EventAssist/CreateEventAssist";
+import DeleteEventAssist from "./pages/EventAssist/DeleteEventAssist";
 import { LoginUser } from "./pages/AuthUser/LoginUser";
 import { PrivateUser } from "./pages/AuthUser/PrivateUser";
 import { LoginPromotor } from "./pages/AuthPromotor/LoginPromotor";
@@ -148,6 +151,10 @@ export const router = createBrowserRouter(
       <Route path="/event-category" element={<EventCategory/>} />
       <Route path="/event-category/:theId/detail" element={<EventCategroyDetail/>} />
       <Route path="/event-category-delete/:theId" element={<DeleteEventCategroy/>} />
+      <Route path="/event-category-create" element={<CreateEventCategroy/>} />
+      <Route path="/event-assists" element={<EventAssistUser />} />
+      <Route path="/create-event-assist" element={<CreateEventAssist />} />
+      <Route path="/delete-event-assist/:id" element={<DeleteEventAssist />} />
       <Route path="/event-category-create" element={<CreateEventCategroy />} />
       <Route path="/promotor/login" element={<LoginPromotor />} />
       <Route path="/promotor/private" element={<PrivatePromotor />} />
