@@ -9,14 +9,13 @@ export const LoginPromotor = () => {
   const [email, setEmail] = useState("")
   const [pw, setPw] = useState("")
   const [tokenApi, setTokenApi] = useState("")
+  const [errorMsg, setErrorMsg] = useState("")
 
   const navigate = useNavigate()
 
 
   async function loginUser(e) {
     e.preventDefault();
-    console.log(email);
-    console.log(pw);
     try {
       const response = await fetch(`${urlApi}/api/promotor/login/`, {
         method: "POST",
@@ -30,6 +29,8 @@ export const LoginPromotor = () => {
       })
 
       if (!response.ok) {
+        const resp = await response.json()
+        setErrorMsg(resp.msg)
         throw new Error("Error on post fetch, status: ", response.status)
       }
       const token = (await response.json()).access_token
@@ -65,21 +66,34 @@ export const LoginPromotor = () => {
         <Navigate to="/privatePage" />
         : null}
       <div className="container row mx-auto mt-5">
+        <div className="d-flex justify-content-end mb-4">
+          <Link to="/">
+            <button type="button" className="btn btn-outline-dark mt-3">Back</button>
+          </Link>
+        </div>
         <div className="col-8 pt-4 w-50">
           <h2 className="d-flex justify-content-center mb-5">Login to MyApp</h2>
+          {errorMsg &&
+            errorMsg != "" ?
+            <div className="alert alert-danger" role="alert">
+              {errorMsg}
+            </div>
+            :
+            null
+          }
           <form onSubmit={loginUser}>
             <div className="mb-3">
               <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
-              <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" onChange={(e) => setEmail(e.target.value)} value={email} />
+              <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" onChange={(e) => setEmail(e.target.value)} value={email} style={errorMsg != "" ? { border: "1px red solid" } : {}} />
               <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
             </div>
             <div className="mb-3">
               <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
-              <input type="password" className="form-control" id="exampleInputPassword1" onChange={(e) => setPw(e.target.value)} value={pw} />
+              <input type="password" className="form-control" id="exampleInputPassword1" onChange={(e) => setPw(e.target.value)} value={pw} style={errorMsg != "" ? { border: "1px red solid" } : {}} />
             </div>
             <button type="submit" className="btn btn-primary d-grid gap-2 col-6 mx-auto" onClick={loginUser}>Login</button>
           </form>
-{/*           <div className="d-flex p-3 gap-4 align-items-center">
+          {/*           <div className="d-flex p-3 gap-4 align-items-center">
             <p>Not registered?</p>
             <Link to="/signup">
               <button className="btn btn-primary">Sign Up Here</button>
