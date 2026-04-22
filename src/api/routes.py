@@ -481,7 +481,7 @@ def delete_category(category_id):
     return jsonify({"msg": "Category eliminada correctamente"}), 200
 
 @api.route("/events", methods=["GET"])
-def get_events():
+def get_all_events():
     stmt = select(Event)
     events = db.session.execute(stmt).scalars().all()
 
