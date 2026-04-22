@@ -70,6 +70,10 @@ import { DeleteEventCategroy } from "./pages/EventCategory/DeleteEventCategory";
 import { CreateEventCategroy } from "./pages/EventCategory/CreateEventCategory";
 import { LoginPromotor } from "./pages/AuthPromotor/LoginPromotor";
 import { PrivatePromotor } from "./pages/AuthPromotor/PrivatePromotor";
+import { EventPromotor } from "./pages/Event-promotor/EventPromotor";
+import { CreateEventPromotor } from "./pages/Event-promotor/CreateEventPromotor";
+import { EditEventPromotor } from "./pages/Event-promotor/EditEventPromotor";
+import { DeleteEventPromotor } from "./pages/Event-promotor/DeleteEventPromotor";
 
 
 export const router = createBrowserRouter(
@@ -147,6 +151,10 @@ export const router = createBrowserRouter(
       <Route path="/event-category-create" element={<CreateEventCategroy />} />
       <Route path="/promotor/login" element={<LoginPromotor />} />
       <Route path="/promotor/private" element={<PrivatePromotor />} />
+      <Route path="/event-promotor" element={<EventPromotor />} />
+      <Route path="/create-event-promotor" element={<CreateEventPromotor />} />
+      <Route path="/edit-event-promotor/:id" element={<EditEventPromotor />} />
+      <Route path="/delete-event-promotor/:id" element={<DeleteEventPromotor />} />
     </Route>
   )
 );

@@ -85,6 +85,7 @@ class Promotor(db.Model):
         back_populates="promotor",
         cascade="all, delete-orphan"
     )
+    eventPromotors: Mapped[list["EventPromotor"]] = relationship(back_populates="promotor")
     # Pending relation with EventOwnerdPromotor table
 
     def serialize(self):
@@ -136,6 +137,7 @@ class Event(db.Model):
     comments: Mapped[List["Comment"]] = relationship(back_populates="event")
     saved_event: Mapped[list["SavedEvent"]] = relationship(back_populates="event")
     categories: Mapped[list["EventCategory"]] = relationship(back_populates="event")
+    eventPromotors: Mapped[list["EventPromotor"]] = relationship(back_populates="event")
 
     def serialize(self):
         return {
@@ -339,4 +341,29 @@ class Comment(db.Model):
                 "id": self.event.id,
                 "name": self.event.name
             } if self.event else None
+        }
+
+
+class EventPromotor(db.Model):
+    __tablename__ = 'event_promotor'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    promotor_id: Mapped[int] = mapped_column(ForeignKey('promotor.id'), nullable=False)
+    promotor: Mapped["Promotor"] = relationship(back_populates="eventPromotors")
+
+    event_id: Mapped[int] = mapped_column(ForeignKey('event.id'), nullable=False)
+    event: Mapped["Event"] = relationship(back_populates="eventPromotors")
+
+    __table_args__ = (
+        db.UniqueConstraint('promotor_id', 'event_id', name='unique_event_promotor'),
+    )
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "promotor_id": self.promotor_id,
+            "event_id": self.event_id,
+            "promotor_name": self.promotor.name if self.promotor else None,
+            "event_name": self.event.name if self.event else None
         }

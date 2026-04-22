@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend, SavedEvent, Discussion, GroupCategory, UserCategory, Comment, EventCategory, GroupEvent
+from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend, SavedEvent, Discussion, GroupCategory, UserCategory, Comment, EventCategory, GroupEvent, EventPromotor
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select
@@ -1530,6 +1530,118 @@ def private_promotor():
     return jsonify({
         "msg": "Token valid",
         "user": promot.serialize()
+    }), 200
+
+# // CRUD EventPromotor
+
+@api.route("/event-promotor", methods=["GET"])
+def get_event_promotors():
+    relations = db.session.execute(select(EventPromotor)).scalars().all()
+
+    return jsonify({
+        "message": "Relaciones obtenidas correctamente",
+        "results": [r.serialize() for r in relations]
+    }), 200
+
+@api.route("/event-promotor/<int:id>", methods=["GET"])
+def get_event_promotor(id):
+    relation = db.session.get(EventPromotor, id)
+
+    if relation is None:
+        return jsonify({"message": "Relación no encontrada"}), 404
+
+    return jsonify({
+        "message": "Relación obtenida correctamente",
+        "results": relation.serialize()
+    }), 200
+
+@api.route("/event-promotor", methods=["POST"])
+def create_event_promotor():
+    body = request.get_json(silent=True)
+
+    if body is None:
+        return jsonify({"message": "Debes enviar un JSON válido"}), 400
+
+    promotor_id = body.get("promotor_id")
+    event_id = body.get("event_id")
+
+    if not promotor_id or not event_id:
+        return jsonify({"message": "promotor_id y event_id son obligatorios"}), 400
+
+    # validar existencia
+    promotor = db.session.get(Promotor, promotor_id)
+    event = db.session.get(Event, event_id)
+
+    if not promotor or not event:
+        return jsonify({"message": "Promotor o Event no existen"}), 404
+
+    # evitar duplicados
+    existing = db.session.execute(
+        select(EventPromotor).where(
+            EventPromotor.promotor_id == promotor_id,
+            EventPromotor.event_id == event_id
+        )
+    ).scalar_one_or_none()
+
+    if existing:
+        return jsonify({"message": "La relación ya existe"}), 409
+
+    new_relation = EventPromotor(
+        promotor_id=promotor_id,
+        event_id=event_id
+    )
+
+    db.session.add(new_relation)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Relación creada correctamente",
+        "results": new_relation.serialize()
+    }), 201
+
+@api.route("/event-promotor/<int:id>", methods=["PUT"])
+def update_event_promotor(id):
+    relation = db.session.get(EventPromotor, id)
+
+    if relation is None:
+        return jsonify({"message": "Relación no encontrada"}), 404
+
+    body = request.get_json(silent=True)
+
+    if body is None:
+        return jsonify({"message": "Debes enviar un JSON válido"}), 400
+
+    if "promotor_id" in body:
+        promotor = db.session.get(Promotor, body["promotor_id"])
+        if not promotor:
+            return jsonify({"message": "Promotor no válido"}), 404
+        relation.promotor_id = body["promotor_id"]
+
+    if "event_id" in body:
+        event = db.session.get(Event, body["event_id"])
+        if not event:
+            return jsonify({"message": "Event no válido"}), 404
+        relation.event_id = body["event_id"]
+
+    db.session.commit()
+
+    return jsonify({
+        "message": "Relación actualizada correctamente",
+        "results": relation.serialize()
+    }), 200
+
+@api.route("/event-promotor/<int:id>", methods=["DELETE"])
+def delete_event_promotor(id):
+    relation = db.session.get(EventPromotor, id)
+
+    if relation is None:
+        return jsonify({"message": "Relación no encontrada"}), 404
+
+    db.session.delete(relation)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Relación eliminada correctamente"
     }), 200
 
 

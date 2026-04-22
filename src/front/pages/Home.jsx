@@ -126,6 +126,11 @@ export const Home = () => {
 						<button className="btn btn-primary">Event Category CRUD</button>
 					</Link>
 				</div>
+				<div>	
+					<Link className="p-2" to="/event-promotor">
+						<button className="btn btn-primary">Event Promotor CRUD</button>
+					</Link>
+				</div>
 			</div> 
 		</div>
 	)
