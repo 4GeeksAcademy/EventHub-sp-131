@@ -11,31 +11,22 @@ export const PrivatePromotor = () => {
   const urlApi = import.meta.env.VITE_BACKEND_URL
   const [isLogged, setIsLogged] = useState(false)
 
-  useEffect(() => {
-    setTokenApi(localStorage.getItem("token"))
-  }, [])
-
-  useEffect(() => {
-    console.log("TokenAPI en el use effect ",tokenApi);
-      authUser();
-  }, [tokenApi])
 
   useEffect(()=> {
     if (localStorage.getItem("promotorAuth") == true) {
       setIsLogged(localStorage.getItem("promotorAuth"))
     }
-    if (localStorage.getItem("token") != null && localStorage.getItem("token") != "") {
-      setTokenApi(localStorage.getItem("token"))
-    }
+    authUser(localStorage.getItem("token"));
   },[])
 
-  async function authUser() {
+  async function authUser(token) {
+    console.log("Esto es tokenAPI en authUser",token);
     try {
       const response = await fetch(`${urlApi}api/promotor/private`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${tokenApi}`
+          "Authorization": `Bearer ${token}`
         },
       })
 
@@ -55,11 +46,6 @@ export const PrivatePromotor = () => {
 
   return (
     <>
-      {store.promotorAuth === false ?
-        setTimeout(() => {
-          <Navigate to="/promotor/login" />
-        }, 1000)
-        : null}
       <div className="container">
         <h1 className="text-center p-4">This page is private</h1>
       </div>

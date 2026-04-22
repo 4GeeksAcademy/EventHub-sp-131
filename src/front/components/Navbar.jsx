@@ -4,9 +4,7 @@ import useGlobalReducer from "../hooks/useGlobalReducer";
 export const Navbar = () => {
 
 	const location = useLocation();
-	const { store, dispatch } = useGlobalReducer()
-	console.log(store);
-	
+	const { store, dispatch } = useGlobalReducer()	
 	const navigate = useNavigate()
 
 	function logOutPromotor() {
