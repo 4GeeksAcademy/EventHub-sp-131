@@ -17,10 +17,7 @@ api = Blueprint('api', __name__)
 def get_users():
     users = db.session.execute(select(User)).scalars().all()
 
-    return jsonify({
-        "message": "Users obtenidos correctamente",
-        "results": [user.serialize() for user in users]
-    }), 200
+    return jsonify([user.serialize() for user in users]), 200
 
 
 @api.route("/users/<int:user_id>", methods=["GET"])
@@ -480,10 +477,7 @@ def delete_category(category_id):
 def get_events():
     events = db.session.execute(select(Event)).scalars().all()
 
-    return jsonify({
-        "message": "Eventos obtenidos correctamente",
-        "results": [event.serialize() for event in events]
-    }), 200
+    return jsonify([event.serialize() for event in events]), 200
 
 
 @api.route("/events/<int:event_id>", methods=["GET"])
@@ -1491,40 +1485,6 @@ def delete_event_category_by_id(position):
 
     return jsonify(response_body), 200
 
-# // Promotor Login
-
-@api.route('promotor/login', methods=['POST'])
-def login_promotor():
-    email = request.json.get("email", None)
-    password = request.json.get("password", None)
-
-    promotors = db.session.execute(select(Promotor)).scalars().all()
-
-    if email == None or password == None:
-        return jsonify({"msg": "Bad email or password"}), 401
-    for promot in promotors:
-        print(email in promot.email)
-        print(password)
-        print(promot.password)
-        print(password == promot.password)
-        if email in promot.email and password == promot.password:
-            access_token = create_access_token(identity=email)
-            return jsonify(access_token=access_token), 200
-
-    return jsonify({"msg": "Bad email or password"}), 401
-
-@api.route('promotor/private', methods=['GET'])
-@jwt_required()
-def private_promotor():
-    current_user_email = get_jwt_identity()
-    promotDb = db.session.execute(select(Promotor).where(Promotor.email == current_user_email)).scalars().all()
-    
-    promot = db.session.get(Promotor, promotDb[0].id)
-
-    return jsonify({
-        "msg": "Token valid",
-        "user": promot.serialize()
-    }), 200
 
 # // CRUD EventPromotor
 
@@ -1532,10 +1492,7 @@ def private_promotor():
 def get_event_promotors():
     relations = db.session.execute(select(EventPromotor)).scalars().all()
 
-    return jsonify({
-        "message": "Relaciones obtenidas correctamente",
-        "results": [r.serialize() for r in relations]
-    }), 200
+    return jsonify([r.serialize() for r in relations]), 200
 
 @api.route("/event-promotor/<int:id>", methods=["GET"])
 def get_event_promotor(id):

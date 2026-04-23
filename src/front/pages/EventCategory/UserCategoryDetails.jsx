@@ -30,7 +30,7 @@ export const EventCategroyDetail = () => {
             })
             const data = await response.json()
             if (str === "events") {
-                setEventData(data.results)
+                setEventData(data)
             }
             if (str === "categories") {
                 setCategroyData(data)

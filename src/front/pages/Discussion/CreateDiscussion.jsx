@@ -68,7 +68,7 @@ export const CreateDiscussion = () => {
             })
             const data = await response.json()
             if (str === "users") {
-                setAllUsers(data.results)
+                setAllUsers(data)
             }
             if (str === "group") {
                 setAllGroups(data)

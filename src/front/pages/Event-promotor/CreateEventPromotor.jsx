@@ -32,7 +32,7 @@ export const CreateEventPromotor = () => {
         const eventData = await eventRes.json();
 
         setPromotores(promData);
-        setEventos(eventData.results);
+        setEventos(eventData);
       } catch (error) {
         console.error("Error cargando datos:", error);
       }

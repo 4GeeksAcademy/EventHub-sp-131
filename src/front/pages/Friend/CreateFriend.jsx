@@ -59,7 +59,7 @@ export const CreateFriend = () => {
                 "Content-Type": "application/json"
             })
             const data = await response.json()
-            setAllFriends(data.results)
+            setAllFriends(data)
             return response
         }
         catch (error) {

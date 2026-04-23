@@ -61,7 +61,7 @@ export const CreateUserCategory = () => {
             })
             const data = await response.json()
             if (str === "users") {
-                setAllUsers(data.results)
+                setAllUsers(data)
             }
             if (str === "categories") {
                 setAllCategory(data)
@@ -80,7 +80,7 @@ export const CreateUserCategory = () => {
 
     return (
         <div style={{ "width": "60%", "margin": "auto", marginTop: "4rem" }}>
-            <Link to="/saved_categroy">
+            <Link to="/user-category">
                 <button type="button" className="btn btn-outline-secondary my-4">Back</button>
             </Link>
             {message ?

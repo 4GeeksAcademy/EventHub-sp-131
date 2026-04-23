@@ -37,10 +37,10 @@ export const SavedEventDetail = () => {
             })
             const data = await response.json()
             if (str === "users") {
-                setUserData(data.results)
+                setUserData(data)
             }
             if (str === "events") {
-                setGroupData(data.results)
+                setGroupData(data)
             }
             return response
         }

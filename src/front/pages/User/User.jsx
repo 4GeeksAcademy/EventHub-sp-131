@@ -10,7 +10,7 @@ export const User = () => {
         try {
             const resp = await fetch(`${backendUrl}/api/users`);
             const data = await resp.json();
-            setUsers(data.results || []);
+            setUsers(data || []);
         } catch {
             console.log("Error cargando usuarios");
         }
