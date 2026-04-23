@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const API_URL = "https://cuddly-telegram-7vwxq565q7vq2944-3001.app.github.dev/api";
+const API_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 export const PromotorCategoryList = () => {
     const [relations, setRelations] = useState([]);
