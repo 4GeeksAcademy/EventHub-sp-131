@@ -30,7 +30,7 @@ export const UserCategoryDetail = () => {
             })
             const data = await response.json()
             if (str === "users") {
-                setUserData(data.results)
+                setUserData(data)
             }
             if (str === "categories") {
                 setCategoryData(data)

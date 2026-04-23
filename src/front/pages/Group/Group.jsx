@@ -49,7 +49,7 @@ export const Group = () => {
                                 return (
                                     <div className="col-sm-6 mb-3 mb-sm-0" key={item.id}>
                                         <div className="card my-3" style={{ "width": "18rem" }}>
-                                            <img src={item.media} class="card-img-top" alt="..."></img>
+                                            <img src={item.media} className="card-img-top" alt="..."></img>
                                             <div className="card-body">
                                                 <div className="d-flex justify-content-between">
                                                     <h5 className="card-title">{item.name}</h5>

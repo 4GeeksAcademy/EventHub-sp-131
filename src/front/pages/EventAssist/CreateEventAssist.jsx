@@ -22,7 +22,7 @@ const CreateEventAssist = () => {
 
     fetch(`${backendUrl}/api/events`)
       .then((res) => res.json())
-      .then((data) => setEvents(data.results))
+      .then((data) => setEvents(data))
       .catch(console.error);
   }, []);
 

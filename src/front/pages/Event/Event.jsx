@@ -14,7 +14,7 @@ export const Event = () => {
             throw new Error("Error al obtener eventos");
 }
         const data = await resp.json();
-        setEvents(data.results);
+        setEvents(data);
     };
 
     useEffect(() => {

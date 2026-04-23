@@ -11,7 +11,7 @@ from api.models import db
 from api.routes import api
 from api.promotor import promotor
 from api.user import user
-from api.admin import admins
+from api.admins import admins
 from api.category import category
 from api.event import event
 from api.group import group
@@ -78,6 +78,8 @@ def sitemap():
     return send_from_directory(static_file_dir, 'index.html')
 
 # any other endpoint will try to serve it like a static file
+
+
 @app.route('/<path:path>', methods=['GET'])
 def serve_any_other_file(path):
     if not os.path.isfile(os.path.join(static_file_dir, path)):
@@ -91,6 +93,3 @@ def serve_any_other_file(path):
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
-
-
-

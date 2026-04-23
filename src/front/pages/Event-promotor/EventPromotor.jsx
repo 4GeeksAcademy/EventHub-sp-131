@@ -9,7 +9,7 @@ export const EventPromotor = () => {
   const fetchData = async () => {
     const res = await fetch(`${backendUrl}/api/event-promotor`);
     const json = await res.json();
-    setData(json.results);
+    setData(json);
   };
 
   useEffect(() => {

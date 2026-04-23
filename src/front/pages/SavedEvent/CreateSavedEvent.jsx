@@ -61,10 +61,10 @@ export const CreateSavedEvent = () => {
             })
             const data = await response.json()
             if (str === "users") {
-                setAllUsers(data.results)
+                setAllUsers(data)
             }
             if (str === "events") {
-                setAllEvent(data.results)
+                setAllEvent(data)
             }
             return response
         }

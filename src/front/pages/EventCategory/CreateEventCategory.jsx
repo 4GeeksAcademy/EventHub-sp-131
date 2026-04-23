@@ -61,7 +61,7 @@ export const CreateEventCategroy = () => {
             })
             const data = await response.json()
             if (str === "events") {
-                setAllEvents(data.results)
+                setAllEvents(data)
             }
             if (str === "categories") {
                 setAllCategroy(data)
