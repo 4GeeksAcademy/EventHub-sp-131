@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const PrivateUser = () => {
@@ -32,6 +32,8 @@ export const PrivateUser = () => {
 					return;
 				}
 
+				localStorage.setItem("userAuth", JSON.stringify(data.user));
+
 				dispatch({
 					type: "ADD_TOKEN_USER",
 					payload: token
@@ -53,14 +55,28 @@ export const PrivateUser = () => {
 	}, [dispatch, navigate]);
 
 	return (
-		<div className="container">
+		<div className="container py-5">
 			<div className="card shadow p-4 mt-5">
-				<h1>User Private View</h1>
+				<h1 className="mb-4">Mi perfil</h1>
 
 				{store.privateUser ? (
 					<>
 						<p><strong>ID:</strong> {store.privateUser.id}</p>
-						<p><strong>Email:</strong> {store.privateUser.email}</p>
+						<p><strong>Nombre:</strong> {store.privateUser.name || "No registrado"}</p>
+						<p><strong>Email:</strong> {store.privateUser.email || "No registrado"}</p>
+						<p><strong>Edad:</strong> {store.privateUser.age || "No registrada"}</p>
+						<p><strong>Localidad:</strong> {store.privateUser.location || "No registrada"}</p>
+						<p><strong>Descripción:</strong> {store.privateUser.description || "Sin descripción"}</p>
+
+						<div className="d-flex gap-2 mt-4">
+							<Link to="/user-flow/dashboard" className="btn btn-primary">
+								Ir al dashboard
+							</Link>
+
+							<Link to={`/edit-user/${store.privateUser.id}`} className="btn btn-outline-secondary">
+								Editar perfil
+							</Link>
+						</div>
 					</>
 				) : (
 					<p>Loading...</p>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const LoginUser = () => {
@@ -49,7 +49,7 @@ export const LoginUser = () => {
 					payload: true
 				});
 
-				navigate("/user/private");
+				navigate("/user-flow/dashboard");
 			})
 			.catch(() => {
 				setError("Something went wrong");
@@ -98,6 +98,9 @@ export const LoginUser = () => {
 								Volver
 							</button>
 						</form>
+						<Link to="/create-user" className="btn btn-outline-success mt-3">
+                           Crear cuenta
+                        </Link>
 					</div>
 				</div>
 			</div>

@@ -79,7 +79,14 @@ import { EventPromotor } from "./pages/Event-promotor/EventPromotor";
 import { CreateEventPromotor } from "./pages/Event-promotor/CreateEventPromotor";
 import { EditEventPromotor } from "./pages/Event-promotor/EditEventPromotor";
 import { DeleteEventPromotor } from "./pages/Event-promotor/DeleteEventPromotor";
-
+import { UserDashboard } from "./pages/UserFlow/UserDashboard";
+import { UserFutureEvents } from "./pages/UserFlow/UserFutureEvents";
+import { UserEventDetail } from "./pages/UserFlow/UserEventDetail";
+import { UserMyEvents } from "./pages/UserFlow/UserMyEvents";
+import { UserGroups } from "./pages/UserFlow/UserGroups";
+import { UserGroupDetail } from "./pages/UserFlow/UserGroupDetail";
+import { UserUsers } from "./pages/UserFlow/UserUsers";
+import { UserProfile } from "./pages/UserFlow/UserProfile";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -166,6 +173,14 @@ export const router = createBrowserRouter(
       <Route path="/create-event-promotor" element={<CreateEventPromotor />} />
       <Route path="/edit-event-promotor/:id" element={<EditEventPromotor />} />
       <Route path="/delete-event-promotor/:id" element={<DeleteEventPromotor />} />
+      <Route path="/user-flow/dashboard" element={<UserDashboard />} />
+      <Route path="/user-flow/events" element={<UserFutureEvents />} />
+      <Route path="/user-flow/events/:id" element={<UserEventDetail />} />
+      <Route path="/user-flow/my-events" element={<UserMyEvents />} />
+      <Route path="/user-flow/groups" element={<UserGroups />} />
+      <Route path="/user-flow/groups/:id" element={<UserGroupDetail />} />
+      <Route path="/user-flow/users" element={<UserUsers />} />
+      <Route path="/user-flow/users/:id" element={<UserProfile />} />
     </Route>
   )
 );
