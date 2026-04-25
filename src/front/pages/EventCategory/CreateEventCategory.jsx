@@ -28,7 +28,7 @@ export const CreateEventCategory = () => {
         }
     }
 
-    async function createEventCategroy() {
+    async function createEventCategory() {
         try {
             const response = await fetch(`${urlAPI}api/event_category`, {
                 method: "POST",
@@ -80,7 +80,7 @@ export const CreateEventCategory = () => {
 
     return (
         <div style={{ "width": "60%", "margin": "auto", marginTop: "4rem" }}>
-            <Link to="/saved_categroy">
+            <Link to="/event-category">
                 <button type="button" className="btn btn-outline-secondary my-4">Back</button>
             </Link>
             {message ?
@@ -105,7 +105,7 @@ export const CreateEventCategory = () => {
                     )
                 })}
             </select>
-            <button type="button" className="btn btn-primary" onClick={createEventCategroy}>Create</button>
+            <button type="button" className="btn btn-primary" onClick={createEventCategory}>Create</button>
         </div>
     );
 }

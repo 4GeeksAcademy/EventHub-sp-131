@@ -6,7 +6,7 @@ export const EventCategoryDetail = () => {
     const { theId } = useParams();
 
     const [event_category, setEventCategroy] = useState(null);
-    const [eventData, setEventData] = useState()
+    const [eventData, setEventData] = useState()    
     const [categroyData, setCategroyData] = useState()
 
     async function getEventCategroyById(theId) {
@@ -68,9 +68,11 @@ export const EventCategoryDetail = () => {
                         </div>
                     ) : (
                         <div className="row flex-lg-row-reverse align-items-center g-5 py-5">
-                            {event_category ?
+                            {event_category &&
+                            eventData
+                            ?
                                 <div>
-                                    <h2>Saved Event with ID {event_category.id}</h2>
+                                    <h2>Event with ID {eventData.id} named {eventData.name}</h2>
                                     <div className="">
                                         {eventData  ?
                                             <h5>Event {eventData.name}</h5>
