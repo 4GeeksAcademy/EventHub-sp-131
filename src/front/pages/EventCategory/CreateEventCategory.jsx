@@ -3,7 +3,7 @@ import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { use } from "react";
 
-export const CreateEventCategroy = () => {
+export const CreateEventCategory = () => {
 
     const urlAPI = import.meta.env.VITE_BACKEND_URL
     const [selectedIDEvent, setSelectedIDEvent] = useState("")

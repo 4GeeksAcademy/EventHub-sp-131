@@ -1,6 +1,6 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-export const DeleteEventCategroy = () => {
+export const DeleteEventCategory = () => {
 
     const urlAPI = import.meta.env.VITE_BACKEND_URL
     const { theId } = useParams()

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-export const EventCategroyDetail = () => {
+export const EventCategoryDetail = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const { theId } = useParams();
 
