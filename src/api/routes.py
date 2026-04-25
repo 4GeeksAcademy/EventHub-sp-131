@@ -487,10 +487,7 @@ def get_event(event_id):
     if event is None:
         return jsonify({"message": "Evento no encontrado"}), 404
 
-    return jsonify({
-        "message": "Evento obtenido correctamente",
-        "results": event.serialize()
-    }), 200
+    return jsonify(event.serialize()), 200
 
 
 @api.route("/events", methods=["POST"])
