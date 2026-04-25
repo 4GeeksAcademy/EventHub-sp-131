@@ -79,6 +79,8 @@ import { EventPromotor } from "./pages/Event-promotor/EventPromotor";
 import { CreateEventPromotor } from "./pages/Event-promotor/CreateEventPromotor";
 import { EditEventPromotor } from "./pages/Event-promotor/EditEventPromotor";
 import { DeleteEventPromotor } from "./pages/Event-promotor/DeleteEventPromotor";
+import { LoginAdmin } from "./pages/AuthAdmin/LoginAdmin";
+import { PrivateAdmin } from "./pages/AuthAdmin/PrivateAdmin";
 
 
 export const router = createBrowserRouter(
@@ -166,6 +168,8 @@ export const router = createBrowserRouter(
       <Route path="/create-event-promotor" element={<CreateEventPromotor />} />
       <Route path="/edit-event-promotor/:id" element={<EditEventPromotor />} />
       <Route path="/delete-event-promotor/:id" element={<DeleteEventPromotor />} />
+      <Route path="/admin/login" element={<LoginAdmin />} />
+      <Route path="/admin/private" element={<PrivateAdmin />} />
     </Route>
   )
 );
