@@ -17,7 +17,7 @@ const CreateEventAssist = () => {
     console.log("events state:", events);
     fetch(`${backendUrl}/api/users`)
       .then((res) => res.json())
-      .then((data) => setUsers(data.results))
+      .then((data) => setUsers(data))
       .catch(console.error);
 
     fetch(`${backendUrl}/api/events`)

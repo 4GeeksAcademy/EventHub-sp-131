@@ -30,9 +30,9 @@ export const EventCategory = () => {
             <div className="container">
                 <div className="d-flex justify-content-between">
                     <div className="d-flex gap-2 mt-3">
-                        <button type="button" className="btn btn-primary" onClick={getEventCategories}>Get all saved events</button>
+                        <button type="button" className="btn btn-primary" onClick={getEventCategories}>Get all event categories</button>
                         <Link to="/event-category-create">
-                            <button type="button" className="btn btn-primary">Create saved event</button>
+                            <button type="button" className="btn btn-primary">Create new event category</button>
                         </Link>
                     </div>
                     <Link to="/">

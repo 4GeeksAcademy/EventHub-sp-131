@@ -3,7 +3,7 @@ import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { use } from "react";
 
-export const CreateEventCategroy = () => {
+export const CreateEventCategory = () => {
 
     const urlAPI = import.meta.env.VITE_BACKEND_URL
     const [selectedIDEvent, setSelectedIDEvent] = useState("")
@@ -28,7 +28,7 @@ export const CreateEventCategroy = () => {
         }
     }
 
-    async function createEventCategroy() {
+    async function createEventCategory() {
         try {
             const response = await fetch(`${urlAPI}api/event_category`, {
                 method: "POST",
@@ -80,7 +80,7 @@ export const CreateEventCategroy = () => {
 
     return (
         <div style={{ "width": "60%", "margin": "auto", marginTop: "4rem" }}>
-            <Link to="/saved_categroy">
+            <Link to="/event-category">
                 <button type="button" className="btn btn-outline-secondary my-4">Back</button>
             </Link>
             {message ?
@@ -105,7 +105,7 @@ export const CreateEventCategroy = () => {
                     )
                 })}
             </select>
-            <button type="button" className="btn btn-primary" onClick={createEventCategroy}>Create</button>
+            <button type="button" className="btn btn-primary" onClick={createEventCategory}>Create</button>
         </div>
     );
 }
