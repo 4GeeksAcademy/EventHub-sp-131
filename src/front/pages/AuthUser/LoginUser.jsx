@@ -50,7 +50,7 @@ export const LoginUser = () => {
 					payload: true
 				});
 
-				navigate("/user-flow/dashboard");
+				navigate("/user/private");
 			})
 			.catch(() => {
 				setError("Something went wrong");
@@ -103,9 +103,6 @@ export const LoginUser = () => {
 								Volver
 							</button>
 						</form>
-						<Link to="/create-user" className="btn btn-outline-success mt-3">
-                           Crear cuenta
-                        </Link>
 					</div>
 				</div>
 			</div>
