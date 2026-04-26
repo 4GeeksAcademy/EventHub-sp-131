@@ -1594,7 +1594,7 @@ def delete_event_promotor(id):
 
   # // USER -LOGIN //
 
-@api.route('user/login', methods=['POST'])
+@api.route("/user/login", methods=["POST"])
 def login_user():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
@@ -1619,7 +1619,7 @@ def login_user():
 
     return jsonify({"msg": "Bad email or password"}), 401
 
-@api.route('user/private', methods=['GET'])
+@api.route("/user/private", methods=["GET"])
 @jwt_required()
 def private_user():
     current_user_email = get_jwt_identity()
