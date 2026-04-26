@@ -1,8 +1,8 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import { useEffect, useState } from "react";
-//import { CreateEventForm } from "../../components/Event/CreateEventForm";
-//import { EventList } from "../../components/Event/EventList"
+import { CreateEventForm } from "../../components/Event/CreateEventForm";
+import { EventList } from "../../components/Event/EventList"
 
 export const PrivatePromotor = () => {
   const { store, dispatch } = useGlobalReducer()

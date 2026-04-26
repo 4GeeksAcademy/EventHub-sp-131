@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, Promotor, Event, EventPromotor, SavedEvent, EventCategory, EventAssistUser, GroupEvent, Category, Comment
+from api.models import db, Promotor, Event, EventPromotor, SavedEvent, EventCategory, EventAssistUser, GroupEvent, Category, Comment, User
 from sqlalchemy import select
 from datetime import datetime, timezone
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
@@ -88,7 +88,7 @@ def get_events(promotor_id):
 
 
 @promotor.route("/<int:promotor_id>/events/<int:event_id>", methods=["GET"])
-@jwt_required()
+# @jwt_required()
 def get_event_by_id(promotor_id, event_id):
     event = db.session.get(Event, event_id)
     promotor = db.session.get(Promotor, promotor_id)
@@ -271,19 +271,26 @@ def delete_event(promotor_id, event_id):
 
 
 @promotor.route('/events/<int:event_id>/event_category', methods=['GET'])
-@jwt_required()
+# @jwt_required()
 def get_event_category(event_id):
-    event_categories = db.session.execute(select(EventCategory).where(
+
+    event = db.session.get(Event, event_id)
+    eventCatRelation = db.session.execute(select(EventCategory).where(
         EventCategory.event_id == event_id)).scalars().all()
-    response_body = list(
-        map(lambda event_category: event_category.serialize(), event_categories))
 
-    return jsonify(response_body), 200
+    for category in eventCatRelation:
+        if category is None:
+            return jsonify({"message": "No events found"}), 404
+
+    return jsonify({
+        "message": f"{len(eventCatRelation)} where found for event {event.name}",
+        "eventCategories": list(map(lambda relation: relation.serialize(), eventCatRelation)),
+    }), 200
 
 
-@promotor.route('/event_category', methods=['POST'])
-@jwt_required()
-def create_event_category():
+@promotor.route('/events/<int:event_id>/event_category', methods=['POST'])
+# @jwt_required()
+def create_event_category(promotor_id, event_id):
 
     body = request.json
     if "event_id" not in body or "category_id" not in body:
@@ -310,64 +317,89 @@ def create_event_category():
 
     return jsonify(response_body), 200
 
+@promotor.route('/events/<int:event_id>/event_category/<int:position>', methods=['DELETE'])
+def delete_event_category_by_id(event_id ,position):
+
+    event_category = db.session.get(EventCategory, position)
+
+    if event_category == None:
+        return jsonify("This event category does not exist"), 404
+
+    db.session.delete(event_category)
+    db.session.commit()
+
+    response_body = {
+        "message": "The event category has been deleted correctly",
+        "event_category": event_category.serialize()
+    }
+
+    return jsonify(response_body), 200
+
 # ver asistentes del evento creado por X promotor
 
-@promotor.route("/<int:promotor_id>/events/<int:event_id>/event-assists", methods=["GET"])
+@promotor.route("/events/<int:event_id>/event-assists", methods=["GET"])
 # @jwt_required()
-def get_event_assists(promotor_id, event_id):
-    stmt = select(EventAssistUser)
-    assists = db.session.execute(stmt).scalars().all()
+def get_event_assists(event_id):
 
-    event_categories = db.session.execute(select(EventCategory).where(EventCategory.event_id == event_id)).scalars().all()
-    response_body = list(map(lambda event_category: event_category.serialize(), event_categories))
-
-    return jsonify([
-        {
-            "id": a.id,
-            "user_id": a.user_id,
-            "event_id": a.event_id,
-            "user_name": a.user.name if a.user else None,
-            "event_name": a.event.name if a.event else None
-        }
-        for a in assists
-    ]), 200
-
-# comentar sobre los eventos
+    event = db.session.get(Event, event_id)
+    eventAsistRelation = db.session.execute(select(EventAssistUser).where(
+        EventAssistUser.event_id == event_id)).scalars().all()
 
 
-@promotor.route('/<int:promotor_id>/events/<int:event_id>/comments', methods=['GET'])
-def get_comments(promotor_id, event_id):
-    result = db.session.execute(db.select(Comment))
-    comments = result.scalars().all()
-
-    return jsonify([c.serialize() for c in comments]), 200
+    return jsonify({
+        "message": f"{len(eventAsistRelation)} where found for event {event.name}",
+        "relations": list(map(lambda relation: relation.serialize(), eventAsistRelation)),}), 200
 
 
-@promotor.route('/comments/<int:id>', methods=['GET'])
-def get_comment(id):
+# comments on the event
+
+@promotor.route('/events/<int:event_id>/comments', methods=['GET'])
+# @jwt_required()
+def get_comments(event_id):
+
+    event = db.session.get(Event, event_id)
+    eventCommentRelation = db.session.execute(select(Comment).where(
+        Comment.event_id == event_id)).scalars().all()
+
+    for user in eventCommentRelation:
+        if user is None:
+            return jsonify({"message": "No comments found"}), 404
+        
+    return jsonify({
+        "message": f"{len(eventCommentRelation)} where found for event {event.name}",
+        "comments": list(map(lambda relation: relation.serialize(), eventCommentRelation))}), 200
+
+
+@promotor.route('/events/<int:event_id>/comments/<int:id>', methods=['GET'])
+# @jwt_required()
+def get_comment(event_id, id):
     comment = db.session.get(Comment, id)
 
     if comment is None:
         return jsonify({"msg": "Comment not found"}), 404
+    
+    if comment.event.id != event_id:
+        return jsonify({"msg": "This comment is not on your event"}), 404
 
     return jsonify(comment.serialize()), 200
 
-
-@promotor.route('/<int:promotor_id>/events/<int:event_id>/comments', methods=['POST'])
-def create_comment():
+# Esto no sirve porque Promotor no puede crear comentarios segun nuestra DB
+""" @promotor.route('/events/<int:event_id>/comments', methods=['POST'])
+# @jwt_required()
+def create_comment(event_id):
     body = request.json
 
     user = db.session.get(User, body.get("user_id"))
-    event = db.session.get(Event, body.get("event_id"))
+    event = db.session.get(Event, event_id)
 
     if not user or not event:
         return jsonify({"msg": "Invalid user or event"}), 400
 
     new_comment = Comment(
-        message=body["message"],
-        create_date=datetime.now(timezone.utc),
-        user_id=body["user_id"],
-        event_id=body["event_id"]
+        message= body["message"],
+        create_date= datetime.now(timezone.utc),
+        user_id= body["user_id"],
+        event_id= event_id
     )
 
     db.session.add(new_comment)
@@ -376,12 +408,15 @@ def create_comment():
     return jsonify(new_comment.serialize()), 201
 
 
-@promotor.route('/<int:promotor_id>/events/<int:event_id>/comments/<int:id>', methods=['PUT'])
-def update_comment(id):
+@promotor.route('/events/<int:event_id>/comments/<int:id>', methods=['PUT'])
+def update_comment(id, event_id):
     comment = db.session.get(Comment, id)
 
     if comment is None:
         return jsonify({"msg": "Comment not found"}), 404
+    
+    if comment.event.id != event_id:
+        return jsonify({"msg": "This comment is not on your event"})
 
     body = request.json
 
@@ -389,15 +424,19 @@ def update_comment(id):
 
     db.session.commit()
 
-    return jsonify(comment.serialize()), 200
+    return jsonify(comment.serialize()), 200 """
 
 
-@promotor.route('/<int:promotor_id>/events/<int:event_id>/comments/<int:id>', methods=['DELETE'])
-def delete_comment(id):
+@promotor.route('/events/<int:event_id>/comments/<int:id>', methods=['DELETE'])
+# @jwt_required()
+def delete_comment(id, event_id):
     comment = db.session.get(Comment, id)
 
     if comment is None:
         return jsonify({"msg": "Comment not found"}), 404
+    
+    if comment.event.id != event_id:
+        return jsonify({"msg": "This comment is not on your event"})
 
     db.session.delete(comment)
     db.session.commit()
