@@ -78,7 +78,7 @@ class Promotor(db.Model):
         String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
     location: Mapped[str] = mapped_column(String(160), nullable=False)
-    phone: Mapped[int] = mapped_column(unique=True)
+    phone: Mapped[int] = mapped_column(unique=True, nullable=True)
     web_page: Mapped[str] = mapped_column(
         String(120), unique=True, nullable=False)
     verified_org: Mapped[bool] = mapped_column(Boolean(), nullable=False)

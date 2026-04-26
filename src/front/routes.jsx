@@ -65,9 +65,9 @@ import { GroupEventList } from "./pages/Group-event/GroupEventList";
 import { CreateGroupEvent } from "./pages/Group-event/CreateGroupEvent";
 import { EditGroupEvent } from "./pages/Group-event/EditGroupEvent";
 import { EventCategory } from "./pages/EventCategory/EventCategory";
-import { EventCategroyDetail } from "./pages/EventCategory/UserCategoryDetails";
-import { DeleteEventCategroy } from "./pages/EventCategory/DeleteEventCategory";
-import { CreateEventCategroy } from "./pages/EventCategory/CreateEventCategory";
+import { EventCategoryDetail } from "./pages/EventCategory/EventCategoryDetails";
+import { DeleteEventCategory } from "./pages/EventCategory/DeleteEventCategory";
+import { CreateEventCategory } from "./pages/EventCategory/CreateEventCategory";
 import EventAssistUser from "./pages/EventAssist/EventAssistUser";
 import CreateEventAssist from "./pages/EventAssist/CreateEventAssist";
 import DeleteEventAssist from "./pages/EventAssist/DeleteEventAssist";
@@ -79,14 +79,16 @@ import { EventPromotor } from "./pages/Event-promotor/EventPromotor";
 import { CreateEventPromotor } from "./pages/Event-promotor/CreateEventPromotor";
 import { EditEventPromotor } from "./pages/Event-promotor/EditEventPromotor";
 import { DeleteEventPromotor } from "./pages/Event-promotor/DeleteEventPromotor";
-import { UserDashboard } from "./pages/UserFlow/UserDashboard";
-import { UserFutureEvents } from "./pages/UserFlow/UserFutureEvents";
-import { UserEventDetail } from "./pages/UserFlow/UserEventDetail";
-import { UserMyEvents } from "./pages/UserFlow/UserMyEvents";
-import { UserGroups } from "./pages/UserFlow/UserGroups";
-import { UserGroupDetail } from "./pages/UserFlow/UserGroupDetail";
-import { UserUsers } from "./pages/UserFlow/UserUsers";
-import { UserProfile } from "./pages/UserFlow/UserProfile";
+import { LoginAdmin } from "./pages/AuthAdmin/LoginAdmin";
+import { PrivateAdmin } from "./pages/AuthAdmin/PrivateAdmin";
+import { MySavedEvents } from "./pages/SavedEvent/MySavedEvents";
+import { MyAssistingEvents } from "./pages/EventAssist/MyAssistingEvents";
+import { EventDetail } from "./pages/Event/EventDetail";
+import { RegisterUser } from "./pages/AuthUser/RegisterUser";
+import { UserEvents } from "./pages/AuthUser/UserEvents";
+import { UserProfiles } from "./pages/AuthUser/UserProfiles";
+import { UserGroups } from "./pages/AuthUser/UserGroups";
+import { UserGroupDetail } from "./pages/AuthUser/UserGroupDetail";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -160,27 +162,28 @@ export const router = createBrowserRouter(
       <Route path="/create-group-event" element={<CreateGroupEvent />} />
       <Route path="/edit-group-event/:id" element={<EditGroupEvent />} />
       <Route path="/event-category" element={<EventCategory/>} />
-      <Route path="/event-category/:theId/detail" element={<EventCategroyDetail/>} />
-      <Route path="/event-category-delete/:theId" element={<DeleteEventCategroy/>} />
-      <Route path="/event-category-create" element={<CreateEventCategroy/>} />
+      <Route path="/event-category/:theId/detail" element={<EventCategoryDetail/>} />
+      <Route path="/event-category-delete/:theId" element={<DeleteEventCategory/>} />
+      <Route path="/event-category-create" element={<CreateEventCategory/>} />
       <Route path="/event-assists" element={<EventAssistUser />} />
       <Route path="/create-event-assist" element={<CreateEventAssist />} />
       <Route path="/delete-event-assist/:id" element={<DeleteEventAssist />} />
-      <Route path="/event-category-create" element={<CreateEventCategroy />} />
       <Route path="/promotor/login" element={<LoginPromotor />} />
       <Route path="/promotor/private" element={<PrivatePromotor />} />
       <Route path="/event-promotor" element={<EventPromotor />} />
       <Route path="/create-event-promotor" element={<CreateEventPromotor />} />
       <Route path="/edit-event-promotor/:id" element={<EditEventPromotor />} />
       <Route path="/delete-event-promotor/:id" element={<DeleteEventPromotor />} />
-      <Route path="/user-flow/dashboard" element={<UserDashboard />} />
-      <Route path="/user-flow/events" element={<UserFutureEvents />} />
-      <Route path="/user-flow/events/:id" element={<UserEventDetail />} />
-      <Route path="/user-flow/my-events" element={<UserMyEvents />} />
-      <Route path="/user-flow/groups" element={<UserGroups />} />
-      <Route path="/user-flow/groups/:id" element={<UserGroupDetail />} />
-      <Route path="/user-flow/users" element={<UserUsers />} />
-      <Route path="/user-flow/users/:id" element={<UserProfile />} />
+      <Route path="/admin/login" element={<LoginAdmin />} />
+      <Route path="/admin/private" element={<PrivateAdmin />} />
+      <Route path="/user/saved-events" element={<MySavedEvents />} />
+      <Route path="/user/assisting-events" element={<MyAssistingEvents />} />
+      <Route path="/events/:id" element={<EventDetail />} />
+      <Route path="/user/register" element={<RegisterUser />} />
+      <Route path="/user/events" element={<UserEvents />} />
+      <Route path="/user/profiles" element={<UserProfiles />} />
+      <Route path="/user/groups" element={<UserGroups />} />
+      <Route path="/user/group/:theId" element={<UserGroupDetail />} />
     </Route>
   )
 );
