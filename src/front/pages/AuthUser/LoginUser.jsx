@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const LoginUser = () => {
@@ -37,7 +37,8 @@ export const LoginUser = () => {
 				}
 
 				localStorage.setItem("tokenUser", data.token);
-				localStorage.setItem("userAuth", "true");
+                localStorage.setItem("userAuth", "true");
+                localStorage.setItem("user", JSON.stringify(data.user));
 
 				dispatch({
 					type: "ADD_TOKEN_USER",
@@ -87,8 +88,12 @@ export const LoginUser = () => {
 							</div>
 
 							<button className="btn btn-success w-100">
-								Login
+								Iniciar Sesión
 							</button>
+
+							<button type="button" className="btn btn-outline-primary w-100 mt-2" onClick={() => navigate("/user/register")}>
+                                Crear cuenta
+                            </button>
 
 							<button
 								type="button"

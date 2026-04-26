@@ -83,7 +83,14 @@ import { DeleteEventPromotor } from "./pages/Event-promotor/DeleteEventPromotor"
 import { EventDetail } from "./pages/EventDetail";
 import { LoginAdmin } from "./pages/AuthAdmin/LoginAdmin";
 import { PrivateAdmin } from "./pages/AuthAdmin/PrivateAdmin";
-
+import { MySavedEvents } from "./pages/SavedEvent/MySavedEvents";
+import { MyAssistingEvents } from "./pages/EventAssist/MyAssistingEvents";
+import { EventDetail } from "./pages/Event/EventDetail";
+import { RegisterUser } from "./pages/AuthUser/RegisterUser";
+import { UserEvents } from "./pages/AuthUser/UserEvents";
+import { UserProfiles } from "./pages/AuthUser/UserProfiles";
+import { UserGroups } from "./pages/AuthUser/UserGroups";
+import { UserGroupDetail } from "./pages/AuthUser/UserGroupDetail";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -163,7 +170,6 @@ export const router = createBrowserRouter(
       <Route path="/event-assists" element={<EventAssistUser />} />
       <Route path="/create-event-assist" element={<CreateEventAssist />} />
       <Route path="/delete-event-assist/:id" element={<DeleteEventAssist />} />
-      <Route path="/event-category-create" element={<CreateEventCategory />} />
       <Route path="/promotor/login" element={<LoginPromotor />} />
       <Route path="/promotor/private" element={<PrivatePromotor />} />
       <Route path="/promotor/sign-up" element={<PromotorSignUp/>} />
@@ -174,6 +180,14 @@ export const router = createBrowserRouter(
       <Route path="/:type/private/:ownerId/event/:id" element={ <EventDetail/> } />
       <Route path="/admin/login" element={<LoginAdmin />} />
       <Route path="/admin/private" element={<PrivateAdmin />} />
+      <Route path="/user/saved-events" element={<MySavedEvents />} />
+      <Route path="/user/assisting-events" element={<MyAssistingEvents />} />
+      <Route path="/events/:id" element={<EventDetail />} />
+      <Route path="/user/register" element={<RegisterUser />} />
+      <Route path="/user/events" element={<UserEvents />} />
+      <Route path="/user/profiles" element={<UserProfiles />} />
+      <Route path="/user/groups" element={<UserGroups />} />
+      <Route path="/user/group/:theId" element={<UserGroupDetail />} />
     </Route>
   )
 );
