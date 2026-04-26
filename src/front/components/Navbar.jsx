@@ -12,7 +12,15 @@ export const Navbar = () => {
 		localStorage.removeItem("promotorAuth")
 		dispatch({ type: "PROMOTOR_LOGOUT" })
 		navigate('/promotor/login');
+	}	
+	
+	function logOutAdmin() {
+		localStorage.removeItem("tokenAdmin");
+		localStorage.removeItem("adminAuth");
+		dispatch({ type: "ADMIN_LOGOUT" });
+		navigate("/admin/login");
 	}
+	
 
 	function logOutUser() {
 	   localStorage.removeItem("tokenUser");
@@ -62,6 +70,21 @@ export const Navbar = () => {
 									</button>
 							  )
 					}
+
+				{
+						store.adminAuth === false
+							? location.pathname &&
+							!location.pathname.includes("login") && (
+								<Link to="/admin/login">
+								<button className="btn btn-warning">Admin Login</button>
+								</Link>
+							)
+							: (
+								<button className="btn btn-danger" onClick={logOutAdmin}>
+								Admin Log Out
+								</button>
+							)
+						}
 				<div className="ml-auto">
 					<Link to="/demo">
 						<button className="btn btn-primary">Check the Context in action</button>

@@ -29,7 +29,10 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 
 # Allow CORS requests to this API
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app, resources={r"/api/*": {"origins": "*"}},
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    supports_credentials=True)
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")

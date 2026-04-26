@@ -4,7 +4,9 @@ export const initialStore = () => {
     promotorAuth: false,
     tokenUser: localStorage.getItem("tokenUser") || "",
     userAuth: localStorage.getItem("userAuth") === "true",
-    privateUser: null
+    privateUser: null,
+    tokenAdmin: localStorage.getItem("tokenAdmin") || "",
+    adminAuth: localStorage.getItem("adminAuth") === "true",
   };
 };
 
@@ -51,6 +53,25 @@ export default function storeReducer(store, action = {}) {
         tokenUser: "",
         userAuth: false,
         privateUser: null,
+      };
+
+    case "ADD_TOKEN_ADMIN":
+      return {
+        ...store,
+        tokenAdmin: action.payload,
+      };
+
+    case "ADD_LOGIN_STATUS_ADMIN":
+      return {
+        ...store,
+        adminAuth: action.payload,
+      };
+
+    case "ADMIN_LOGOUT":
+      return {
+        ...store,
+        tokenAdmin: "",
+        adminAuth: false,
       };
 
     default:
