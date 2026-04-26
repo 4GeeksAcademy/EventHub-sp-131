@@ -308,11 +308,12 @@ class EventCategory(db.Model):
     category: Mapped["Category"] = relationship(back_populates="eventCats")
 
     def serialize(self):
-      return {
-        "id": self.id,
-        "event_id": self.event_id,
-        "category_id": self.category_id
-      }
+        return {
+            "id": self.id,
+            "event_id": self.event_id,
+            "category_id": self.category_id,
+            "category_name": self.category.name if self.category else None
+        }
 
 class Comment(db.Model):
     __tablename__ = "comment"

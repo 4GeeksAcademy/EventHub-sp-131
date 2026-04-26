@@ -15,7 +15,7 @@ export const CreateComment = () => {
     useEffect(() => {
     fetch(`${backendUrl}/api/users`)
         .then(res => res.json())
-        .then(data => setUsers(data.results))
+        .then(data => setUsers(data))
         .catch(err => console.log(err));
     }, []);
 
@@ -24,7 +24,7 @@ export const CreateComment = () => {
     useEffect(() => {
     fetch(`${backendUrl}/api/events`)
         .then(res => res.json())
-        .then(data => setEvents(data.results))
+        .then(data => setEvents(data))
         .catch(err => console.log(err));
     }, []);
 

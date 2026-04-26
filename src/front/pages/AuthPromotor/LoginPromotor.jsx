@@ -34,7 +34,6 @@ export const LoginPromotor = () => {
         throw new Error("Error on post fetch, status: ", response.status)
       }
       const token = (await response.json()).access_token
-      setTokenApi(token)
       localStorage.setItem("token", token)
       dispatch({ type: "ADD_TOKEN_PROMOTOR", payload: token })
       setTimeout(() => {
@@ -60,10 +59,16 @@ export const LoginPromotor = () => {
     }
   }, [])
 
+  useEffect(() => {
+    setTimeout(() => {
+      setErrorMsg("")
+    }, 6000)
+  }, [errorMsg])
+
   return (
     <>
-      {store.userAuth === "true" ?
-        <Navigate to="/privatePage" />
+      {store.promotorAuth === "true" ?
+        <Navigate to="/promotor/private" />
         : null}
       <div className="container row mx-auto mt-5">
         <div className="d-flex justify-content-end mb-4">
@@ -72,7 +77,7 @@ export const LoginPromotor = () => {
           </Link>
         </div>
         <div className="col-8 pt-4 w-50">
-          <h2 className="d-flex justify-content-center mb-5">Login to MyApp</h2>
+          <h2 className="d-flex justify-content-center mb-5">Login as promotor</h2>
           {errorMsg &&
             errorMsg != "" ?
             <div className="alert alert-danger" role="alert">
@@ -93,12 +98,12 @@ export const LoginPromotor = () => {
             </div>
             <button type="submit" className="btn btn-primary d-grid gap-2 col-6 mx-auto" onClick={loginUser}>Login</button>
           </form>
-          {/*           <div className="d-flex p-3 gap-4 align-items-center">
+          <div className="d-flex p-3 gap-4 align-items-center">
             <p>Not registered?</p>
-            <Link to="/signup">
+            <Link to="/promotor/sign-up">
               <button className="btn btn-primary">Sign Up Here</button>
             </Link>
-          </div> */}
+          </div>
         </div>
         <div className="col-4 ms-5">
           <img src={rigoImageUrl} alt="" />
