@@ -50,8 +50,6 @@ export const PromotorSignUp = () => {
 
   async function signUpPromotor(e) {
     e.preventDefault();
-    console.log(email);
-    console.log(pw);
     try {
       const response = await fetch(`${urlApi}/api/promotor/sign-in`, {
         method: "POST",

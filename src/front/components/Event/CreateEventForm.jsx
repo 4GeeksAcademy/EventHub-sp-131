@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Cloudinary } from "@cloudinary/url-gen";
+import { AdvancedImage } from "@cloudinary/react";
+import { Resize } from "@cloudinary/url-gen/actions";
+import CloudinaryUploadWidget from "../CloudinaryUploadWidget";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -11,9 +15,23 @@ export const CreateEventForm = (props) => {
     const [description, setDescription] = useState("");
     const [date_event, setDateEvent] = useState("");
     const [capacity, setCapacity] = useState("");
-    const [media, setMedia] = useState("");
-    console.log(props);
-    
+    const [publicId, setPublicId] = useState('');
+
+    const cloudName = 'dxv6ytl25';
+    const uploadPreset = 'ml_default';
+
+    const cld = new Cloudinary({
+        cloud: {
+            cloudName,
+            uploadPreset
+        }
+    })
+
+    const uwConfig = {
+        cloudName,
+        uploadPreset
+    }
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,7 +48,7 @@ export const CreateEventForm = (props) => {
                 description,
                 date_event,
                 capacity: Number(capacity),
-                media
+                publicId
             })
         });
 
@@ -106,27 +124,14 @@ export const CreateEventForm = (props) => {
                         </div>
 
                         <div className="mb-3">
-                            <label className="form-label">Imagen (URL)</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={media}
-                                onChange={(e) => setMedia(e.target.value)}
-                            />
+                            <label className="form-label me-3">Imagen</label>
+                            <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} />
                         </div>
 
                         {/* Preview */}
-                        {media && (
-                            <div className="mb-3 text-center">
-                                <img
-                                    src={media}
-                                    alt="preview"
-                                    style={{
-                                        maxHeight: "200px",
-                                        objectFit: "cover",
-                                        borderRadius: "10px"
-                                    }}
-                                />
+                        {publicId && (
+                            <div className="p-4 mb-3 text-center">
+                                <AdvancedImage cldImg={cld.image(publicId).resize(Resize.scale().width(450).height(250))} />
                             </div>
                         )}
 

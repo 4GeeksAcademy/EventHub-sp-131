@@ -8,7 +8,6 @@ export const EventDetail = () => {
     const { ownerId } = useParams();
     const [event, setEvent] = useState(null);
     const [eventCat, setEventCat] = useState(null)
-    console.log(eventCat);
     
     const [categories, setCategories] = useState(null)
     const [eventAsistants, setEventAssistants] = useState(null)
