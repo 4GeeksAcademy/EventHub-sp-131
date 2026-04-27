@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const PrivateUser = () => {
@@ -31,6 +31,8 @@ export const PrivateUser = () => {
 					navigate("/user/login");
 					return;
 				}
+
+				localStorage.setItem("userAuth", JSON.stringify(data.user));
 
 				dispatch({
 					type: "ADD_TOKEN_USER",

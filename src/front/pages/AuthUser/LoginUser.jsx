@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const LoginUser = () => {

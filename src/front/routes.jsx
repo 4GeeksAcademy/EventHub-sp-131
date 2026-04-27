@@ -65,7 +65,7 @@ import { GroupEventList } from "./pages/Group-event/GroupEventList";
 import { CreateGroupEvent } from "./pages/Group-event/CreateGroupEvent";
 import { EditGroupEvent } from "./pages/Group-event/EditGroupEvent";
 import { EventCategory } from "./pages/EventCategory/EventCategory";
-import { EventCategoryDetail } from "./pages/EventCategory/EventCategoryDetails";
+import { EventCategoryDetail } from "./pages/EventCategory/EventCategoryDetails"
 import { DeleteEventCategory } from "./pages/EventCategory/DeleteEventCategory";
 import { CreateEventCategory } from "./pages/EventCategory/CreateEventCategory";
 import EventAssistUser from "./pages/EventAssist/EventAssistUser";
