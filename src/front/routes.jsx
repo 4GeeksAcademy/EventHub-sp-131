@@ -88,7 +88,7 @@ import { UserEvents } from "./pages/AuthUser/UserEvents";
 import { UserProfiles } from "./pages/AuthUser/UserProfiles";
 import { UserGroups } from "./pages/AuthUser/UserGroups";
 import { UserGroupDetail } from "./pages/AuthUser/UserGroupDetail";
-import { EventDetail} from "./pages/Event/EventDetails";
+import { EventDetails} from "./pages/Event/EventDetails";
 export const router = createBrowserRouter(
   createRoutesFromElements(
     // CreateRoutesFromElements function allows you to build route elements declaratively.
@@ -177,7 +177,7 @@ export const router = createBrowserRouter(
       <Route path="/admin/private" element={<PrivateAdmin />} />
       <Route path="/user/saved-events" element={<MySavedEvents />} />
       <Route path="/user/assisting-events" element={<MyAssistingEvents />} />
-      <Route path="/events/:id" element={<EventDetail />} />
+      <Route path="/events/:id" element={<EventDetails />} />
       <Route path="/user/register" element={<RegisterUser />} />
       <Route path="/user/events" element={<UserEvents />} />
       <Route path="/user/profiles" element={<UserProfiles />} />
