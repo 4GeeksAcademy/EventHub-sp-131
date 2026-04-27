@@ -4,7 +4,7 @@ import { BackButton } from "../../components/BackButton";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-export const EventDetail = () => {
+export const EventDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
