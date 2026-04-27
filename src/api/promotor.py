@@ -88,7 +88,7 @@ def get_events(promotor_id):
 
 
 @promotor.route("/<int:promotor_id>/events/<int:event_id>", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def get_event_by_id(promotor_id, event_id):
     event = db.session.get(Event, event_id)
     promotor = db.session.get(Promotor, promotor_id)
@@ -271,7 +271,7 @@ def delete_event(promotor_id, event_id):
 
 
 @promotor.route('/events/<int:event_id>/event_category', methods=['GET'])
-# @jwt_required()
+@jwt_required()
 def get_event_category(event_id):
 
     event = db.session.get(Event, event_id)
@@ -289,7 +289,7 @@ def get_event_category(event_id):
 
 
 @promotor.route('/events/<int:event_id>/event_category', methods=['POST'])
-# @jwt_required()
+@jwt_required()
 def create_event_category(promotor_id, event_id):
 
     body = request.json
@@ -318,6 +318,7 @@ def create_event_category(promotor_id, event_id):
     return jsonify(response_body), 200
 
 @promotor.route('/events/<int:event_id>/event_category/<int:position>', methods=['DELETE'])
+@jwt_required()
 def delete_event_category_by_id(event_id ,position):
 
     event_category = db.session.get(EventCategory, position)
@@ -338,7 +339,7 @@ def delete_event_category_by_id(event_id ,position):
 # ver asistentes del evento creado por X promotor
 
 @promotor.route("/events/<int:event_id>/event-assists", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def get_event_assists(event_id):
 
     event = db.session.get(Event, event_id)
@@ -354,7 +355,7 @@ def get_event_assists(event_id):
 # comments on the event
 
 @promotor.route('/events/<int:event_id>/comments', methods=['GET'])
-# @jwt_required()
+@jwt_required()
 def get_comments(event_id):
 
     event = db.session.get(Event, event_id)
@@ -371,7 +372,7 @@ def get_comments(event_id):
 
 
 @promotor.route('/events/<int:event_id>/comments/<int:id>', methods=['GET'])
-# @jwt_required()
+@jwt_required()
 def get_comment(event_id, id):
     comment = db.session.get(Comment, id)
 
@@ -428,7 +429,7 @@ def update_comment(id, event_id):
 
 
 @promotor.route('/events/<int:event_id>/comments/<int:id>', methods=['DELETE'])
-# @jwt_required()
+@jwt_required()
 def delete_comment(id, event_id):
     comment = db.session.get(Comment, id)
 
