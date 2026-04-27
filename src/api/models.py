@@ -132,7 +132,7 @@ class Event(db.Model):
     description: Mapped[str] = mapped_column(db.Text)
     date_event: Mapped[datetime] = mapped_column(nullable=False)
     capacity: Mapped[int] = mapped_column()
-    media: Mapped[Optional[str]] = mapped_column(db.String(255))
+    media: Mapped[Optional[str]] = mapped_column(db.String(500))
     create_date: Mapped[datetime] = mapped_column(
         default=lambda: datetime.now(timezone.utc))
 
