@@ -3,7 +3,7 @@ from sqlalchemy import select
 from datetime import datetime, timezone
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.routes import api
-from api.models import (db, User, Event, Comment, SavedEvent, EventAssistUser, Group, Discussion, Friend)
+from api.models import (db, User, Event, Comment, SavedEvent, EventAssistUser, Group, Discussion, Friend, Promotor, Chat, Message)
 
 user = Blueprint('user', __name__,)
 
@@ -268,3 +268,88 @@ def get_my_friends():
     return jsonify({
         "friends": [friend.serialize() for friend in friends]
     }), 200
+
+# chats
+
+@api.route("/chats", methods=["GET"])
+def get_chats():
+    chats = db.session.execute(
+        select(Chat)
+    ).scalars().all()
+
+    return jsonify([chat.serialize() for chat in chats]), 200
+
+@api.route("/chats", methods=["POST"])
+def create_chat():
+    data = request.get_json()
+
+    user_id = data.get("user_id")
+    promotor_id = data.get("promotor_id")
+
+    if not user_id or not promotor_id:
+        return jsonify({"message": "user_id y promotor_id son requeridos"}), 400
+
+    user = db.session.get(User, user_id)
+    promotor = db.session.get(Promotor, promotor_id)
+
+    if not user:
+        return jsonify({"message": "User no encontrado"}), 404
+
+    if not promotor:
+        return jsonify({"message": "Promotor no encontrado"}), 404
+
+    chat = Chat(
+        user_id=user_id,
+        promotor_id=promotor_id
+    )
+
+    db.session.add(chat)
+    db.session.commit()
+
+    return jsonify(chat.serialize()), 201
+    
+# message
+
+@api.route("/chats/<int:chat_id>/messages", methods=["GET"])
+def get_chat_messages(chat_id):
+    chat = db.session.get(Chat, chat_id)
+
+    if not chat:
+        return jsonify({"message": "Chat no encontrado"}), 404
+
+    messages = db.session.execute(
+        select(Message).where(Message.chat_id == chat_id).order_by(Message.created_at.asc())
+    ).scalars().all()
+
+    return jsonify([message.serialize() for message in messages]), 200
+
+@api.route("/chats/<int:chat_id>/messages", methods=["POST"])
+def create_chat_message(chat_id):
+    data = request.get_json()
+
+    chat = db.session.get(Chat, chat_id)
+
+    if not chat:
+        return jsonify({"message": "Chat no encontrado"}), 404
+
+    sender_type = data.get("sender_type")
+    sender_id = data.get("sender_id")
+    text = data.get("text")
+
+    if not sender_type or not sender_id or not text:
+        return jsonify({"message": "sender_type, sender_id y text son requeridos"}), 400
+
+    if sender_type not in ["user", "promotor"]:
+        return jsonify({"message": "sender_type debe ser user o promotor"}), 400
+
+    message = Message(
+        chat_id=chat_id,
+        sender_type=sender_type,
+        sender_id=sender_id,
+        text=text
+    )
+
+    db.session.add(message)
+    db.session.commit()
+
+    return jsonify(message.serialize()), 201
