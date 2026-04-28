@@ -56,7 +56,8 @@
 	"dependencies": {
 		"@googlemaps/markerclusterer": "^2.6.2",
 		"@vis.gl/react-google-maps": "^1.8.3",
-		"cloudinary": "^2.10.0",
+		"@cloudinary/react": "^1.14.4",
+		"@cloudinary/url-gen": "^1.22.0",
 		"prop-types": "^15.8.1",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",

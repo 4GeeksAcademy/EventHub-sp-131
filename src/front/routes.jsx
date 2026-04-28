@@ -75,12 +75,10 @@ import { LoginUser } from "./pages/AuthUser/LoginUser";
 import { PrivateUser } from "./pages/AuthUser/PrivateUser";
 import { LoginPromotor } from "./pages/AuthPromotor/LoginPromotor";
 import { PrivatePromotor } from "./pages/AuthPromotor/PrivatePromotor";
-import { PromotorSignUp } from "./pages/AuthPromotor/SignUpPromotor";
 import { EventPromotor } from "./pages/Event-promotor/EventPromotor";
 import { CreateEventPromotor } from "./pages/Event-promotor/CreateEventPromotor";
 import { EditEventPromotor } from "./pages/Event-promotor/EditEventPromotor";
 import { DeleteEventPromotor } from "./pages/Event-promotor/DeleteEventPromotor";
-import { EventDetail } from "./pages/EventDetail";
 import { LoginAdmin } from "./pages/AuthAdmin/LoginAdmin";
 import { PrivateAdmin } from "./pages/AuthAdmin/PrivateAdmin";
 import { MySavedEvents } from "./pages/SavedEvent/MySavedEvents";
@@ -90,7 +88,7 @@ import { UserEvents } from "./pages/AuthUser/UserEvents";
 import { UserProfiles } from "./pages/AuthUser/UserProfiles";
 import { UserGroups } from "./pages/AuthUser/UserGroups";
 import { UserGroupDetail } from "./pages/AuthUser/UserGroupDetail";
-
+import { EventDetails} from "./pages/Event/EventDetails";
 export const router = createBrowserRouter(
   createRoutesFromElements(
     // CreateRoutesFromElements function allows you to build route elements declaratively.
@@ -171,16 +169,15 @@ export const router = createBrowserRouter(
       <Route path="/delete-event-assist/:id" element={<DeleteEventAssist />} />
       <Route path="/promotor/login" element={<LoginPromotor />} />
       <Route path="/promotor/private" element={<PrivatePromotor />} />
-      <Route path="/promotor/sign-up" element={<PromotorSignUp/>} />
       <Route path="/event-promotor" element={<EventPromotor />} />
       <Route path="/create-event-promotor" element={<CreateEventPromotor />} />
       <Route path="/edit-event-promotor/:id" element={<EditEventPromotor />} />
       <Route path="/delete-event-promotor/:id" element={<DeleteEventPromotor />} />
-      <Route path="/:type/private/:ownerId/event/:id" element={ <EventDetail/> } />
       <Route path="/admin/login" element={<LoginAdmin />} />
       <Route path="/admin/private" element={<PrivateAdmin />} />
       <Route path="/user/saved-events" element={<MySavedEvents />} />
       <Route path="/user/assisting-events" element={<MyAssistingEvents />} />
+      <Route path="/events/:id" element={<EventDetails />} />
       <Route path="/user/register" element={<RegisterUser />} />
       <Route path="/user/events" element={<UserEvents />} />
       <Route path="/user/profiles" element={<UserProfiles />} />
