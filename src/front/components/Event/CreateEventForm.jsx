@@ -1,42 +1,80 @@
-import { useState } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage } from "@cloudinary/react";
 import { Resize } from "@cloudinary/url-gen/actions";
 import CloudinaryUploadWidget from "../CloudinaryUploadWidget";
+import { MapContent } from "../MapContent";
+import { APIProvider } from '@vis.gl/react-google-maps';
+import { setLocationType } from "react-geocode";
+
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const geoApiKey = import.meta.env.VITE_GEOCODING_API_KEY;
 
 export const CreateEventForm = (props) => {
     const navigate = useNavigate();
 
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
+    console.log("esto es location ",location);
+    
     const [description, setDescription] = useState("");
     const [date_event, setDateEvent] = useState("");
     const [capacity, setCapacity] = useState("");
     const [publicId, setPublicId] = useState('');
+    const [college, setCollege] = useState(undefined);
+    console.log(college);
+
+    const [markerPosition, setMarkerPosition] = useState(null);
+    console.log(markerPosition);
 
     const cloudName = 'dxv6ytl25';
     const uploadPreset = 'ml_default';
 
-    const cld = new Cloudinary({
+    useEffect(() => {
+        if (!markerPosition) {
+            setLocation(college?.Di?.formattedAddress)
+        }
+        else {
+            async function geoloc() {
+                const resp = await fetch(`https://geocode.googleapis.com/v4/geocode/location/${markerPosition.lat},${markerPosition.lng}?key=${geoApiKey}`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                if (resp.ok) {
+                    const data = await resp.json()
+                    console.log(data);
+                    setLocation(data.results[0].formattedAddress)
+                } else {
+                    console.error("Error creando evento");
+                }
+            }
+            geoloc()
+        }
+    }, [college, markerPosition])
+
+
+    const cld = useMemo(() => new Cloudinary({
         cloud: {
             cloudName,
             uploadPreset
         }
-    })
+    }), []);
 
-    const uwConfig = {
+    const uwConfig = useMemo(() => ({
         cloudName,
         uploadPreset
-    }
+    }), []);
+
 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const resp = await fetch(`${backendUrl}/api/${props.type}/${props.id}/event`, {
+        const resp = await fetch(`${backendUrl}/api/${props.type}/${props.id}/events`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -53,11 +91,25 @@ export const CreateEventForm = (props) => {
         });
 
         if (resp.ok) {
-            navigate("/events");
         } else {
             console.error("Error creando evento");
         }
     };
+
+    /*     async function geoloc(lat, long) {
+            const resp = await fetch(`https://geocode.googleapis.com/v4/geocode/location/${lat},${long}?key=${geoApiKey}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+    
+            if (resp.ok) {
+                const data = resp.json()
+                console.log(data);
+            } else {
+                console.error("Error creando evento");
+            }
+        } */
 
     return (
         <div className="container my-4">
@@ -81,13 +133,15 @@ export const CreateEventForm = (props) => {
 
                         <div className="mb-3">
                             <label className="form-label">Ubicación</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={location}
-                                onChange={(e) => setLocation(e.target.value)}
-                                required
-                            />
+                            <APIProvider apiKey={geoApiKey} version='beta' libraries={['marker']}>
+                                <MapContent
+                                    college={college}
+                                    setCollege={setCollege}
+                                    markerPosition={markerPosition}
+                                    setMarkerPosition={setMarkerPosition}
+                                />
+                            </APIProvider>
+                            {/* <button type="submit" className="btn btn-success" onClick={() => geoloc(latitud, longitud)}>Search</button> */}
                         </div>
 
                         <div className="mb-3">
@@ -143,7 +197,7 @@ export const CreateEventForm = (props) => {
 
                     </form>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
