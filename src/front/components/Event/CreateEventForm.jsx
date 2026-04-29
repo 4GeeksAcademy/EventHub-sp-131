@@ -4,9 +4,8 @@ import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage } from "@cloudinary/react";
 import { Resize } from "@cloudinary/url-gen/actions";
 import CloudinaryUploadWidget from "../CloudinaryUploadWidget";
-import { MapContent } from "../MapContent";
-import { APIProvider } from '@vis.gl/react-google-maps';
-import { setLocationType } from "react-geocode";
+import { AdvancedMarker, APIProvider, Map, } from '@vis.gl/react-google-maps';
+
 
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -17,44 +16,55 @@ export const CreateEventForm = (props) => {
 
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
-    console.log("esto es location ",location);
-    
     const [description, setDescription] = useState("");
     const [date_event, setDateEvent] = useState("");
     const [capacity, setCapacity] = useState("");
     const [publicId, setPublicId] = useState('');
-    const [college, setCollege] = useState(undefined);
-    console.log(college);
-
-    const [markerPosition, setMarkerPosition] = useState(null);
-    console.log(markerPosition);
+    const [mapCenter, setMapCenter] = useState({ lat: 39.9514572, lng: -4.3435391 });
+    const [defaultZoom, setDefaultZoom] = useState(3)
+    const [isProgrammaticMove, setIsProgrammaticMove] = useState(false);
+    const autocompleteRef = useRef(null);
 
     const cloudName = 'dxv6ytl25';
     const uploadPreset = 'ml_default';
 
     useEffect(() => {
-        if (!markerPosition) {
-            setLocation(college?.Di?.formattedAddress)
-        }
-        else {
-            async function geoloc() {
-                const resp = await fetch(`https://geocode.googleapis.com/v4/geocode/location/${markerPosition.lat},${markerPosition.lng}?key=${geoApiKey}`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
+        const autocomplete = autocompleteRef.current;
+        if (!autocomplete) return;
 
-                if (resp.ok) {
-                    const data = await resp.json()
-                    console.log(data);
-                    setLocation(data.results[0].formattedAddress)
-                } else {
-                    console.error("Error creando evento");
-                }
+        const handlePlaceSelect = async (event) => {
+            let place = null
+
+            if (event.placePrediction) {
+                place = event.placePrediction.toPlace();
+            } else if (event.place) {
+                place = event.place
+
             }
-            geoloc()
+            if (!place) return;
+
+            try {
+                await place.fetchFields({ fields: ["location", "formattedAddress", "displayName", "viewport"] });;
+                if (place.location) {
+                    const newCenter = {
+                        lat: place.location.lat(),
+                        lng: place.location.lng()
+                    };
+                    setIsProgrammaticMove(newCenter);
+                    setMapCenter(newCenter)                    
+                    geoloc(newCenter.lat, newCenter.lng)
+                    setDefaultZoom(13)
+
+                }
+            } catch (error) {
+                console.error("Error al obtener datos del place:", error);
+            }
         }
-    }, [college, markerPosition])
+        autocomplete.addEventListener("gmp-select", handlePlaceSelect);
+        return () => {
+            autocomplete.removeEventListener("gmp-select", handlePlaceSelect);
+        };
+    }, [])
 
 
     const cld = useMemo(() => new Cloudinary({
@@ -68,8 +78,6 @@ export const CreateEventForm = (props) => {
         cloudName,
         uploadPreset
     }), []);
-
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -96,20 +104,31 @@ export const CreateEventForm = (props) => {
         }
     };
 
-    /*     async function geoloc(lat, long) {
-            const resp = await fetch(`https://geocode.googleapis.com/v4/geocode/location/${lat},${long}?key=${geoApiKey}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-    
-            if (resp.ok) {
-                const data = resp.json()
-                console.log(data);
-            } else {
-                console.error("Error creando evento");
-            }
-        } */
+    async function geoloc(lat, long) {
+        const resp = await fetch(`https://geocode.googleapis.com/v4/geocode/location/${lat},${long}?key=${geoApiKey}`, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (resp.ok) {
+            const data = await resp.json()
+            setLocation(data.results[0].formattedAddress)
+        } else {
+            console.error("Error creando evento");
+        }
+    }
+
+    const dragMarkerOnMap = (e) => {
+        const newCenter = {
+            lat: e.latLng.lat(),
+            lng: e.latLng.lng()
+        };
+        setIsProgrammaticMove(newCenter);
+        setMapCenter(newCenter);
+        setDefaultZoom(13)
+        geoloc(newCenter.lat, newCenter.lng)
+    }
 
     return (
         <div className="container my-4">
@@ -133,15 +152,35 @@ export const CreateEventForm = (props) => {
 
                         <div className="mb-3">
                             <label className="form-label">Ubicación</label>
-                            <APIProvider apiKey={geoApiKey} version='beta' libraries={['marker']}>
-                                <MapContent
-                                    college={college}
-                                    setCollege={setCollege}
-                                    markerPosition={markerPosition}
-                                    setMarkerPosition={setMarkerPosition}
-                                />
+                            <p>{location}</p>
+                            <APIProvider apiKey={geoApiKey} version='beta' libraries={['marker', 'places']}>
+                                <div style={{ marginBottom: "10px" }}>
+                                    <gmp-place-autocomplete
+                                        ref={autocompleteRef}
+                                        placeholder="Busca una ubicación"
+                                        style={{
+                                            width: "100%",
+                                            height: "40px",
+                                            padding: "8px",
+                                            fontSize: "16px"
+                                        }}
+                                    />
+                                </div>
+                                <Map
+                                    style={{ width: "100%", height: "400px" }}
+                                    zoom={defaultZoom}
+                                    id="my-map"
+                                    mapId="8c732c82e4ec29d9"
+                                    center={mapCenter}
+                                    onCameraChanged={(ev) => {
+                                        console.log(defaultZoom);
+                                        setMapCenter(ev.detail.center)
+                                    }
+                                    }>
+                                    <AdvancedMarker position={isProgrammaticMove ? isProgrammaticMove : null} draggable={true} onDragEnd={(e) => dragMarkerOnMap(e)}></AdvancedMarker>
+                                </Map>
+
                             </APIProvider>
-                            {/* <button type="submit" className="btn btn-success" onClick={() => geoloc(latitud, longitud)}>Search</button> */}
                         </div>
 
                         <div className="mb-3">
