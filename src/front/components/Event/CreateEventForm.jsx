@@ -21,6 +21,7 @@ export const CreateEventForm = (props) => {
     const [capacity, setCapacity] = useState("");
     const [publicId, setPublicId] = useState('');
     const [mapCenter, setMapCenter] = useState({ lat: 39.9514572, lng: -4.3435391 });
+    const [defaultZoom, setDefaultZoom] = useState(3)
     const [isProgrammaticMove, setIsProgrammaticMove] = useState(false);
     const autocompleteRef = useRef(null);
 
@@ -52,6 +53,7 @@ export const CreateEventForm = (props) => {
                     setIsProgrammaticMove(newCenter);
                     setMapCenter(newCenter)                    
                     geoloc(newCenter.lat, newCenter.lng)
+                    setDefaultZoom(13)
 
                 }
             } catch (error) {
@@ -124,6 +126,7 @@ export const CreateEventForm = (props) => {
         };
         setIsProgrammaticMove(newCenter);
         setMapCenter(newCenter);
+        setDefaultZoom(13)
         geoloc(newCenter.lat, newCenter.lng)
     }
 
@@ -165,11 +168,12 @@ export const CreateEventForm = (props) => {
                                 </div>
                                 <Map
                                     style={{ width: "100%", height: "400px" }}
-                                    defaultZoom={3}
+                                    zoom={defaultZoom}
                                     id="my-map"
                                     mapId="8c732c82e4ec29d9"
                                     center={mapCenter}
                                     onCameraChanged={(ev) => {
+                                        console.log(defaultZoom);
                                         setMapCenter(ev.detail.center)
                                     }
                                     }>
