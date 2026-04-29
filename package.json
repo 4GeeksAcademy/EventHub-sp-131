@@ -56,6 +56,8 @@
 	"dependencies": {
 		"@cloudinary/react": "^1.14.4",
 		"@cloudinary/url-gen": "^1.22.0",
+		"@googlemaps/extended-component-library": "^0.6.14",
+		"@vis.gl/react-google-maps": "^1.8.3",
 		"prop-types": "^15.8.1",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
