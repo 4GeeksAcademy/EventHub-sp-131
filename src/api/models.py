@@ -397,6 +397,8 @@ class EventAssistUser(db.Model):
             "event_name": self.event.name if self.event else None
         }
 
+# chat
+
 class Chat(db.Model):
     __tablename__ = "chat"
 
@@ -414,11 +416,19 @@ class Chat(db.Model):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow,
+        default=lambda: datetime.now(timezone.utc),
         nullable=False
     )
 
-    messages = relationship("Message", back_populates="chat", cascade="all, delete-orphan")
+    messages = relationship(
+        "Message",
+        back_populates="chat",
+        cascade="all, delete-orphan"
+    )
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "promotor_id", name="unique_user_promotor_chat"),
+    )
 
     def serialize(self):
         return {
@@ -427,7 +437,8 @@ class Chat(db.Model):
             "promotor_id": self.promotor_id,
             "created_at": self.created_at.isoformat()
         }
-    
+ # message
+
 class Message(db.Model):
     __tablename__ = "message"
 
@@ -455,7 +466,7 @@ class Message(db.Model):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow,
+        default=lambda: datetime.now(timezone.utc),
         nullable=False
     )
 
@@ -470,3 +481,4 @@ class Message(db.Model):
             "text": self.text,
             "created_at": self.created_at.isoformat()
         }
+
