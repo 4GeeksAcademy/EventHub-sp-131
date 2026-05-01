@@ -89,6 +89,7 @@ import { UserProfiles } from "./pages/AuthUser/UserProfiles";
 import { UserGroups } from "./pages/AuthUser/UserGroups";
 import { UserGroupDetail } from "./pages/AuthUser/UserGroupDetail";
 import { EventDetails} from "./pages/Event/EventDetails";
+import { EventDetail } from "./pages/EventDetail";
 import { Chat } from "./pages/Chat.jsx";
 import { ChatPromotor } from "./pages/ChatPromotor.jsx";
 export const router = createBrowserRouter(
@@ -180,6 +181,7 @@ export const router = createBrowserRouter(
       <Route path="/user/saved-events" element={<MySavedEvents />} />
       <Route path="/user/assisting-events" element={<MyAssistingEvents />} />
       <Route path="/events/:id" element={<EventDetails />} />
+      <Route path="/:type/private/:ownerId/event/:id" element={<EventDetail />} />
       <Route path="/user/register" element={<RegisterUser />} />
       <Route path="/user/events" element={<UserEvents />} />
       <Route path="/user/profiles" element={<UserProfiles />} />
