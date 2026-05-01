@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean, Integer, ForeignKey, UniqueConstraint
+from sqlalchemy import String, Boolean, Integer, ForeignKey, UniqueConstraint, DateTime, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
 from datetime import datetime, timezone
@@ -396,3 +396,89 @@ class EventAssistUser(db.Model):
             "user_name": self.user.name if self.user else None,
             "event_name": self.event.name if self.event else None
         }
+
+# chat
+
+class Chat(db.Model):
+    __tablename__ = "chat"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("user.id"),
+        nullable=False
+    )
+
+    promotor_id: Mapped[int] = mapped_column(
+        ForeignKey("promotor.id"),
+        nullable=False
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False
+    )
+
+    messages = relationship(
+        "Message",
+        back_populates="chat",
+        cascade="all, delete-orphan"
+    )
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "promotor_id", name="unique_user_promotor_chat"),
+    )
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "promotor_id": self.promotor_id,
+            "created_at": self.created_at.isoformat()
+        }
+ # message
+
+class Message(db.Model):
+    __tablename__ = "message"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    chat_id: Mapped[int] = mapped_column(
+        ForeignKey("chat.id"),
+        nullable=False
+    )
+
+    sender_type: Mapped[str] = mapped_column(
+        String(20),
+        nullable=False
+    )
+
+    sender_id: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False
+    )
+
+    text: Mapped[str] = mapped_column(
+        Text,
+        nullable=False
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False
+    )
+
+    chat = relationship("Chat", back_populates="messages")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "chat_id": self.chat_id,
+            "sender_type": self.sender_type,
+            "sender_id": self.sender_id,
+            "text": self.text,
+            "created_at": self.created_at.isoformat()
+        }
+

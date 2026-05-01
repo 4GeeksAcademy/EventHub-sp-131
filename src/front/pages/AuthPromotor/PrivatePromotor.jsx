@@ -20,7 +20,7 @@ export const PrivatePromotor = () => {
 
   async function authUser(token) {
     try {
-      const response = await fetch(`${urlApi}api/promotor/private`, {
+      const response = await fetch(`${urlApi}/api/promotor/private`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -29,7 +29,7 @@ export const PrivatePromotor = () => {
       })
 
       if (!response.ok) {
-        navigate('/promotor/login')
+        navigate('/promotor/login');
       }
       dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: response.ok })
       localStorage.setItem("promotorAuth", response.ok)
