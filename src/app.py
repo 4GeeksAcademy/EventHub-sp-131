@@ -19,7 +19,8 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-
+from flask_socketio import SocketIO
+from api.socket_events import register_socket_events
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
@@ -29,6 +30,8 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 
 # Allow CORS requests to this API
+socketio = SocketIO(app, cors_allowed_origins="*")
+register_socket_events(socketio)
 CORS(app, resources={r"/api/*": {"origins": "*"}},
     allow_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -97,4 +100,4 @@ def serve_any_other_file(path):
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
-    app.run(host='0.0.0.0', port=PORT, debug=True)
+    socketio.run(app, host='0.0.0.0', port=PORT, debug=True)
