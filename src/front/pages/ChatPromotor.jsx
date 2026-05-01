@@ -1,17 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { io } from "socket.io-client";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
-const socket = io(API_URL, {
-    transports: ["polling", "websocket"]
-});
-
-export const Chat = () => {
-    const location = useLocation();
-    const navigate = useNavigate();
-
+export const ChatPromotor = () => {
     const [chats, setChats] = useState([]);
     const [selectedChat, setSelectedChat] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -28,10 +19,10 @@ export const Chat = () => {
     }, [messages]);
 
     const checkToken = () => {
-        const tokenUser = localStorage.getItem("tokenUser");
+        const tokenPromotor = localStorage.getItem("tokenPromotor");
 
-        if (!tokenUser) {
-            navigate("/user/login");
+        if (!tokenPromotor) {
+            alert("Debes iniciar sesión como promotor");
             return false;
         }
 
@@ -41,11 +32,10 @@ export const Chat = () => {
     const getChats = () => {
         if (!checkToken()) return;
 
-        fetch(API_URL + "/api/chats", {
-            method: "GET",
+        fetch(API_URL + "/api/promotor/chats", {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + localStorage.getItem("tokenUser")
+                Authorization: "Bearer " + localStorage.getItem("tokenPromotor")
             }
         })
             .then((res) => res.json())
@@ -61,11 +51,10 @@ export const Chat = () => {
     const getMessages = (chatId) => {
         if (!checkToken()) return;
 
-        fetch(API_URL + `/api/chats/${chatId}/messages`, {
-            method: "GET",
+        fetch(API_URL + `/api/promotor/chats/${chatId}/messages`, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + localStorage.getItem("tokenUser")
+                Authorization: "Bearer " + localStorage.getItem("tokenPromotor")
             }
         })
             .then((res) => res.json())
@@ -79,19 +68,7 @@ export const Chat = () => {
     };
 
     const handleSelectChat = (chat) => {
-        if (selectedChat) {
-            socket.emit("leave_chat", {
-                chat_id: selectedChat.id
-            });
-        }
-    
-
         setSelectedChat(chat);
-
-        socket.emit("join_chat", {
-            chat_id: chat.id
-        });
-
         getMessages(chat.id);
     };
 
@@ -108,11 +85,11 @@ export const Chat = () => {
             return;
         }
 
-        fetch(API_URL + `/api/chats/${selectedChat.id}/messages`, {
+        fetch(API_URL + `/api/promotor/chats/${selectedChat.id}/messages`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + localStorage.getItem("tokenUser")
+                Authorization: "Bearer " + localStorage.getItem("tokenPromotor")
             },
             body: JSON.stringify({
                 text: text
@@ -145,54 +122,37 @@ export const Chat = () => {
     };
 
     useEffect(() => {
-        socket.on("new_message", (newMessage) => {
-            setMessages((prevMessages) => {
-                const exists = prevMessages.some((msg) => msg.id === newMessage.id);
-
-                if (exists) return prevMessages;
-
-                return [...prevMessages, newMessage];
-            });
-        });
-
-        return () => {
-            socket.off("new_message");
-        };
-    }, []);
-
-    useEffect(() => {
-        if (!checkToken()) return;
-
         getChats();
-
-        if (location.state?.chatId) {
-            const chatId = location.state.chatId;
-
-            socket.emit("join_chat", {
-                chat_id: chatId
-            });
-
-            setSelectedChat({
-             id: chatId,
-             promotor_id: location.state?.promotorId || null,
-             promotor_name: location.state?.promotorName || null
-            });
-
-            getMessages(chatId);
-        }
     }, []);
+
+    // Timer: actualiza mensajes cada 3 segundos
+    useEffect(() => {
+        if (!selectedChat) return;
+
+        const interval = setInterval(() => {
+            getMessages(selectedChat.id);
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, [selectedChat]);
 
     return (
         <div className="container-fluid bg-dark text-white min-vh-100 py-4">
             <div className="row g-4">
 
                 <div className="col-12 col-md-4">
-                    <h4 className="mb-3">Member</h4>
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                        <h4 className="mb-0">Chats de usuarios</h4>
+
+                        <button className="btn btn-info text-white btn-sm" onClick={getChats}>
+                            Cargar
+                        </button>
+                    </div>
 
                     <div className="card bg-secondary border-0 p-3">
                         {chats.length === 0 && (
                             <div className="alert alert-light mb-0">
-                                No hay chats todavía.
+                                No tienes chats todavía.
                             </div>
                         )}
 
@@ -206,29 +166,29 @@ export const Chat = () => {
                             >
                                 <div className="d-flex align-items-center gap-3">
                                     <div
-                                        className="rounded-circle bg-info d-flex align-items-center justify-content-center fw-bold text-white"
+                                        className="rounded-circle bg-primary d-flex align-items-center justify-content-center fw-bold text-white"
                                         style={{
                                             width: "70px",
                                             height: "70px",
                                             minWidth: "70px"
                                         }}
                                     >
-                                        P
+                                        U
                                     </div>
 
                                     <div className="text-start flex-grow-1">
                                         <div className="d-flex justify-content-between">
-                                            <h6 className="mb-1 text-primary fw-bold">
-                                                {chat.promotor_name || `Promotor #${chat.promotor_id}`}
+                                            <h6 className="mb-1 text-info fw-bold">
+                                                {chat.user_name || `Usuario #${chat.user_id}`}
                                             </h6>
 
                                             <small className="text-light">
-                                                Just now
+                                                Chat #{chat.id}
                                             </small>
                                         </div>
 
-                                        <p className="mb-0 small text-truncate">
-                                              {chat.last_message ? chat.last_message.text : `Chat #${chat.id}`}
+                                        <p className="mb-0 small">
+                                            Promotor #{chat.promotor_id}
                                         </p>
                                     </div>
                                 </div>
@@ -263,21 +223,21 @@ export const Chat = () => {
                                     <div
                                         key={msg.id}
                                         className={`d-flex mb-4 ${
-                                            msg.sender_type === "user"
+                                            msg.sender_type === "promotor"
                                                 ? "justify-content-end"
                                                 : "justify-content-start"
                                         }`}
                                     >
-                                        {msg.sender_type !== "user" && (
+                                        {msg.sender_type !== "promotor" && (
                                             <div
-                                                className="rounded-circle bg-info d-flex align-items-center justify-content-center fw-bold text-white me-3"
+                                                className="rounded-circle bg-primary d-flex align-items-center justify-content-center fw-bold text-white me-3"
                                                 style={{
                                                     width: "65px",
                                                     height: "65px",
                                                     minWidth: "65px"
                                                 }}
                                             >
-                                                P
+                                                U
                                             </div>
                                         )}
 
@@ -290,9 +250,9 @@ export const Chat = () => {
                                         >
                                             <div className="card-header bg-secondary text-white border-bottom d-flex justify-content-between">
                                                 <strong>
-                                                    {msg.sender_type === "user"
-                                                        ? "Usuario"
-                                                        : "Promotor"}
+                                                    {msg.sender_type === "promotor"
+                                                        ? "Promotor"
+                                                        : "Usuario"}
                                                 </strong>
 
                                                 <small>
@@ -307,16 +267,16 @@ export const Chat = () => {
                                             </div>
                                         </div>
 
-                                        {msg.sender_type === "user" && (
+                                        {msg.sender_type === "promotor" && (
                                             <div
-                                                className="rounded-circle bg-primary d-flex align-items-center justify-content-center fw-bold text-white ms-3"
+                                                className="rounded-circle bg-info d-flex align-items-center justify-content-center fw-bold text-white ms-3"
                                                 style={{
                                                     width: "65px",
                                                     height: "65px",
                                                     minWidth: "65px"
                                                 }}
                                             >
-                                                U
+                                                P
                                             </div>
                                         )}
                                     </div>
@@ -328,7 +288,7 @@ export const Chat = () => {
                             <textarea
                                 className="form-control bg-dark text-white border-light"
                                 rows="4"
-                                placeholder="Message"
+                                placeholder="Responder mensaje..."
                                 value={text}
                                 onChange={(e) => setText(e.target.value)}
                             />

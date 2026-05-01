@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
 from flask_jwt_extended import JWTManager
 from api.models import db
-from api.routes import api
+from api.routes import user
 from api.promotor import promotor
 from api.user import user
 from api.admins import admins
@@ -33,9 +33,9 @@ app.url_map.strict_slashes = False
 socketio = SocketIO(app, cors_allowed_origins="*")
 register_socket_events(socketio)
 CORS(app, resources={r"/api/*": {"origins": "*"}},
-    allow_headers=["Content-Type", "Authorization"],
-    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    supports_credentials=True)
+     allow_headers=["Content-Type", "Authorization"],
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+     supports_credentials=True)
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
@@ -48,7 +48,7 @@ else:
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
-   
+
 with app.app_context():
     db.create_all()
 # add the admin
@@ -58,7 +58,7 @@ setup_admin(app)
 setup_commands(app)
 
 # Add all endpoints form the API with a "api" prefix
-app.register_blueprint(api, url_prefix='/api')
+app.register_blueprint(user, url_prefix='/api')
 app.register_blueprint(promotor, url_prefix='/api/promotor')
 app.register_blueprint(user, url_prefix='/api')
 app.register_blueprint(group, url_prefix='/api')

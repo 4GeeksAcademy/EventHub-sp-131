@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, Promotor, Event, EventPromotor, SavedEvent, EventCategory, EventAssistUser, GroupEvent, Category, Comment, User
+from api.models import db, Promotor, Event, EventPromotor, SavedEvent, EventCategory, EventAssistUser, GroupEvent, Category, Comment, User, Chat, Message
 from sqlalchemy import select
 from datetime import datetime, timezone
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
@@ -442,3 +442,86 @@ def delete_comment(id, event_id):
     db.session.commit()
 
     return jsonify({"msg": "Deleted"}), 200
+
+
+def get_current_promotor():
+    current_promotor_email = get_jwt_identity()
+
+    promotor = db.session.execute(
+        select(Promotor).where(Promotor.email == current_promotor_email)
+    ).scalar_one_or_none()
+
+    return promotor
+
+@promotor.route("/promotor/chats", methods=["GET"])
+@jwt_required()
+def get_promotor_chats():
+    promotor = get_current_promotor()
+
+    if promotor is None:
+        return jsonify({"message": "Promotor no encontrado"}), 404
+
+    chats = db.session.execute(
+        select(Chat).where(Chat.promotor_id == promotor.id)
+    ).scalars().all()
+
+    return jsonify([chat.serialize() for chat in chats]), 200
+
+@promotor.route("/promotor/chats/<int:chat_id>/messages", methods=["GET"])
+@jwt_required()
+def get_promotor_chat_messages(chat_id):
+    promotor = get_current_promotor()
+
+    if promotor is None:
+        return jsonify({"message": "Promotor no encontrado"}), 404
+
+    chat = db.session.get(Chat, chat_id)
+
+    if chat is None:
+        return jsonify({"message": "Chat no encontrado"}), 404
+
+    if chat.promotor_id != promotor.id:
+        return jsonify({"message": "No tienes permiso para este chat"}), 403
+
+    messages = db.session.execute(
+        select(Message)
+        .where(Message.chat_id == chat.id)
+        .order_by(Message.created_at.asc())
+    ).scalars().all()
+
+    return jsonify([message.serialize() for message in messages]), 200
+
+@promotor.route("/promotor/chats/<int:chat_id>/messages", methods=["POST"])
+@jwt_required()
+def create_promotor_chat_message(chat_id):
+    promotor = get_current_promotor()
+
+    if promotor is None:
+        return jsonify({"message": "Promotor no encontrado"}), 404
+
+    chat = db.session.get(Chat, chat_id)
+
+    if chat is None:
+        return jsonify({"message": "Chat no encontrado"}), 404
+
+    if chat.promotor_id != promotor.id:
+        return jsonify({"message": "No tienes permiso para este chat"}), 403
+
+    data = request.get_json()
+    text = data.get("text")
+
+    if not text:
+        return jsonify({"message": "text es requerido"}), 400
+
+    message = Message(
+        chat_id=chat.id,
+        sender_type="promotor",
+        sender_id=promotor.id,
+        text=text
+    )
+
+    db.session.add(message)
+    db.session.commit()
+
+    return jsonify(message.serialize()), 201
+
