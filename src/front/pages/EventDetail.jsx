@@ -1,19 +1,52 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 export const EventDetail = () => {
+    const { store, dispatch } = useGlobalReducer()
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const { id } = useParams();
     const { type } = useParams();
     const { ownerId } = useParams();
     const [event, setEvent] = useState(null);
     const [eventCat, setEventCat] = useState(null)
-    
+
     const [categories, setCategories] = useState(null)
     const [eventAsistants, setEventAssistants] = useState(null)
     const [comments, setComments] = useState(null)
 
     const [message, setMessage] = useState("");
+
+    useEffect(() => {
+        if (localStorage.getItem("promotorAuth") == true) {
+            setIsLogged(localStorage.getItem("promotorAuth"))
+        }
+        authUser(localStorage.getItem("token"));
+    }, [])
+
+    async function authUser(token) {
+        try {
+            const response = await fetch(`${urlApi}api/promotor/private`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+            })
+
+            if (!response.ok) {
+                navigate('/promotor/login')
+            }
+            dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: response.ok })
+            localStorage.setItem("promotorAuth", response.ok)
+            const data = await response.json()
+            setProfileInfo(data.promotor)
+        }
+
+        catch (error) {
+            console.log("Error on fetch: ", error.message)
+        }
+    }
 
     async function getEventById() {
         try {
@@ -34,7 +67,7 @@ export const EventDetail = () => {
 
     async function getEventCategoryById() {
         try {
-            const response = await fetch(`${backendUrl}/api/${type}/events/${id}/event_category`, {
+            const response = await fetch(`${backendUrl}/api/${type}/${ownerId}/events/${id}/event_category`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${localStorage.getItem("token")}`
@@ -52,7 +85,7 @@ export const EventDetail = () => {
     async function removeCategoryById(e) {
         console.log(e.target.value);
         try {
-            const response = await fetch(`${backendUrl}/api/${type}/events/${id}/event_category/${e.target.value}`, {
+            const response = await fetch(`${backendUrl}/api/${type}/${ownerId}/events/${id}/event_category/${e.target.value}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -131,6 +164,7 @@ export const EventDetail = () => {
             const response = await fetch(`${backendUrl}/api/${type}/events/${id}/comments`, {
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
                 },
             })
             const data = await response.json()

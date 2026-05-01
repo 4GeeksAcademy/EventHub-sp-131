@@ -1,9 +1,27 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useMemo, useEffect } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { Cloudinary } from "@cloudinary/url-gen";
+import { AdvancedImage } from "@cloudinary/react";
+import { Resize } from "@cloudinary/url-gen/actions";
+import CloudinaryUploadWidget from "../../components/CloudinaryUploadWidget";
+import { Map } from "../../components/Map";
+import { useArtistSearch } from "../../hooks/useArtistSearch";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const geoApiKey = import.meta.env.VITE_GEOCODING_API_KEY;
+
+const cloudName = 'dxv6ytl25';
+const uploadPreset = 'ml_default';
 
 export const EditEvent = () => {
+    const { store, dispatch } = useGlobalReducer()
+    const fromData = useLocation()?.state?.from?.split("/");
+    const props = {
+        type: fromData ? fromData[1] : undefined,
+        id: fromData ? fromData[2] : undefined
+    };
+
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -12,88 +30,344 @@ export const EditEvent = () => {
     const [description, setDescription] = useState("");
     const [date_event, setDateEvent] = useState("");
     const [capacity, setCapacity] = useState("");
+    const [publicId, setPublicId] = useState("");
     const [media, setMedia] = useState("");
+    const [mapCenter, setMapCenter] = useState({ lat: 39.9514572, lng: -4.3435391 });
+    const [markerPosition, setMarkerPosition] = useState(null);
+    const [defZoom, setDefZoom] = useState(3)
+    const [eventCat, setEventCat] = useState(null);
+    const [categories, setCategories] = useState(null);
+    const [imgFromApi, setImgFromApi] = useState("");
 
-    // 🔽 Cargar evento
-    const getEvent = async () => {
-        const resp = await fetch(`${backendUrl}/api/events/${id}`);
-        const data = await resp.json();
+    const {
+        artistQuery,
+        setArtistQuery,
+        artistSuggestions,
+        isDropdownOpen,
+        containerRef,
+        selectArtist,
+        selectedArtist,
+    } = useArtistSearch();
 
-        const e = data.results;
 
-        setName(e.name || "");
-        setLocation(e.location || "");
-        setDescription(e.description || "");
-        setCapacity(e.capacity || "");
-        setMedia(e.media || "");
+    const urlApi = props.type === undefined
+        ? "events"
+        : `${props.type}/${props.id}/events`;
 
-        // ⚠️ Formato para datetime-local
-        if (e.date_event) {
-            const formatted = e.date_event.slice(0, 16);
-            setDateEvent(formatted);
+    const cld = useMemo(() => new Cloudinary({ cloud: { cloudName, uploadPreset } }), []);
+    const uwConfig = useMemo(() => ({ cloudName, uploadPreset }), []);
+
+    useEffect(() => {
+        if (localStorage.getItem("promotorAuth") == true) {
+            setIsLogged(localStorage.getItem("promotorAuth"))
         }
+        authUser(localStorage.getItem("token"));
+    }, [])
+
+    async function authUser(token) {
+        try {
+            const response = await fetch(`${urlApi}api/promotor/private`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+            })
+
+            if (!response.ok) {
+                navigate('/promotor/login')
+            }
+            dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: response.ok })
+            localStorage.setItem("promotorAuth", response.ok)
+            const data = await response.json()
+            setProfileInfo(data.promotor)
+        }
+
+        catch (error) {
+            console.log("Error on fetch: ", error.message)
+        }
+    }
+
+    useEffect(() => {
+        if (!selectedArtist) {
+            setName("");
+            setLocation("");
+            setDateEvent("");
+            setImgFromApi("");
+            setDescription("")
+            setMapCenter({ lat: 39.9514572, lng: -4.3435391 });
+            setMarkerPosition(null);
+            setDefZoom(3);
+        }
+    }, [selectedArtist]);
+
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        setArtistQuery(value);
+        setName(value);
+    };
+
+    const handleSuggestionSelected = (item) => {
+        selectArtist(item);
+        setName(item?.name);
+        setLocation(`${item?._embedded.venues[0].name} ${item?._embedded.venues[0].address.line1} ${item?._embedded.venues[0].city.name} ${item?._embedded.venues[0].country.name}`)
+        setDateEvent(item?.dates.start.dateTime.slice(0, 16))
+        setImgFromApi(item?.images[0].url)
+        setDescription(item?.description)
+        setMapCenter({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) })
+        setMarkerPosition({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) })
+        setDefZoom(13)
     };
 
     useEffect(() => {
         getEvent();
+        getEventCategoryById();
     }, []);
 
-    // 🔽 Guardar cambios
+    useEffect(() => {
+        if (eventCat) getCategories();
+    }, [eventCat]);
+
+    async function getEvent() {
+        try {
+            const resp = await fetch(`${backendUrl}/api/${urlApi}/${id}`);
+            const data = await resp.json();
+            const e = props.type !== undefined ? data.event : data;
+            console.log(e);
+            
+
+            setName(e.name || "");
+            setLocation(e.location || "");
+            setDescription(e.description || "");
+            setCapacity(e.capacity || "");
+            setMedia(e.media || "");
+
+            if (e.date_event) setDateEvent(e.date_event.slice(0, 16));
+            if (e.location) getCurrentEventLoc(e.location);
+        } catch (err) {
+            console.error("Error cargando evento:", err);
+        }
+    }
+
+    async function geoloc(lat, lng) {
+        try {
+            const resp = await fetch(
+                `https://geocode.googleapis.com/v4/geocode/location/${lat},${lng}?key=${geoApiKey}`
+            );
+            if (resp.ok) {
+                const data = await resp.json();
+                setLocation(data.results[0].formattedAddress);
+            }
+        } catch (err) {
+            console.error("Error obteniendo dirección:", err);
+        }
+    }
+
+    async function getCurrentEventLoc(address) {
+        const encoded = encodeURIComponent(address).replace(/%20/g, '+');
+        try {
+            const resp = await fetch(
+                `https://geocode.googleapis.com/v4/geocode/address/${encoded}?key=${geoApiKey}`
+            );
+            if (!resp.ok) throw new Error("Error localizando el evento");
+            const data = await resp.json();
+            const newCenter = {
+                lat: data.results[0].location.latitude,
+                lng: data.results[0].location.longitude
+            };
+            setMapCenter(newCenter);
+            setMarkerPosition(newCenter);
+            setDefZoom(13);
+        } catch (err) {
+            console.error("Error al obtener ubicación del evento:", err);
+        }
+    }
+
+    async function getEventCategoryById() {
+        try {
+            const resp = await fetch(`${backendUrl}/api/${urlApi}/${id}/event_category`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+            const data = await resp.json();
+            setEventCat(data.eventCategories);
+        } catch (err) {
+            console.error("Error cargando categorías del evento:", err);
+        }
+    }
+
+    async function getCategories() {
+        try {
+            const resp = await fetch(`${backendUrl}/api/categories`, {
+                headers: { "Content-Type": "application/json" }
+            });
+            const data = await resp.json();
+            const filtered = data.filter(cat => !eventCat.some(item => item.name === cat.name));
+            setCategories(filtered);
+        } catch (err) {
+            console.error("Error cargando categorías:", err);
+        }
+    }
+
+    async function addNewCat(e) {
+        const addedCategory = categories.find(cat => cat.name === e.target.value);
+        if (!addedCategory) return;
+        try {
+            await fetch(`${backendUrl}/api/${urlApi}/${id}/event_category`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                },
+                body: JSON.stringify({ event_id: parseInt(id), category_id: addedCategory.id })
+            });
+        } catch (err) {
+            console.error("Error añadiendo categoría:", err);
+        }
+        getEventCategoryById();
+        getCategories();
+    }
+
+    async function removeCategoryById(e) {
+        try {
+            await fetch(`${backendUrl}/api/${urlApi}/${id}/event_category/${e.target.value}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+        } catch (err) {
+            console.error("Error eliminando categoría:", err);
+        }
+        getEventCategoryById();
+        getCategories();
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const resp = await fetch(`${backendUrl}/api/events/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                name,
-                location,
-                description,
-                date_event,
-                capacity: Number(capacity),
-                media
-            })
-        });
-
-        if (resp.ok) {
-            navigate("/events");
-        } else {
-            console.error("Error actualizando evento");
+        try {
+            const resp = await fetch(`${backendUrl}/api/${urlApi}/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                },
+                body: JSON.stringify({ name, location, description, date_event, capacity: Number(capacity), media })
+            });
+            if (!resp.ok) throw new Error("Error actualizando evento");
+        } catch (err) {
+            console.error(err);
         }
+
+        props.type === undefined
+            ? navigate("/events")
+            : navigate(`/${props.type}/private`);
     };
 
     return (
-        <div className="container mt-5">
+        <div className="container my-4">
             <div className="row justify-content-center">
                 <div className="col-md-6">
-
                     <h2 className="mb-4 text-center">Editar Evento</h2>
 
                     <form onSubmit={handleSubmit}>
-
-                        <div className="mb-3">
+                        {(publicId || imgFromApi) &&
+                            (
+                                <div className="p-4 mb-3 text-center">
+                                    {publicId ?
+                                        <AdvancedImage
+                                            cldImg={cld.image(publicId).resize(Resize.scale().width(450).height(250))}
+                                        />
+                                        :
+                                        <img src={imgFromApi} style={{ width: "450px", height: "250px" }} />
+                                    }
+                                </div>
+                            )}
+                        {/* Imagen */}
+                        <div className="mb-3 d-flex justify-content-center">
+                            <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} />
+                        </div>
+                        {/* Nombre */}
+                        <div className="mb-3" ref={containerRef}>
                             <label className="form-label">Nombre</label>
                             <input
                                 type="text"
                                 className="form-control"
                                 value={name}
-                                onChange={(e) => setName(e.target.value)}
+                                onChange={handleInputChange}
                                 required
                             />
+                            {isDropdownOpen && artistSuggestions.length > 0 && (
+                                <div className="border rounded-bottom-1">
+                                    <ul className="list-group">
+                                        {artistSuggestions.map((suggestion) => (
+                                            <li
+                                                key={suggestion.id || suggestion.name}
+                                                onClick={() => handleSuggestionSelected(suggestion)}
+                                                className="list-group-item list-group-item-action p-2"
+                                                style={{ cursor: "pointer" }}
+                                            >
+                                                {suggestion.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
                         </div>
 
+                        {/* Categorías */}
+                        <div>
+                            <select className="form-select" onChange={addNewCat} defaultValue="">
+                                <option value="" disabled>Añadir categoría</option>
+                                {categories?.map(cat => (
+                                    <option key={cat.id}>{cat.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="d-flex py-3 gap-2 row row-cols-auto">
+                            {eventCat?.map(categoryRel => (
+                                <div key={categoryRel.id}>
+                                    <p className="p-1" style={{
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                        backgroundColor: "#ffc107",
+                                        border: "1px solid",
+                                        borderRadius: "2rem"
+                                    }}>
+                                        {categoryRel.category_name}
+                                        <button
+                                            type="button"
+                                            className="btn rounded-end-circle p-1 ps-2"
+                                            onClick={removeCategoryById}
+                                            value={categoryRel.id}
+                                        >
+                                            X
+                                        </button>
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Mapa */}
                         <div className="mb-3">
                             <label className="form-label">Ubicación</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={location}
-                                onChange={(e) => setLocation(e.target.value)}
+                            <Map
+                                location={location}
+                                mapCenter={mapCenter}
+                                setMapCenter={setMapCenter}
+                                markerPosition={markerPosition}
+                                setMarkerPosition={setMarkerPosition}
+                                onLocationChange={geoloc}
+                                defZoom={defZoom}
+                                setDefZoom={setDefZoom}
                             />
                         </div>
 
+                        {/* Descripción */}
                         <div className="mb-3">
                             <label className="form-label">Descripción</label>
                             <textarea
@@ -101,9 +375,11 @@ export const EditEvent = () => {
                                 rows="3"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
+                                required
                             />
                         </div>
 
+                        {/* Fecha */}
                         <div className="mb-3">
                             <label className="form-label">Fecha</label>
                             <input
@@ -115,6 +391,7 @@ export const EditEvent = () => {
                             />
                         </div>
 
+                        {/* Capacidad */}
                         <div className="mb-3">
                             <label className="form-label">Capacidad</label>
                             <input
@@ -122,45 +399,13 @@ export const EditEvent = () => {
                                 className="form-control"
                                 value={capacity}
                                 onChange={(e) => setCapacity(e.target.value)}
+                                required
                             />
                         </div>
-
-                        <div className="mb-3">
-                            <label className="form-label">Imagen (URL)</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={media}
-                                onChange={(e) => setMedia(e.target.value)}
-                            />
-                        </div>
-
-                        {/* Preview */}
-                        {media && (
-                            <div className="mb-3 text-center">
-                                <img
-                                    src={media}
-                                    alt="preview"
-                                    style={{
-                                        maxHeight: "200px",
-                                        objectFit: "cover",
-                                        borderRadius: "10px"
-                                    }}
-                                />
-                            </div>
-                        )}
 
                         <div className="d-flex justify-content-between">
-                            <button type="submit" className="btn btn-primary">
-                                Guardar
-                            </button>
-
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                onClick={() => navigate("/events")}
-                            >
-                                Cancelar
+                            <button type="submit" className="btn btn-success">
+                                Editar
                             </button>
                         </div>
 
