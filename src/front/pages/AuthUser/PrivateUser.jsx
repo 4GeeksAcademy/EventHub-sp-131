@@ -7,53 +7,52 @@ export const PrivateUser = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const token = localStorage.getItem("tokenUser");
+	const token = localStorage.getItem("tokenUser");
 
-		if (!token) {
-			navigate("/user/login");
-			return;
+	if (!token) {
+		navigate("/user/login");
+		return;
+	}
+
+	fetch(import.meta.env.VITE_BACKEND_URL + "/api/private", {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: "Bearer " + token
 		}
+	})
+		.then((resp) => resp.json().then((data) => ({ ok: resp.ok, data })))
+		.then(({ ok, data }) => {
+			if (!ok) {
+				localStorage.removeItem("tokenUser");
+				localStorage.removeItem("userAuth");
 
-		fetch(import.meta.env.VITE_BACKEND_URL + "/api/user/private", {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: "Bearer " + token
-			}
-		})
-			.then((resp) => resp.json().then((data) => ({ ok: resp.ok, data })))
-			.then(({ ok, data }) => {
-				if (!ok) {
-					localStorage.removeItem("tokenUser");
-					localStorage.removeItem("userAuth");
-
-					dispatch({ type: "USER_LOGOUT" });
-					navigate("/user/login");
-					return;
-				}
-
-				localStorage.setItem("userAuth", JSON.stringify(data.user));
-
-				dispatch({
-					type: "ADD_TOKEN_USER",
-					payload: token
-				});
-
-				dispatch({
-					type: "ADD_LOGIN_STATUS_USER",
-					payload: true
-				});
-
-				dispatch({
-					type: "GET_PRIVATE_USER",
-					payload: data.user
-				});
-			})
-			.catch(() => {
+				dispatch({ type: "USER_LOGOUT" });
 				navigate("/user/login");
-			});
-	}, [dispatch, navigate]);
+				return;
+			}
 
+			localStorage.setItem("userAuth", "true");
+
+			dispatch({
+				type: "ADD_TOKEN_USER",
+				payload: token
+			});
+
+			dispatch({
+				type: "ADD_LOGIN_STATUS_USER",
+				payload: true
+			});
+
+			dispatch({
+				type: "GET_PRIVATE_USER",
+				payload: data.user || data
+			});
+		})
+		.catch((error) => {
+			console.log("ERROR PRIVATE USER:", error);
+		});
+}, []);
 	return (
 		<div className="container mt-5">
 			<div className="mb-4">

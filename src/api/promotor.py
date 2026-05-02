@@ -453,7 +453,7 @@ def get_current_promotor():
 
     return promotor
 
-@promotor.route("/promotor/chats", methods=["GET"])
+@promotor.route("/chats", methods=["GET"])
 @jwt_required()
 def get_promotor_chats():
     promotor = get_current_promotor()
@@ -467,7 +467,7 @@ def get_promotor_chats():
 
     return jsonify([chat.serialize() for chat in chats]), 200
 
-@promotor.route("/promotor/chats/<int:chat_id>/messages", methods=["GET"])
+@promotor.route("/chats/<int:chat_id>/messages", methods=["GET"])
 @jwt_required()
 def get_promotor_chat_messages(chat_id):
     promotor = get_current_promotor()
@@ -491,7 +491,7 @@ def get_promotor_chat_messages(chat_id):
 
     return jsonify([message.serialize() for message in messages]), 200
 
-@promotor.route("/promotor/chats/<int:chat_id>/messages", methods=["POST"])
+@promotor.route("/chats/<int:chat_id>/messages", methods=["POST"])
 @jwt_required()
 def create_promotor_chat_message(chat_id):
     promotor = get_current_promotor()

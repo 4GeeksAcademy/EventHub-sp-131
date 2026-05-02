@@ -8,9 +8,9 @@ from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
 from flask_jwt_extended import JWTManager
 from api.models import db
-from api.routes import user
+from api.routes import api
 from api.promotor import promotor
-from api.user import user
+from api.user import api as user
 from api.admins import admins
 from api.category import category
 from api.event import event
@@ -58,13 +58,13 @@ setup_admin(app)
 setup_commands(app)
 
 # Add all endpoints form the API with a "api" prefix
-app.register_blueprint(user, url_prefix='/api')
+app.register_blueprint(api, url_prefix='/api')
 app.register_blueprint(promotor, url_prefix='/api/promotor')
-app.register_blueprint(user, url_prefix='/api')
 app.register_blueprint(group, url_prefix='/api')
 app.register_blueprint(admins, url_prefix='/api')
 app.register_blueprint(event, url_prefix='/api')
 app.register_blueprint(category, url_prefix='/api')
+app.register_blueprint(user, url_prefix='/api')
 
 app.config["JWT_SECRET_KEY"] = "super-secret-status-python-flask-token-secure-private"
 jwt = JWTManager(app)

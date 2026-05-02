@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const ChatPromotor = () => {
+    const navigate = useNavigate();
+
     const [chats, setChats] = useState([]);
     const [selectedChat, setSelectedChat] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -19,10 +22,10 @@ export const ChatPromotor = () => {
     }, [messages]);
 
     const checkToken = () => {
-        const tokenPromotor = localStorage.getItem("tokenPromotor");
+        const token = localStorage.getItem("token");
 
-        if (!tokenPromotor) {
-            alert("Debes iniciar sesión como promotor");
+        if (!token) {
+            navigate("/promotor/login");
             return false;
         }
 
@@ -32,13 +35,19 @@ export const ChatPromotor = () => {
     const getChats = () => {
         if (!checkToken()) return;
 
-        fetch(API_URL + "/api/promotor/chats", {
+        fetch(`${API_URL}/api/promotor/chats`, {
+            method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + localStorage.getItem("tokenPromotor")
+                Authorization: "Bearer " + localStorage.getItem("token")
             }
         })
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error("No se pudieron cargar los chats");
+                }
+                return res.json();
+            })
             .then((data) => {
                 setChats(Array.isArray(data) ? data : []);
             })
@@ -51,13 +60,19 @@ export const ChatPromotor = () => {
     const getMessages = (chatId) => {
         if (!checkToken()) return;
 
-        fetch(API_URL + `/api/promotor/chats/${chatId}/messages`, {
+        fetch(`${API_URL}/api/promotor/chats/${chatId}/messages`, {
+            method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + localStorage.getItem("tokenPromotor")
+                Authorization: "Bearer " + localStorage.getItem("token")
             }
         })
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error("No se pudieron cargar los mensajes");
+                }
+                return res.json();
+            })
             .then((data) => {
                 setMessages(Array.isArray(data) ? data : []);
             })
@@ -85,11 +100,11 @@ export const ChatPromotor = () => {
             return;
         }
 
-        fetch(API_URL + `/api/promotor/chats/${selectedChat.id}/messages`, {
+        fetch(`${API_URL}/api/promotor/chats/${selectedChat.id}/messages`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + localStorage.getItem("tokenPromotor")
+                Authorization: "Bearer " + localStorage.getItem("token")
             },
             body: JSON.stringify({
                 text: text
@@ -99,7 +114,6 @@ export const ChatPromotor = () => {
                 if (!res.ok) {
                     throw new Error("No se pudo enviar el mensaje");
                 }
-
                 return res.json();
             })
             .then((data) => {
@@ -107,9 +121,7 @@ export const ChatPromotor = () => {
 
                 setMessages((prevMessages) => {
                     const exists = prevMessages.some((msg) => msg.id === data.id);
-
                     if (exists) return prevMessages;
-
                     return [...prevMessages, data];
                 });
 
@@ -125,7 +137,6 @@ export const ChatPromotor = () => {
         getChats();
     }, []);
 
-    // Timer: actualiza mensajes cada 3 segundos
     useEffect(() => {
         if (!selectedChat) return;
 
@@ -144,7 +155,10 @@ export const ChatPromotor = () => {
                     <div className="d-flex justify-content-between align-items-center mb-3">
                         <h4 className="mb-0">Chats de usuarios</h4>
 
-                        <button className="btn btn-info text-white btn-sm" onClick={getChats}>
+                        <button
+                            className="btn btn-info text-white btn-sm"
+                            onClick={getChats}
+                        >
                             Cargar
                         </button>
                     </div>
@@ -187,8 +201,10 @@ export const ChatPromotor = () => {
                                             </small>
                                         </div>
 
-                                        <p className="mb-0 small">
-                                            Promotor #{chat.promotor_id}
+                                        <p className="mb-0 small text-truncate">
+                                            {chat.last_message
+                                                ? chat.last_message.text
+                                                : "Sin mensajes todavía"}
                                         </p>
                                     </div>
                                 </div>
