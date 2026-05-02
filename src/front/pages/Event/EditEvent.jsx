@@ -38,6 +38,9 @@ export const EditEvent = () => {
     const [eventCat, setEventCat] = useState(null);
     const [categories, setCategories] = useState(null);
     const [imgFromApi, setImgFromApi] = useState("");
+    console.log(media);
+    const authApiA= import.meta.env.VITE_BACKEND_URL
+    
 
     const {
         artistQuery,
@@ -48,6 +51,9 @@ export const EditEvent = () => {
         selectArtist,
         selectedArtist,
     } = useArtistSearch();
+
+    console.log(selectedArtist);
+    
 
 
     const urlApi = props.type === undefined
@@ -66,7 +72,7 @@ export const EditEvent = () => {
 
     async function authUser(token) {
         try {
-            const response = await fetch(`${urlApi}api/promotor/private`, {
+            const response = await fetch(`${authApiA}api/promotor/private`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -80,7 +86,6 @@ export const EditEvent = () => {
             dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: response.ok })
             localStorage.setItem("promotorAuth", response.ok)
             const data = await response.json()
-            setProfileInfo(data.promotor)
         }
 
         catch (error) {
@@ -89,7 +94,9 @@ export const EditEvent = () => {
     }
 
     useEffect(() => {
+        console.log("test",!selectArtist);
         if (!selectedArtist) {
+            
             setName("");
             setLocation("");
             setDateEvent("");
@@ -117,6 +124,7 @@ export const EditEvent = () => {
         setMapCenter({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) })
         setMarkerPosition({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) })
         setDefZoom(13)
+        setMedia(publicId ? publicId : imgFromApi)
     };
 
     useEffect(() => {

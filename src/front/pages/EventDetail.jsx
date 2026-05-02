@@ -14,7 +14,7 @@ export const EventDetail = () => {
     const [categories, setCategories] = useState(null)
     const [eventAsistants, setEventAssistants] = useState(null)
     const [comments, setComments] = useState(null)
-
+    const urlApi = import.meta.env.VITE_BACKEND_URL
     const [message, setMessage] = useState("");
 
     useEffect(() => {
@@ -40,7 +40,6 @@ export const EventDetail = () => {
             dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: response.ok })
             localStorage.setItem("promotorAuth", response.ok)
             const data = await response.json()
-            setProfileInfo(data.promotor)
         }
 
         catch (error) {

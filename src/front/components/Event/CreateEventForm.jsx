@@ -104,7 +104,7 @@ export const CreateEventForm = (props) => {
                 description,
                 date_event,
                 capacity: Number(capacity),
-                finalImg
+                "media": finalImg
             })
         });
 
