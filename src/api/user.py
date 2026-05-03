@@ -52,7 +52,9 @@ def get_my_saved_events():
         if event:
             events.append(event.serialize())
 
-    return jsonify({"events": events}), 200
+    return jsonify({
+        "events": events
+    }), 200
 
 
 @api.route("/events/<int:event_id>/save", methods=["POST"])
