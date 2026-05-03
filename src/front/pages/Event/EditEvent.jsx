@@ -27,6 +27,8 @@ export const EditEvent = () => {
 
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
+    const [latitude, setLatitude] = useState("")
+    const [longitude, setLongitude] = useState("");
     const [description, setDescription] = useState("");
     const [date_event, setDateEvent] = useState("");
     const [capacity, setCapacity] = useState("");
@@ -39,8 +41,8 @@ export const EditEvent = () => {
     const [categories, setCategories] = useState(null);
     const [imgFromApi, setImgFromApi] = useState("");
     console.log(media);
-    const authApiA= import.meta.env.VITE_BACKEND_URL
-    
+    const authApiA = import.meta.env.VITE_BACKEND_URL
+
 
     const {
         artistQuery,
@@ -53,7 +55,7 @@ export const EditEvent = () => {
     } = useArtistSearch();
 
     console.log(selectedArtist);
-    
+
 
 
     const urlApi = props.type === undefined
@@ -94,11 +96,13 @@ export const EditEvent = () => {
     }
 
     useEffect(() => {
-        console.log("test",!selectArtist);
+        console.log("test", !selectArtist);
         if (!selectedArtist) {
-            
+
             setName("");
             setLocation("");
+            setLatitude("");
+            setLongitude("");
             setDateEvent("");
             setImgFromApi("");
             setDescription("")
@@ -119,6 +123,8 @@ export const EditEvent = () => {
         setName(item?.name);
         setLocation(`${item?._embedded.venues[0].name} ${item?._embedded.venues[0].address.line1} ${item?._embedded.venues[0].city.name} ${item?._embedded.venues[0].country.name}`)
         setDateEvent(item?.dates.start.dateTime.slice(0, 16))
+        setLatitude(parseFloat(item?._embedded.venues[0].location.latitude))
+        setLongitude(parseFloat(item?._embedded.venues[0].location.longitude))
         setImgFromApi(item?.images[0].url)
         setDescription(item?.description)
         setMapCenter({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) })
@@ -142,7 +148,7 @@ export const EditEvent = () => {
             const data = await resp.json();
             const e = props.type !== undefined ? data.event : data;
             console.log(e);
-            
+
 
             setName(e.name || "");
             setLocation(e.location || "");
@@ -158,6 +164,8 @@ export const EditEvent = () => {
     }
 
     async function geoloc(lat, lng) {
+        console.log("lat ",lat," long ",lng);
+        
         try {
             const resp = await fetch(
                 `https://geocode.googleapis.com/v4/geocode/location/${lat},${lng}?key=${geoApiKey}`
@@ -372,6 +380,7 @@ export const EditEvent = () => {
                                 onLocationChange={geoloc}
                                 defZoom={defZoom}
                                 setDefZoom={setDefZoom}
+                                height={"400px"}
                             />
                         </div>
 

@@ -1,4 +1,5 @@
 import click
+import random
 from sqlalchemy import select, func
 from api.models import db, User, Admin, Promotor, Category, Event, Group, PromotorCategory, Friend, SavedEvent, Discussion, GroupCategory, UserCategory, Comment, EventCategory, GroupEvent, EventAssistUser, EventPromotor
 
@@ -138,6 +139,8 @@ def setup_commands(app):
                 event.description = f"Description of Event number {x}"
                 event.capacity = 10
                 event.date_event = "2026-04-01T13:45:00"
+                event.lat = round(random.uniform(-90, 90), 6)
+                event.lng = round(random.uniform(-180, 180), 6)
                 db.session.add(event)
                 db.session.commit()
                 print(f"Event: {event.name} created.")
@@ -176,16 +179,20 @@ def setup_commands(app):
     def insert_test_promotor_categories(count):
         print("Creating test promotor-category relations")
         # Get existing IDs to pair new ones
-        promotor_ids = db.session.execute(select(Promotor.id).order_by(Promotor.id)).scalars().all()
-        category_ids = db.session.execute(select(Category.id).order_by(Category.id)).scalars().all()
+        promotor_ids = db.session.execute(
+            select(Promotor.id).order_by(Promotor.id)).scalars().all()
+        category_ids = db.session.execute(
+            select(Category.id).order_by(Category.id)).scalars().all()
         created = 0
         for i in range(int(count)):
             if i >= len(promotor_ids) or i >= len(category_ids):
-                print(f"Not enough promotors or categories for index {i}, stopping.")
+                print(
+                    f"Not enough promotors or categories for index {i}, stopping.")
                 break
             p_id, c_id = promotor_ids[i], category_ids[i]
             if relation_exists(PromotorCategory, promotor_id=p_id, category_id=c_id):
-                print(f"PromotorCategory: Promotor {p_id} - Category {c_id} already exists, skipping.")
+                print(
+                    f"PromotorCategory: Promotor {p_id} - Category {c_id} already exists, skipping.")
                 continue
             try:
                 prom_cat = PromotorCategory()
@@ -193,7 +200,8 @@ def setup_commands(app):
                 prom_cat.category_id = c_id
                 db.session.add(prom_cat)
                 db.session.commit()
-                print(f"PromotorCategory: Promotor {p_id} - Category {c_id} created.")
+                print(
+                    f"PromotorCategory: Promotor {p_id} - Category {c_id} created.")
                 created += 1
             except Exception as e:
                 db.session.rollback()
@@ -213,11 +221,13 @@ def setup_commands(app):
         created = 0
         for i in range(int(count)):
             if i >= len(user_ids) or i >= len(category_ids):
-                print(f"Not enough users or categories for index {i}, stopping.")
+                print(
+                    f"Not enough users or categories for index {i}, stopping.")
                 break
             u_id, c_id = user_ids[i], category_ids[i]
             if relation_exists(UserCategory, user_id=u_id, category_id=c_id):
-                print(f"UserCategory: User {u_id} - Category {c_id} already exists, skipping.")
+                print(
+                    f"UserCategory: User {u_id} - Category {c_id} already exists, skipping.")
                 continue
             try:
                 uc = UserCategory()
@@ -245,11 +255,13 @@ def setup_commands(app):
         created = 0
         for i in range(int(count)):
             if i >= len(event_ids) or i >= len(category_ids):
-                print(f"Not enough events or categories for index {i}, stopping.")
+                print(
+                    f"Not enough events or categories for index {i}, stopping.")
                 break
             e_id, c_id = event_ids[i], category_ids[i]
             if relation_exists(EventCategory, event_id=e_id, category_id=c_id):
-                print(f"EventCategory: Event {e_id} - Category {c_id} already exists, skipping.")
+                print(
+                    f"EventCategory: Event {e_id} - Category {c_id} already exists, skipping.")
                 continue
             try:
                 ec = EventCategory()
@@ -257,7 +269,8 @@ def setup_commands(app):
                 ec.category_id = c_id
                 db.session.add(ec)
                 db.session.commit()
-                print(f"EventCategory: Event {e_id} - Category {c_id} created.")
+                print(
+                    f"EventCategory: Event {e_id} - Category {c_id} created.")
                 created += 1
             except Exception as e:
                 db.session.rollback()
@@ -277,11 +290,13 @@ def setup_commands(app):
         created = 0
         for i in range(int(count)):
             if i >= len(group_ids) or i >= len(category_ids):
-                print(f"Not enough groups or categories for index {i}, stopping.")
+                print(
+                    f"Not enough groups or categories for index {i}, stopping.")
                 break
             g_id, c_id = group_ids[i], category_ids[i]
             if relation_exists(GroupCategory, group_id=g_id, category_id=c_id):
-                print(f"GroupCategory: Group {g_id} - Category {c_id} already exists, skipping.")
+                print(
+                    f"GroupCategory: Group {g_id} - Category {c_id} already exists, skipping.")
                 continue
             try:
                 gc = GroupCategory()
@@ -289,7 +304,8 @@ def setup_commands(app):
                 gc.category_id = c_id
                 db.session.add(gc)
                 db.session.commit()
-                print(f"GroupCategory: Group {g_id} - Category {c_id} created.")
+                print(
+                    f"GroupCategory: Group {g_id} - Category {c_id} created.")
                 created += 1
             except Exception as e:
                 db.session.rollback()
@@ -313,7 +329,8 @@ def setup_commands(app):
                 break
             g_id, e_id = group_ids[i], event_ids[i]
             if relation_exists(GroupEvent, group_id=g_id, event_id=e_id):
-                print(f"GroupEvent: Group {g_id} - Event {e_id} already exists, skipping.")
+                print(
+                    f"GroupEvent: Group {g_id} - Event {e_id} already exists, skipping.")
                 continue
             try:
                 ge = GroupEvent()
@@ -345,7 +362,8 @@ def setup_commands(app):
                 break
             u_id, e_id = user_ids[i], event_ids[i]
             if relation_exists(SavedEvent, user_id=u_id, event_id=e_id):
-                print(f"SavedEvent: User {u_id} - Event {e_id} already exists, skipping.")
+                print(
+                    f"SavedEvent: User {u_id} - Event {e_id} already exists, skipping.")
                 continue
             try:
                 se = SavedEvent()
@@ -375,7 +393,8 @@ def setup_commands(app):
         for i in range(1, min(int(count) + 1, len(user_ids))):
             friend_user = user_ids[i]
             if relation_exists(Friend, user_id=base_user, friend_id=friend_user):
-                print(f"Friend: User {base_user} <-> User {friend_user} already exists, skipping.")
+                print(
+                    f"Friend: User {base_user} <-> User {friend_user} already exists, skipping.")
                 continue
             try:
                 friend = Friend()
@@ -383,11 +402,13 @@ def setup_commands(app):
                 friend.friend_id = friend_user
                 db.session.add(friend)
                 db.session.commit()
-                print(f"Friend: User {base_user} <-> User {friend_user} created.")
+                print(
+                    f"Friend: User {base_user} <-> User {friend_user} created.")
                 created += 1
             except Exception as e:
                 db.session.rollback()
-                print(f"Error creating Friend ({base_user}, {friend_user}): {e}")
+                print(
+                    f"Error creating Friend ({base_user}, {friend_user}): {e}")
         print(f"Done. {created} friendship(s) created.")
 
     @app.cli.command("insert-test-discussions")
@@ -465,11 +486,13 @@ def setup_commands(app):
         created = 0
         for i in range(int(count)):
             if i >= len(promotor_ids) or i >= len(event_ids):
-                print(f"Not enough promotors or events for index {i}, stopping.")
+                print(
+                    f"Not enough promotors or events for index {i}, stopping.")
                 break
             p_id, e_id = promotor_ids[i], event_ids[i]
             if relation_exists(EventPromotor, promotor_id=p_id, event_id=e_id):
-                print(f"EventPromotor: Promotor {p_id} - Event {e_id} already exists, skipping.")
+                print(
+                    f"EventPromotor: Promotor {p_id} - Event {e_id} already exists, skipping.")
                 continue
             try:
                 ep = EventPromotor()
@@ -477,7 +500,8 @@ def setup_commands(app):
                 ep.event_id = e_id
                 db.session.add(ep)
                 db.session.commit()
-                print(f"EventPromotor: Promotor {p_id} - Event {e_id} created.")
+                print(
+                    f"EventPromotor: Promotor {p_id} - Event {e_id} created.")
                 created += 1
             except Exception as e:
                 db.session.rollback()
@@ -502,7 +526,8 @@ def setup_commands(app):
             u_id = user_ids[i]
             e_id = event_ids[i % len(event_ids)]
             if relation_exists(EventAssistUser, user_id=u_id, event_id=e_id):
-                print(f"EventAssistUser: User {u_id} - Event {e_id} already exists, skipping.")
+                print(
+                    f"EventAssistUser: User {u_id} - Event {e_id} already exists, skipping.")
                 continue
             try:
                 assist = EventAssistUser()

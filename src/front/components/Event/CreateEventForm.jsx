@@ -18,6 +18,8 @@ export const CreateEventForm = (props) => {
 
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
+    const [lat, setLatitude] = useState("")
+    const [lng, setLongitude]= useState("");
     const [description, setDescription] = useState("");
     const [date_event, setDateEvent] = useState("");
     const [capacity, setCapacity] = useState("");
@@ -45,6 +47,7 @@ export const CreateEventForm = (props) => {
     const uwConfig = useMemo(() => ({ cloudName, uploadPreset }), []);
 
     async function geoloc(lat, lng) {
+        console.log("lat ",lat," long ",lng);
         try {
             const resp = await fetch(
                 `https://geocode.googleapis.com/v4/geocode/location/${lat},${lng}?key=${geoApiKey}`
@@ -62,14 +65,19 @@ export const CreateEventForm = (props) => {
         if (!selectedArtist) {
             setName("");
             setLocation("");
+            setLatitude("");
+            setLongitude("");
             setDateEvent("");
             setImgFromApi("");
-            setDescription("")
+            setDescription("");
             setMapCenter({ lat: 39.9514572, lng: -4.3435391 });
             setMarkerPosition(null);
             setDefZoom(3);
         }
     }, [selectedArtist]);
+
+    //console.log(selectedArtist);
+    
 
     const handleInputChange = (e) => {
         const value = e.target.value;
@@ -81,6 +89,8 @@ export const CreateEventForm = (props) => {
         selectArtist(item);
         setName(item?.name);
         setLocation(`${item?._embedded.venues[0].name} ${item?._embedded.venues[0].address.line1} ${item?._embedded.venues[0].city.name} ${item?._embedded.venues[0].country.name}`)
+        setLatitude(parseFloat(item?._embedded.venues[0].location.latitude) ?? mapCenter.lat)
+        setLongitude(parseFloat(item?._embedded.venues[0].location.longitude)?? mapCenter.lng)
         setDateEvent(item?.dates.start.dateTime.slice(0, 16))
         setImgFromApi(item?.images[0].url)
         setDescription(item?.description)
@@ -91,6 +101,7 @@ export const CreateEventForm = (props) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         const finalImg = publicId ?? imgFromApi
         const resp = await fetch(`${backendUrl}/api/${urlApi}`, {
             method: "POST",
@@ -101,6 +112,8 @@ export const CreateEventForm = (props) => {
             body: JSON.stringify({
                 name,
                 location,
+                lat,
+                lng,
                 description,
                 date_event,
                 capacity: Number(capacity),
@@ -181,12 +194,15 @@ export const CreateEventForm = (props) => {
                             <Map
                                 location={location}
                                 mapCenter={mapCenter}
+                                setLatitude={setLatitude}
+                                setLongitude={setLongitude}
                                 defZoom={defZoom}
                                 setDefZoom={setDefZoom}
                                 setMapCenter={setMapCenter}
                                 markerPosition={markerPosition}
                                 setMarkerPosition={setMarkerPosition}
                                 onLocationChange={geoloc}
+                                height={'400px'}
                             />
                         </div>
 
