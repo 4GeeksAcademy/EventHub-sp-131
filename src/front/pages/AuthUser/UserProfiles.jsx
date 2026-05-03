@@ -24,18 +24,18 @@ export const UserProfiles = () => {
             return;
         }
 
-        fetch(`${backendUrl}/api/users/${friendId}/add-friend`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + tokenUser
-            }
-        })
+        fetch(`${backendUrl}/api/${friendId}/add-friend`, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + tokenUser
+    }
+})
             .then((resp) => {
                 if (!resp.ok) throw new Error();
                 setMessage("Amigo agregado correctamente");
             })
-            .catch(() => setMessage("No se pudo agregar. Quizás ya es tu amigo."));
+            .catch(() => setMessage("Este usuario ya es tu amigo."));
     };
 
     useEffect(() => {
