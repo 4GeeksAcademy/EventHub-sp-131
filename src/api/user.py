@@ -42,12 +42,23 @@ def get_user_me():
 def get_my_saved_events():
     user = get_current_user()
 
+    if user is None:
+        return jsonify({"message": "User no encontrado"}), 404
+
     saved_events = db.session.execute(
         select(SavedEvent).where(SavedEvent.user_id == user.id)
     ).scalars().all()
 
+    events = []
+
+    for saved in saved_events:
+        event = db.session.get(Event, saved.event_id)
+
+        if event:
+            events.append(event.serialize())
+
     return jsonify({
-        "events": [saved.event.serialize() for saved in saved_events if saved.event]
+        "events": events
     }), 200
 
 
