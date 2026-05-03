@@ -96,7 +96,13 @@ export const EventDetails = () => {
                     return;
                 }
 
-                navigate("/chat", { state: { chatId: data.id } });
+                navigate("/chat", {
+                   state: {
+                    chatId: data.id,
+                    promotorId: data.promotor_id,
+                    promotorName: data.promotor_name
+                   }
+                });
             })
             .catch(() => alert("No se pudo crear el chat"));
     };

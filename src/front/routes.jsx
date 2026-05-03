@@ -91,6 +91,7 @@ import { UserGroupDetail } from "./pages/AuthUser/UserGroupDetail";
 import { EventDetails} from "./pages/Event/EventDetails";
 import { EventDetail } from "./pages/EventDetail";
 import { Chat } from "./pages/Chat.jsx";
+import { ChatPromotor } from "./pages/ChatPromotor.jsx";
 import { SearchByImage } from "./pages/SearchByImage.jsx";
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -188,6 +189,7 @@ export const router = createBrowserRouter(
       <Route path="/user/groups" element={<UserGroups />} />
       <Route path="/user/group/:theId" element={<UserGroupDetail />} />
       <Route path="/chat" element={<Chat />} />
+      <Route path="/promotor/chat" element={<ChatPromotor />} />
       <Route path="/search-by-image" element={<SearchByImage />} />
     </Route>
   )

@@ -53,6 +53,11 @@ export const PrivatePromotor = () => {
             Create new event
           </button>
         </p>
+         <p>
+            <button className="btn btn-primary" onClick={() => navigate("/promotor/chat")}>
+               Ver mensajes
+            </button>
+        </p>
         {profileInfo &&
           <div className="collapse border" id="collapseExample">
             <CreateEventForm

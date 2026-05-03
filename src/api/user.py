@@ -3,9 +3,10 @@ from sqlalchemy import select
 from datetime import datetime, timezone
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.routes import api
-from api.models import (db, User, Event, Comment, SavedEvent, EventAssistUser, Group, Discussion, Friend, Promotor, Chat, Message, EventPromotor)
+from api.models import (db, User, Event, Comment, SavedEvent, EventAssistUser,
+                        Group, Discussion, Friend, Promotor, Chat, Message, EventPromotor)
 
-user = Blueprint('user', __name__,)
+api = Blueprint('user', __name__,)
 
 
 def get_current_user():
@@ -18,7 +19,7 @@ def get_current_user():
     return user
 
 
-@api.route("/user/me", methods=["GET"])
+@api.route("/me", methods=["GET"])
 @jwt_required()
 def get_user_me():
     user = get_current_user()
@@ -31,7 +32,7 @@ def get_user_me():
     }), 200
 
 
-@api.route("/user/saved-events", methods=["GET"])
+@api.route("/saved-events", methods=["GET"])
 @jwt_required()
 def get_my_saved_events():
     user = get_current_user()
@@ -100,7 +101,7 @@ def unsave_event_user(event_id):
     }), 200
 
 
-@api.route("/user/assisting-events", methods=["GET"])
+@api.route("/assisting-events", methods=["GET"])
 @jwt_required()
 def get_my_assisting_events():
     user = get_current_user()
@@ -214,7 +215,7 @@ def create_event_comment_user(event_id):
     }), 201
 
 
-@api.route("/users/<int:friend_id>/add-friend", methods=["POST"])
+@api.route("/<int:friend_id>/add-friend", methods=["POST"])
 @jwt_required()
 def add_friend_user(friend_id):
     user = get_current_user()
@@ -250,7 +251,7 @@ def add_friend_user(friend_id):
     }), 201
 
 
-@api.route("/user/friends", methods=["GET"])
+@api.route("/friends", methods=["GET"])
 @jwt_required()
 def get_my_friends():
     user = get_current_user()
@@ -262,6 +263,7 @@ def get_my_friends():
     return jsonify({
         "friends": [friend.serialize() for friend in friends]
     }), 200
+
 
 @api.route("/chats", methods=["POST"])
 @jwt_required()
@@ -302,6 +304,7 @@ def create_chat():
 
     return jsonify(new_chat.serialize()), 201
 
+
 @api.route("/chats", methods=["GET"])
 @jwt_required()
 def get_chats():
@@ -315,6 +318,7 @@ def get_chats():
     ).scalars().all()
 
     return jsonify([chat.serialize() for chat in chats]), 200
+
 
 @api.route("/chats/<int:chat_id>/messages", methods=["GET"])
 @jwt_required()
@@ -339,6 +343,7 @@ def get_chat_messages(chat_id):
     ).scalars().all()
 
     return jsonify([message.serialize() for message in messages]), 200
+
 
 @api.route("/chats/<int:chat_id>/messages", methods=["POST"])
 @jwt_required()
