@@ -32,7 +32,7 @@ def get_user_me():
     }), 200
 
 
-@api.route("/saved-events", methods=["GET"])
+@api.route("/user/saved-events", methods=["GET"])
 @jwt_required()
 def get_my_saved_events():
     user = get_current_user()
