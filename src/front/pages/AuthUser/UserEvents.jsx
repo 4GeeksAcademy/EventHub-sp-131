@@ -18,9 +18,13 @@ export const UserEvents = () => {
     const navigate = useNavigate();
     const [selectedEvent, setSelectedEvent] = useState(null)
     const [userLocation, setUserLocation] = useState(null);
+    console.log("userloc ",userLocation);
+    
     const [searchLocation, setSearchLocation] = useState(null);
     const [defZoom, setDefZoom] = useState(12)
     const [mapCenter, setMapCenter] = useState({ lat: 40.4168, lng: -3.7038 });
+    console.log(mapCenter);
+    
     const [markerPosition, setMarkerPosition] = useState({ lat: 40.4168, lng: -3.7038 });
 
     const getEvents = () => {
@@ -86,6 +90,8 @@ export const UserEvents = () => {
                 .then(response => response.json())
                 .then(data => {
                     setUserLocation({ "address": data.results[0].formattedAddress, lat: data.results[0].geometry.location.lat, lng: data.results[0].geometry.location.lng });
+                    setMapCenter({ "address": data.results[0].formattedAddress, lat: data.results[0].geometry.location.lat, lng: data.results[0].geometry.location.lng });
+                    setMarkerPosition({ "address": data.results[0].formattedAddress, lat: data.results[0].geometry.location.lat, lng: data.results[0].geometry.location.lng });
                 });
         });
     }, []);
