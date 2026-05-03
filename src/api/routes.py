@@ -692,12 +692,14 @@ def delete_group_by_id(position):
 
 # // Comments
 
+
 @api.route('/comments', methods=['GET'])
 def get_comments():
     result = db.session.execute(db.select(Comment))
     comments = result.scalars().all()
 
     return jsonify([c.serialize() for c in comments]), 200
+
 
 @api.route('/comments/<int:id>', methods=['GET'])
 def get_comment(id):
@@ -707,6 +709,7 @@ def get_comment(id):
         return jsonify({"msg": "Comment not found"}), 404
 
     return jsonify(comment.serialize()), 200
+
 
 @api.route('/comments', methods=['POST'])
 def create_comment():
@@ -730,6 +733,7 @@ def create_comment():
 
     return jsonify(new_comment.serialize()), 201
 
+
 @api.route('/comments/<int:id>', methods=['PUT'])
 def update_comment(id):
     comment = db.session.get(Comment, id)
@@ -745,6 +749,7 @@ def update_comment(id):
 
     return jsonify(comment.serialize()), 200
 
+
 @api.route('/comments/<int:id>', methods=['DELETE'])
 def delete_comment(id):
     comment = db.session.get(Comment, id)
@@ -757,6 +762,7 @@ def delete_comment(id):
 
     return jsonify({"msg": "Deleted"}), 200
 # // FRIENDS
+
 
 @api.route('/friend', methods=['GET'])
 def get_friend():
@@ -789,13 +795,12 @@ def create_friend():
         return jsonify("Please provide a valid user and a friend ID"), 400
     if body["user_id"] == body["friend_id"]:
         return jsonify("A user cannot be friend with itself!"), 400
-    
+
     if db.session.execute(select(User).where(User.id == body["user_id"])).scalar_one_or_none() == None:
         return jsonify("The user does not exist"), 400
-    
+
     if db.session.execute(select(User).where(User.id == body["friend_id"])).scalar_one_or_none() == None:
         return jsonify("The user you're trying to add as freind does not exist"), 400
-
 
     friend = Friend(**body)
 
@@ -828,8 +833,8 @@ def delete_friend_by_id(position):
 
     return jsonify(response_body), 200
 
+    # // Promotor-Category CRUD //
 
-    ## // Promotor-Category CRUD //
 
 @api.route('/promotors', methods=['GET'])
 def get_promotors():
@@ -965,8 +970,8 @@ def delete_promotor_category(relation_id):
 
     return jsonify({"msg": "Relación eliminada correctamente"}), 200
 
-    
     # // DISCUSSIONS
+
 
 @api.route('/discussion', methods=['GET'])
 def get_discussion():
@@ -1138,7 +1143,7 @@ def create_user_category():
     body = request.json
     if "user_id" not in body or "category_id" not in body:
         return jsonify("Please provide a user ID and a category ID"), 400
-    
+
     if body["user_id"] == "" or body["category_id"] == "":
         return jsonify("Please provide a valid user and a category ID"), 400
 
@@ -1181,12 +1186,14 @@ def delete_user_category_by_id(position):
 
 # // GROUP-CATEGORY //
 
+
 @api.route('/group-categories', methods=['GET'])
 def get_group_categories():
     stmt = select(GroupCategory)
     result = db.session.execute(stmt).scalars().all()
 
     return jsonify([item.serialize() for item in result]), 200
+
 
 @api.route('/group-categories/<int:id>', methods=['GET'])
 def get_one_group_category(id):
@@ -1197,6 +1204,7 @@ def get_one_group_category(id):
         return jsonify({"message": "Relación no encontrada"}), 404
 
     return jsonify(result.serialize()), 200
+
 
 @api.route('/group-categories', methods=['POST'])
 def create_group_category():
@@ -1217,14 +1225,12 @@ def create_group_category():
     if group is None:
         return jsonify({"message": "El grupo no existe"}), 404
 
-    
     stmt_category = select(Category).where(Category.id == category_id)
     category = db.session.execute(stmt_category).scalar_one_or_none()
 
     if category is None:
         return jsonify({"message": "La categoría no existe"}), 404
 
-    
     stmt = select(GroupCategory).where(
         GroupCategory.group_id == group_id,
         GroupCategory.category_id == category_id
@@ -1247,6 +1253,7 @@ def create_group_category():
         "data": new_relation.serialize()
     }), 201
 
+
 @api.route('/group-categories/<int:id>', methods=['PUT'])
 def update_group_category(id):
     stmt = select(GroupCategory).where(GroupCategory.id == id)
@@ -1266,21 +1273,18 @@ def update_group_category(id):
     if group_id is None or category_id is None:
         return jsonify({"message": "group_id y category_id son obligatorios"}), 400
 
-    
     stmt_group = select(Group).where(Group.id == group_id)
     group = db.session.execute(stmt_group).scalar_one_or_none()
 
     if group is None:
         return jsonify({"message": "El grupo no existe"}), 404
 
-    
     stmt_category = select(Category).where(Category.id == category_id)
     category = db.session.execute(stmt_category).scalar_one_or_none()
 
     if category is None:
         return jsonify({"message": "La categoría no existe"}), 404
 
-    
     stmt = select(GroupCategory).where(
         GroupCategory.group_id == group_id,
         GroupCategory.category_id == category_id,
@@ -1301,6 +1305,7 @@ def update_group_category(id):
         "data": relation.serialize()
     }), 200
 
+
 @api.route('/group-categories/<int:id>', methods=['DELETE'])
 def delete_group_category(id):
     stmt = select(GroupCategory).where(GroupCategory.id == id)
@@ -1315,11 +1320,14 @@ def delete_group_category(id):
     return jsonify({"message": "Relación eliminada"}), 200
 
 #  // Group-event //
+
+
 @api.route("/group-event", methods=["GET"])
 def get_all_group_event():
     stmt = select(GroupEvent)
     group_events = db.session.execute(stmt).scalars().all()
     return jsonify([item.serialize() for item in group_events]), 200
+
 
 @api.route("/group-event/<int:id>", methods=["GET"])
 def get_one_group_event(id):
@@ -1330,6 +1338,7 @@ def get_one_group_event(id):
         return jsonify({"msg": "Relacion no encontrada"}), 404
 
     return jsonify(group_event.serialize()), 200
+
 
 @api.route("/group-event", methods=["POST"])
 def create_group_event():
@@ -1362,6 +1371,7 @@ def create_group_event():
     db.session.commit()
 
     return jsonify(new_group_event.serialize()), 201
+
 
 @api.route("/group-event/<int:id>", methods=["PUT"])
 def update_group_event(id):
@@ -1399,6 +1409,7 @@ def update_group_event(id):
 
     return jsonify(group_event.serialize()), 200
 
+
 @api.route("/group-event/<int:id>", methods=["DELETE"])
 def delete_group_event(id):
     stmt = select(GroupEvent).where(GroupEvent.id == id)
@@ -1413,9 +1424,11 @@ def delete_group_event(id):
     return jsonify({"msg": "Relacion eliminada correctamente"}), 200
 # // EventCategory
 
+
 @api.route('/event_category', methods=['GET'])
 def get_event_category():
-    event_categories = db.session.execute(select(EventCategory)).scalars().all()
+    event_categories = db.session.execute(
+        select(EventCategory)).scalars().all()
 
     response_body = list(
         map(lambda event_category: event_category.serialize(), event_categories))
@@ -1441,7 +1454,7 @@ def create_event_category():
     body = request.json
     if "event_id" not in body or "category_id" not in body:
         return jsonify("Please provide a event ID and a category ID"), 400
-    
+
     if body["event_id"] == "" or body["category_id"] == "":
         return jsonify("Please provide a valid event and a category ID"), 400
 
@@ -1491,6 +1504,7 @@ def get_event_promotors():
 
     return jsonify([r.serialize() for r in relations]), 200
 
+
 @api.route("/event-promotor/<int:id>", methods=["GET"])
 def get_event_promotor(id):
     relation = db.session.get(EventPromotor, id)
@@ -1502,6 +1516,7 @@ def get_event_promotor(id):
         "message": "Relación obtenida correctamente",
         "results": relation.serialize()
     }), 200
+
 
 @api.route("/event-promotor", methods=["POST"])
 def create_event_promotor():
@@ -1547,6 +1562,7 @@ def create_event_promotor():
         "results": new_relation.serialize()
     }), 201
 
+
 @api.route("/event-promotor/<int:id>", methods=["PUT"])
 def update_event_promotor(id):
     relation = db.session.get(EventPromotor, id)
@@ -1578,6 +1594,7 @@ def update_event_promotor(id):
         "results": relation.serialize()
     }), 200
 
+
 @api.route("/event-promotor/<int:id>", methods=["DELETE"])
 def delete_event_promotor(id):
     relation = db.session.get(EventPromotor, id)
@@ -1593,6 +1610,7 @@ def delete_event_promotor(id):
     }), 200
 
   # // USER -LOGIN //
+
 
 @api.route("/user/login", methods=["POST"])
 def login_user():
@@ -1619,7 +1637,8 @@ def login_user():
 
     return jsonify({"msg": "Bad email or password"}), 401
 
-@api.route("/user/private", methods=["GET"])
+
+@api.route("/private", methods=["GET"])
 @jwt_required()
 def private_user():
     current_user_email = get_jwt_identity()
@@ -1654,6 +1673,7 @@ def get_event_assists():
         for a in assists
     ]), 200
 
+
 @api.route("/event-assists/<int:assist_id>", methods=["GET"])
 def get_event_assist(assist_id):
     stmt = select(EventAssistUser).where(EventAssistUser.id == assist_id)
@@ -1667,6 +1687,7 @@ def get_event_assist(assist_id):
         "user_name": assist.user.name if assist.user else None,
         "event_name": assist.event.name if assist.event else None
     }), 200
+
 
 @api.route("/event-assists", methods=["POST"])
 def create_event_assist():
@@ -1706,6 +1727,7 @@ def create_event_assist():
         "event_name": event.name
     }), 201
 
+
 @api.route("/event-assists/<int:assist_id>", methods=["DELETE"])
 def delete_event_assist(assist_id):
     assist = db.session.get(EventAssistUser, assist_id)
@@ -1717,4 +1739,3 @@ def delete_event_assist(assist_id):
     db.session.commit()
 
     return jsonify({"message": "Deleted successfully"}), 200
-

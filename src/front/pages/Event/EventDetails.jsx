@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BackButton } from "../../components/BackButton";
 
@@ -11,6 +11,7 @@ export const EventDetails = () => {
     const [event, setEvent] = useState(null);
     const [comments, setComments] = useState([]);
     const [message, setMessage] = useState("");
+    const [promotorId, setPromotorId] = useState(null);
 
     const getEvent = () => {
         fetch(`${backendUrl}/api/events/${id}`)
@@ -24,6 +25,17 @@ export const EventDetails = () => {
             .then((resp) => resp.json())
             .then((data) => setComments(data.comments || []))
             .catch(() => alert("No se pudieron cargar los comentarios"));
+    };
+
+    const getEventPromotor = () => {
+        fetch(`${backendUrl}/api/event/event-promotor/${id}`)
+            .then((resp) => resp.json())
+            .then((data) => {
+                if (data.relations && data.relations.length > 0) {
+                    setPromotorId(data.relations[0].promotor_id);
+                }
+            })
+            .catch(() => console.log("No se pudo cargar el promotor del evento"));
     };
 
     const handleComment = (e) => {
@@ -54,9 +66,51 @@ export const EventDetails = () => {
             .catch(() => alert("No se pudo crear el comentario"));
     };
 
+    const handleContactPromotor = () => {
+        const tokenUser = localStorage.getItem("tokenUser");
+
+        if (!tokenUser) {
+            navigate("/user/login");
+            return;
+        }
+
+        if (!promotorId) {
+            alert("Este evento no tiene promotor asociado");
+            return;
+        }
+
+        fetch(`${backendUrl}/api/chats`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + tokenUser
+            },
+            body: JSON.stringify({
+                promotor_id: promotorId
+            })
+        })
+            .then((resp) => resp.json())
+            .then((data) => {
+                if (data.message) {
+                    alert(data.message);
+                    return;
+                }
+
+                navigate("/chat", {
+                   state: {
+                    chatId: data.id,
+                    promotorId: data.promotor_id,
+                    promotorName: data.promotor_name
+                   }
+                });
+            })
+            .catch(() => alert("No se pudo crear el chat"));
+    };
+
     useEffect(() => {
         getEvent();
         getComments();
+        getEventPromotor();
     }, []);
 
     if (!event) {
@@ -65,7 +119,7 @@ export const EventDetails = () => {
 
     return (
         <div className="container mt-5">
-            
+
             <BackButton />
 
             <div className="card shadow mb-4">
@@ -80,10 +134,18 @@ export const EventDetails = () => {
 
                 <div className="card-body">
                     <h2>{event.name}</h2>
+
                     <p><strong>Ubicación:</strong> {event.location}</p>
                     <p><strong>Descripción:</strong> {event.description}</p>
                     <p><strong>Fecha:</strong> {new Date(event.date_event).toLocaleString()}</p>
                     <p><strong>Capacidad:</strong> {event.capacity}</p>
+
+                    <button
+                        className="btn btn-success mt-3"
+                        onClick={handleContactPromotor}
+                    >
+                        Contactar promotor
+                    </button>
                 </div>
             </div>
 

@@ -8,10 +8,10 @@ export const EditPromotor = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [location, setLocation] = useState("")
-    const [phone, setPhone] = useState()
+    const [phone, setPhone] = useState("")
     const [webPage, setWebPage] = useState("")
 
-    const { theId } = useParams()
+    const { theId } = useParams("")
 
     const navigate = useNavigate()
 
@@ -21,12 +21,12 @@ export const EditPromotor = () => {
                 "Content-Type": "application/json"
             })
             const data = await response.json()
-            setName(data.name)
-            setEmail(data.email)
-            setPassword(data.password)
-            setLocation(data.location)
-            setPhone(data.phone)
-            setWebPage(data.webPage)
+            setName(data.name ?? "")
+            setEmail(data.email ?? "")
+            setPassword(data.password ?? "")
+            setLocation(data.location ?? "")
+            setPhone(data.phone ?? "")
+            setWebPage(data.web_page ?? "")
 
             return response
         }
@@ -62,6 +62,11 @@ export const EditPromotor = () => {
     }
 
     useEffect(() => {
+        
+            if (!localStorage.getItem("adminAuth")) {
+                navigate("/admin/login");
+            }
+       
         getPromotor(theId)
     }, [])
 

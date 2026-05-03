@@ -1,11 +1,12 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { CreateEventForm } from "../../components/Event/CreateEventForm";
 import { EventList } from "../../components/Event/EventList"
 
 export const PrivatePromotor = () => {
   const { store, dispatch } = useGlobalReducer()
+  const eventListRef = useRef(null);
   const navigate = useNavigate()
   const urlApi = import.meta.env.VITE_BACKEND_URL
   const [profileInfo, setProfileInfo] = useState()
@@ -19,7 +20,7 @@ export const PrivatePromotor = () => {
 
   async function authUser(token) {
     try {
-      const response = await fetch(`${urlApi}api/promotor/private`, {
+      const response = await fetch(`${urlApi}/api/promotor/private`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -28,7 +29,7 @@ export const PrivatePromotor = () => {
       })
 
       if (!response.ok) {
-        navigate('/promotor/login')
+        navigate('/promotor/login');
       }
       dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: response.ok })
       localStorage.setItem("promotorAuth", response.ok)
@@ -52,14 +53,27 @@ export const PrivatePromotor = () => {
             Create new event
           </button>
         </p>
+         <p>
+            <button className="btn btn-primary" onClick={() => navigate("/promotor/chat")}>
+               Ver mensajes
+            </button>
+        </p>
         {profileInfo &&
           <div className="collapse border" id="collapseExample">
-            <CreateEventForm id={profileInfo.id} type={"promotor"} />
+            <CreateEventForm
+              id={profileInfo.id}
+              type={"promotor"}
+              onSuccess={() => {
+                const collapseElement = document.getElementById('collapseExample');
+                const collapse = new bootstrap.Collapse(collapseElement);
+                collapse.hide();
+                eventListRef.current?.refreshEvents();
+              }} />
           </div>
         }
         {profileInfo &&
           <div>
-            <EventList profile={profileInfo} type={"promotor"}/>
+            <EventList ref={eventListRef} profile={profileInfo} type={"promotor"} />
           </div>
         }
       </div>
