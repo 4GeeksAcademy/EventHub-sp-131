@@ -85,6 +85,10 @@ export const Navbar = () => {
 								</button>
 							)
 						}
+
+						<Link to="/search-by-image" className="btn btn-outline-primary">
+                            Buscar eventos 🔍
+                        </Link>
 				<div className="ml-auto">
 					<Link to="/demo">
 						<button className="btn btn-primary">Check the Context in action</button>

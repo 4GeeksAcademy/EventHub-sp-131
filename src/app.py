@@ -21,6 +21,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_socketio import SocketIO
 from api.socket_events import register_socket_events
+from api.image_search import image_search
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
@@ -65,6 +66,7 @@ app.register_blueprint(admins, url_prefix='/api')
 app.register_blueprint(event, url_prefix='/api')
 app.register_blueprint(category, url_prefix='/api')
 app.register_blueprint(user, url_prefix='/api')
+app.register_blueprint(image_search, url_prefix="/api")
 
 app.config["JWT_SECRET_KEY"] = "super-secret-status-python-flask-token-secure-private"
 jwt = JWTManager(app)

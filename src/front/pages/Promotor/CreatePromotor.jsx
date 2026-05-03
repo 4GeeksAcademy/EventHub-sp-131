@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
 import { useNavigate } from "react-router-dom";
 
@@ -9,7 +9,7 @@ export const CreatePromotor = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [location, setLocation] = useState("")
-    const [phone, setPhone] = useState()
+    const [phone, setPhone] = useState("")
     const [webPage, setWebPage] = useState("")
 
     const navigate = useNavigate()
@@ -43,6 +43,7 @@ export const CreatePromotor = () => {
 
     async function createPromotor() {
         try {
+     
             const response = await fetch(`${urlAPI}/api/promotor`, {
                 method: "POST",
                 headers: {
@@ -67,8 +68,14 @@ export const CreatePromotor = () => {
         }
     }
 
+    useEffect(() => {
+            if (!localStorage.getItem("adminAuth")) {
+                navigate("/admin/login");
+            }
+        }, [])
+
     return (
-        <div style={{ "width": "60%", "margin": "auto", "margin-top": "4rem" }}>
+        <div style={{ "width": "60%", "margin": "auto", marginTop: "4rem" }}>
             <div className="input-group mb-3">
                 <input onChange={handleInput} type="text" className="form-control" placeholder="Username" id="name" aria-label="Username" aria-describedby="name" value={name} />
             </div>

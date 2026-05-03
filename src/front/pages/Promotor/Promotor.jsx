@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react"
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 
 export const Promotor = () => {
     const { store, dispatch } = useGlobalReducer()
     const urlAPI = import.meta.env.VITE_BACKEND_URL
     const [allPromotors, setAllPromotors] = useState([])
-
-
+    const navigate = useNavigate();
+    
     async function getPromotors() {
         try {
             const response = await fetch(`${urlAPI}/api/promotor`, {
@@ -23,6 +24,9 @@ export const Promotor = () => {
     }
 
     useEffect(() => {
+        if (!localStorage.getItem("adminAuth")) {
+            navigate("/admin/login");
+        }
         getPromotors()
     }, [])
 

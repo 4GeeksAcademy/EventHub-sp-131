@@ -241,38 +241,49 @@ def update_event(promotor_id, event_id):
 def delete_event(promotor_id, event_id):
     event = db.session.get(Event, event_id)
     promotor = db.session.get(Promotor, promotor_id)
-    promotorEvent = db.session.get(EventPromotor, event_id)
-    userEvent = db.session.get(SavedEvent, event_id)
-    userAssistEvent = db.session.get(EventAssistUser, event_id)
-    categroyEvent = db.session.get(EventCategory, event_id)
-    groupEvent = db.session.get(GroupEvent, event_id)
 
     if event is None:
         return jsonify({"message": "Evento no encontrado"}), 404
 
-    if promotorEvent != None:
-        db.session.delete(promotorEvent)
-    if userEvent != None:
-        db.session.delete(userEvent)
-    if userAssistEvent != None:
-        db.session.delete(userAssistEvent)
-    if categroyEvent != None:
-        db.session.delete(categroyEvent)
-    if groupEvent != None:
-        db.session.delete(groupEvent)
+    promotorEvents = db.session.execute(select(EventPromotor).where(
+        EventPromotor.event_id == event_id)).scalars().all()
+    userEvents = db.session.execute(select(SavedEvent).where(
+        SavedEvent.event_id == event_id)).scalars().all()
+    userAssistEvents = db.session.execute(select(EventAssistUser).where(
+        EventAssistUser.event_id == event_id)).scalars().all()
+    categoryEvents = db.session.execute(select(EventCategory).where(
+        EventCategory.event_id == event_id)).scalars().all()
+    groupEvents = db.session.execute(select(GroupEvent).where(
+        GroupEvent.event_id == event_id)).scalars().all()
+    commentEvents = db.session.execute(select(Comment).where(
+        Comment.event_id == event_id)).scalars().all()
+
+    for item in promotorEvents:
+        db.session.delete(item)
+    for item in userEvents:
+        db.session.delete(item)
+    for item in userAssistEvents:
+        db.session.delete(item)
+    for item in categoryEvents:
+        db.session.delete(item)
+    for item in groupEvents:
+        db.session.delete(item)
+    for item in commentEvents:
+        db.session.delete(item)
+
     db.session.delete(event)
     db.session.commit()
 
     return jsonify({
-        "message": f"Succesfully deleted event {event.name} with ID {event.id} for owner {promotor.name}"
+        "message": f"Succesfully deleted event with ID {event_id} for owner {promotor.name}"
     }), 200
 
 # asignar categorias a los eventos creados por X promotor
 
 
-@promotor.route('/events/<int:event_id>/event_category', methods=['GET'])
-# @jwt_required()
-def get_event_category(event_id):
+@promotor.route('<int:promotor_id>/events/<int:event_id>/event_category', methods=['GET'])
+@jwt_required()
+def get_event_category(event_id,promotor_id):
 
     event = db.session.get(Event, event_id)
     eventCatRelation = db.session.execute(select(EventCategory).where(
@@ -288,8 +299,8 @@ def get_event_category(event_id):
     }), 200
 
 
-@promotor.route('/events/<int:event_id>/event_category', methods=['POST'])
-# @jwt_required()
+@promotor.route('<int:promotor_id>/events/<int:event_id>/event_category', methods=['POST'])
+@jwt_required()
 def create_event_category(promotor_id, event_id):
 
     body = request.json
@@ -317,8 +328,9 @@ def create_event_category(promotor_id, event_id):
 
     return jsonify(response_body), 200
 
-@promotor.route('/events/<int:event_id>/event_category/<int:position>', methods=['DELETE'])
-def delete_event_category_by_id(event_id ,position):
+@promotor.route('<int:promotor_id>/events/<int:event_id>/event_category/<int:position>', methods=['DELETE'])
+@jwt_required()
+def delete_event_category_by_id(promotor_id, event_id ,position):
 
     event_category = db.session.get(EventCategory, position)
 
@@ -338,7 +350,7 @@ def delete_event_category_by_id(event_id ,position):
 # ver asistentes del evento creado por X promotor
 
 @promotor.route("/events/<int:event_id>/event-assists", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def get_event_assists(event_id):
 
     event = db.session.get(Event, event_id)
@@ -354,7 +366,7 @@ def get_event_assists(event_id):
 # comments on the event
 
 @promotor.route('/events/<int:event_id>/comments', methods=['GET'])
-# @jwt_required()
+@jwt_required()
 def get_comments(event_id):
 
     event = db.session.get(Event, event_id)
@@ -371,7 +383,7 @@ def get_comments(event_id):
 
 
 @promotor.route('/events/<int:event_id>/comments/<int:id>', methods=['GET'])
-# @jwt_required()
+@jwt_required()
 def get_comment(event_id, id):
     comment = db.session.get(Comment, id)
 
@@ -383,52 +395,8 @@ def get_comment(event_id, id):
 
     return jsonify(comment.serialize()), 200
 
-# Esto no sirve porque Promotor no puede crear comentarios segun nuestra DB
-""" @promotor.route('/events/<int:event_id>/comments', methods=['POST'])
-# @jwt_required()
-def create_comment(event_id):
-    body = request.json
-
-    user = db.session.get(User, body.get("user_id"))
-    event = db.session.get(Event, event_id)
-
-    if not user or not event:
-        return jsonify({"msg": "Invalid user or event"}), 400
-
-    new_comment = Comment(
-        message= body["message"],
-        create_date= datetime.now(timezone.utc),
-        user_id= body["user_id"],
-        event_id= event_id
-    )
-
-    db.session.add(new_comment)
-    db.session.commit()
-
-    return jsonify(new_comment.serialize()), 201
-
-
-@promotor.route('/events/<int:event_id>/comments/<int:id>', methods=['PUT'])
-def update_comment(id, event_id):
-    comment = db.session.get(Comment, id)
-
-    if comment is None:
-        return jsonify({"msg": "Comment not found"}), 404
-    
-    if comment.event.id != event_id:
-        return jsonify({"msg": "This comment is not on your event"})
-
-    body = request.json
-
-    comment.message = body.get("message", comment.message)
-
-    db.session.commit()
-
-    return jsonify(comment.serialize()), 200 """
-
-
 @promotor.route('/events/<int:event_id>/comments/<int:id>', methods=['DELETE'])
-# @jwt_required()
+@jwt_required()
 def delete_comment(id, event_id):
     comment = db.session.get(Comment, id)
 
