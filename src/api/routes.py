@@ -375,7 +375,7 @@ def delete_promotor_by_id(position):
   #  // CATEGORY CRUD //
 
 
-@api.route("/categories", methods=["GET"])
+@api.route("/", methods=["GET"])
 def get_categories():
     categories = db.session.execute(select(Category)).scalars().all()
     return jsonify([category.serialize() for category in categories]), 200
@@ -499,6 +499,8 @@ def create_event():
 
     name = body.get("name")
     location = body.get("location")
+    latitude = body.get("latitude")
+    longitude = body.get("longitude")
     description = body.get("description")
     date_event_str = body.get("date_event")
     capacity = body.get("capacity")
@@ -521,6 +523,8 @@ def create_event():
     new_event = Event(
         name=name,
         location=location,
+        latitude=latitude,
+        longitude=longitude,
         description=description,
         date_event=date_event,
         capacity=capacity,
@@ -554,6 +558,12 @@ def update_event(event_id):
 
     if "location" in body:
         event.location = body["location"]
+
+    if "latitude" in body:
+        event.latitude = body["latitude"]
+    
+    if "longitude" in body:
+        event.longitude = body["longitude"]
 
     if "description" in body:
         event.description = body["description"]

@@ -114,6 +114,8 @@ def create_event(promotor_id):
 
     name = body.get("name")
     location = body.get("location")
+    lat = body.get("lat")
+    lng = body.get("lng")
     description = body.get("description")
     date_event_str = body.get("date_event")
     capacity = body.get("capacity")
@@ -136,6 +138,8 @@ def create_event(promotor_id):
     new_event = Event(
         name=name,
         location=location,
+        lat=lat,
+        lng=lng,
         description=description,
         date_event=date_event,
         capacity=capacity,
@@ -205,6 +209,12 @@ def update_event(promotor_id, event_id):
 
     if "location" in body:
         event.location = body["location"]
+
+    if "lat" in body:
+        event.lat = body["lat"]
+    
+    if "lng" in body:
+        event.lng = body["lng"]
 
     if "description" in body:
         event.description = body["description"]
