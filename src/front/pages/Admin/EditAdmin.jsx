@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const EditAdmin = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const navigate = useNavigate();
     const { id } = useParams();
+    const { store } = useGlobalReducer();
 
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(true);
@@ -74,6 +76,10 @@ export const EditAdmin = () => {
                 <div className="alert alert-secondary">Cargando administrador...</div>
             </div>
         );
+    }
+
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
     }
 
     return (

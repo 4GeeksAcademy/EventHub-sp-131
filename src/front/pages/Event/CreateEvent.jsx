@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const CreateEvent = () => {
     const navigate = useNavigate();
+    const { store } = useGlobalReducer();
 
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
@@ -37,6 +39,10 @@ export const CreateEvent = () => {
             console.error("Error creando evento");
         }
     };
+
+    if (!store.adminAuth) {
+            return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container mt-5">

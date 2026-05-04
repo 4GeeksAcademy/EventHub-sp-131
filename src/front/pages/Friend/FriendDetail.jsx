@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const FriendDetail = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const { theId } = useParams();
+    const { store } = useGlobalReducer();
 
     const [friend, setFriend] = useState(null);
     const [message, setMessage] = useState("");
@@ -60,6 +62,10 @@ export const FriendDetail = () => {
             getUserById(friend.friend_id, "friend")
         }
     }, [friend])
+
+    if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container py-5">

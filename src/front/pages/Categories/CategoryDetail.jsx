@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const CategoryDetail = () => {
 	const { id } = useParams();
 	const [category, setCategory] = useState(null);
+	const { store } = useGlobalReducer();
 
 	useEffect(() => {
 		fetch(import.meta.env.VITE_BACKEND_URL + "/api/categories/" + id)
@@ -14,6 +16,10 @@ export const CategoryDetail = () => {
 
 	if (!category) {
 		return <div className="container mt-4">Cargando...</div>;
+	}
+
+	if (!store.adminAuth) {
+		return <Navigate to="/admin/login" />;
 	}
 
 	return (

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const EventAssistUser = () => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [assists, setAssists] = useState([]);
   const navigate = useNavigate();
+  const { store } = useGlobalReducer();
 
   useEffect(() => {
     fetch(`${backendUrl}/api/event-assists`)
@@ -12,6 +14,10 @@ const EventAssistUser = () => {
       .then((data) => setAssists(data))
       .catch((err) => console.error(err));
   }, []);
+
+  if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
+  }
 
   return (
     <div className="container mt-4">

@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const CategoryCreate = () => {
 	const [name, setName] = useState("");
 	const navigate = useNavigate();
+	const { store } = useGlobalReducer();
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -19,6 +21,10 @@ export const CategoryCreate = () => {
 			.then(() => navigate("/categories"))
 			.catch((error) => console.log(error));
 	};
+
+	if (!store.adminAuth) {
+		return <Navigate to="/admin/login" />;
+	}
 
 	return (
 		<div className="container mt-4">

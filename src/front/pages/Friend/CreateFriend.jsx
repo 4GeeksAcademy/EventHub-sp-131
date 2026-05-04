@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 
 export const CreateFriend = () => {
 
@@ -9,6 +9,8 @@ export const CreateFriend = () => {
     const [selectedIDFriend, setSelectedIDFriend] = useState("")
     const [allFriends, setAllFriends] = useState([])
     const [message, setMessage] = useState("");
+    const { store } = useGlobalReducer();
+    
 
     const navigate = useNavigate()
 
@@ -70,6 +72,10 @@ export const CreateFriend = () => {
     useEffect(() => {
         getFriends()
     }, [])
+
+    if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div style={{ "width": "60%", "margin": "auto", marginTop: "4rem" }}>

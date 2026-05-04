@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const EventPromotor = () => {
   const [data, setData] = useState([]);
+  const { store } = useGlobalReducer();
 
   const fetchData = async () => {
     const res = await fetch(`${backendUrl}/api/event-promotor`);
@@ -15,6 +17,10 @@ export const EventPromotor = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
+  }
 
   return (
     <div className="container mt-5">

@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
+
 
 export const User = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const [users, setUsers] = useState([]);
     const location = useLocation();
-
+    const { store } = useGlobalReducer();
+    
     const getUsers = async () => {
         try {
             const resp = await fetch(`${backendUrl}/api/users`);
@@ -19,6 +22,10 @@ export const User = () => {
     useEffect(() => {
         getUsers();
     }, []);
+
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container py-5">

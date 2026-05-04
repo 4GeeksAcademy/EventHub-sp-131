@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const SavedEventDetail = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const { theId } = useParams();
+    const { store } = useGlobalReducer();
 
     const [saved_event, setSavedEvent] = useState(null);
     console.log(saved_event);
@@ -59,6 +61,10 @@ export const SavedEventDetail = () => {
             getDataById(saved_event.event_id, "events")
         }
     }, [saved_event])
+
+    if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container py-5">

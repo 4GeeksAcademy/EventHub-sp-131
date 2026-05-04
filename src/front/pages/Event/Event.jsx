@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const Event = () => {
     const [events, setEvents] = useState([]);
     const navigate = useNavigate();
+    const { store } = useGlobalReducer();
 
     const getEvents = async () => {
         const resp = await fetch(`${backendUrl}/api/events`);
@@ -20,6 +22,10 @@ export const Event = () => {
     useEffect(() => {
         getEvents();
     }, []);
+
+    if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
+    }
 
     return (
     <div className="container mt-5">

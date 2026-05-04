@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const EditGroupEvent = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
+	const { store } = useGlobalReducer();
 
 	const [groups, setGroups] = useState([]);
 	const [events, setEvents] = useState([]);
@@ -65,6 +67,10 @@ export const EditGroupEvent = () => {
 			.then(() => navigate("/group-event"))
 			.catch((error) => console.log(error));
 	};
+
+	if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
+  	}
 
 	return (
 		<div className="container mt-4">

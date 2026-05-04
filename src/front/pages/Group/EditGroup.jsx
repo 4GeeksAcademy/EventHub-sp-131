@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
 
 export const EditGroup = () => {
@@ -55,6 +55,10 @@ export const EditGroup = () => {
     useEffect(() => {
         getGroup(theId)
     }, [])
+
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
+    }
 
     async function editGroup(id) {
         try {

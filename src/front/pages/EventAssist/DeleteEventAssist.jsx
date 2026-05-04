@@ -1,10 +1,12 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const DeleteEventAssist = () => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const { id } = useParams();
   const navigate = useNavigate();
+  const { store } = useGlobalReducer();
 
   const handleDelete = async () => {
     const res = await fetch(`${backendUrl}/api/event-assists/${id}`, {
@@ -17,6 +19,10 @@ const DeleteEventAssist = () => {
       alert("Error al eliminar");
     }
   };
+
+  if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
+  }
 
   return (
     <div className="container mt-5">

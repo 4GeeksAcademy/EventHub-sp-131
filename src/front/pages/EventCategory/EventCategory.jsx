@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 export const EventCategory = () => {
     const { store, dispatch } = useGlobalReducer()
@@ -24,6 +24,10 @@ export const EventCategory = () => {
     useEffect(() => {
         getEventCategories()
     }, [])
+
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
+    }
 
     return (
         <>

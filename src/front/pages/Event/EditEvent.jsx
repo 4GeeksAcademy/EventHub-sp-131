@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const EditEvent = () => {
     const navigate = useNavigate();
     const { id } = useParams();
+    const { store } = useGlobalReducer();
 
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
@@ -16,10 +18,12 @@ export const EditEvent = () => {
 
     // 🔽 Cargar evento
     const getEvent = async () => {
+    try {
         const resp = await fetch(`${backendUrl}/api/events/${id}`);
         const data = await resp.json();
 
-        const e = data.results;
+
+        const e = data;
 
         setName(e.name || "");
         setLocation(e.location || "");
@@ -27,16 +31,18 @@ export const EditEvent = () => {
         setCapacity(e.capacity || "");
         setMedia(e.media || "");
 
-        // ⚠️ Formato para datetime-local
         if (e.date_event) {
-            const formatted = e.date_event.slice(0, 16);
-            setDateEvent(formatted);
+            setDateEvent(e.date_event.slice(0, 16));
         }
-    };
+
+    } catch (error) {
+        console.error("Error:", error);
+    }
+};
 
     useEffect(() => {
         getEvent();
-    }, []);
+    }, [id]);
 
     // 🔽 Guardar cambios
     const handleSubmit = async (e) => {
@@ -63,6 +69,10 @@ export const EditEvent = () => {
             console.error("Error actualizando evento");
         }
     };
+
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container mt-5">

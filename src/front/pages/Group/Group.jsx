@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 export const Group = () => {
     const { store, dispatch } = useGlobalReducer()
@@ -25,6 +25,10 @@ export const Group = () => {
     useEffect(() => {
         getGroups()
     }, [])
+
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
+    }
 
     return (
         <>

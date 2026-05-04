@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const CreateEventPromotor = () => {
   const navigate = useNavigate();
+  const { store } = useGlobalReducer();
 
   const [form, setForm] = useState({
     promotor_id: "",
@@ -65,6 +67,10 @@ export const CreateEventPromotor = () => {
       console.error("Error en la petición:", error);
     }
   };
+
+  if (!store.adminAuth) {
+      return <Navigate to="/admin/login" />;
+  }
 
   return (
     <div className="container mt-5">

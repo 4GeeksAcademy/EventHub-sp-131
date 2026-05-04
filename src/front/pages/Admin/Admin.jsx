@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const Admin = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const [admins, setAdmins] = useState([]);
     const [message, setMessage] = useState("");
+    const { store } = useGlobalReducer();
+
 
     const getAdmins = () => {
         fetch(`${backendUrl}/api/admin-panel/admins`)
@@ -42,6 +45,10 @@ export const Admin = () => {
                 setMessage(error.message);
             });
     };
+
+    if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container py-5">

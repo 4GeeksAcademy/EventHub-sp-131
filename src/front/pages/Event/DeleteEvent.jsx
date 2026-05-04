@@ -1,29 +1,35 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const DeleteEvent = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { store } = useGlobalReducer();
 
     const handleDelete = async () => {
-    try {
-        const response = await fetch(`${backendUrl}/api/events/${id}`, {
-            method: "DELETE"
-        });
+        try {
+            const response = await fetch(`${backendUrl}/api/events/${id}`, {
+                method: "DELETE"
+            });
 
-        if (!response.ok) {
-            throw new Error("Error al eliminar");
+            if (!response.ok) {
+                throw new Error("Error al eliminar");
+            }
+
+            alert("Evento eliminado");
+            navigate("/events");
+
+        } catch (error) {
+            console.error(error);
+            alert("No se pudo eliminar el evento");
         }
+    };
 
-        alert("Evento eliminado");
-        navigate("/events");
-
-    } catch (error) {
-        console.error(error);
-        alert("No se pudo eliminar el evento");
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
     }
-};
 
     return (
     <div className="container mt-5">

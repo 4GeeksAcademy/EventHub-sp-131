@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { use } from "react";
 
 export const CreateSavedEvent = () => {
@@ -13,6 +13,7 @@ export const CreateSavedEvent = () => {
     const [message, setMessage] = useState("");
 
     const navigate = useNavigate()
+    const { store } = useGlobalReducer();
 
     const handleInput = e => {
         e.preventDefault();
@@ -77,6 +78,10 @@ export const CreateSavedEvent = () => {
         getData("users")
         getData("events")
     }, [])
+
+    if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div style={{ "width": "60%", "margin": "auto", marginTop: "4rem" }}>

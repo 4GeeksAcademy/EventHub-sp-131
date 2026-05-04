@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const CategoryEdit = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const [name, setName] = useState("");
+	const { store } = useGlobalReducer();
 
 	useEffect(() => {
 		fetch(import.meta.env.VITE_BACKEND_URL + "/api/categories/" + id)
@@ -27,6 +29,10 @@ export const CategoryEdit = () => {
 			.then(() => navigate("/categories"))
 			.catch((error) => console.log(error));
 	};
+
+	if (!store.adminAuth) {
+			return <Navigate to="/admin/login" />;
+	}
 
 	return (
 		<div className="container mt-4">

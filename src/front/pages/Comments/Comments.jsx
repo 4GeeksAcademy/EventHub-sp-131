@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const Comments = () => {
     const [comments, setComments] = useState([]);
+    const { store } = useGlobalReducer();
 
     useEffect(() => {
         fetch(`${backendUrl}/api/comments`)
@@ -12,6 +14,10 @@ export const Comments = () => {
             .then(data => setComments(data))
             .catch(err => console.error(err));
     }, []);
+
+    if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container mt-5">
@@ -38,6 +44,20 @@ export const Comments = () => {
                         <p className="text-muted">
                             {new Date(comment.create_date).toLocaleString()}
                         </p>
+                        <div className="d-flex justify-content-start">
+                            <Link 
+                                to={`/edit-comment/${comment.id}`} 
+                                className="btn btn-warning btn-sm px-2"
+                            >
+                                ✏️
+                            </Link>
+                            <Link 
+                                to={`/delete-comment/${comment.id}`} 
+                                className="btn btn-danger btn-sm px-2"
+                            >
+                                🗑️
+                            </Link>
+                        </div>
                     </div>
                 ))
             )}

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const EditGroupCategory = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
+	const { store } = useGlobalReducer();
 
 	const [groups, setGroups] = useState([]);
 	const [categories, setCategories] = useState([]);
@@ -74,6 +76,10 @@ export const EditGroupCategory = () => {
 			})
 			.catch((error) => console.log(error));
 	};
+
+	if (!store.adminAuth) {
+			return <Navigate to="/admin/login" />;
+	}
 
 	return (
 		<div className="container mt-4">
