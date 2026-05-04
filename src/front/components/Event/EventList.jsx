@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState, forwardRef, useImperativeHandle, useCallback } from "react";
+import { Link, } from "react-router-dom";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-export const EventList = (props) => {
+export const EventList = forwardRef((props, ref) => {
     const [events, setEvents] = useState([]);
-    const navigate = useNavigate();
 
-    const getEvents = async () => {
+    const getEvents = useCallback(async () => {
         const resp = await fetch(`${backendUrl}/api/${props.type}/${props.profile.id}/events`, {
             headers: {
                 "Content-Type": "application/json",
@@ -20,11 +19,15 @@ export const EventList = (props) => {
         }
         const data = await resp.json();
         setEvents(data.events);
-    };
+    },[props.type, props.profile.id]);
+
+    useImperativeHandle(ref, () => ({
+        refreshEvents: getEvents
+    }),[getEvents]);
 
     useEffect(() => {
-        getEvents(props.profile.id);
-    }, []);
+        getEvents();
+    }, [getEvents]);
 
     const handleDelete = async (idToDelete) => {
         try {
@@ -46,6 +49,10 @@ export const EventList = (props) => {
             console.error(error);
             alert("No se pudo eliminar el evento");
         }
+        const modalElement = document.getElementById(`deleteEvent-${idToDelete}`);
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        modal.hide();
+        getEvents();
     };
 
     return (
@@ -87,41 +94,25 @@ export const EventList = (props) => {
                                 <p><strong>👥 Capacidad:</strong> {e.capacity}</p>
 
                                 <div className="mt-auto d-flex justify-content-between">
-                                    <button type="button" className="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editEvent">
-                                        Editar
-                                    </button>
-                                    <div className="modal fade" id="editEvent" tabIndex="-1" aria-labelledby="editEventLabel" aria-hidden="true">
-                                        <div className="modal-dialog">
-                                            <div className="modal-content">
-                                                <div className="modal-header">
-                                                    <h1 className="modal-title fs-5" id="editEventLabel">Modal title</h1>
-                                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div className="modal-body">
-                                                    ...
-                                                </div>
-                                                <div className="modal-footer">
-                                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="button" className="btn btn-primary">Save changes</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <Link to={`/edit-event/${e.id}`} state={{ from: `/${props.type}/${props.profile.id}/private` }}>
+                                        <button type="button" className="btn btn-outline-primary btn-sm" >
+                                            Editar
+                                        </button>
+                                    </Link>
 
-                                    <button type="button" className="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEvent">
+                                    <button type="button" className="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target={`#deleteEvent-${e.id}`}>
                                         Eliminar
                                     </button>
 
-                                    <div className="modal fade" id="deleteEvent" tabIndex="-1" aria-labelledby="deleteEventLabel" aria-hidden="true">
+                                    <div className="modal fade" id={`deleteEvent-${e.id}`} tabIndex="-1" aria-labelledby="deleteEventLabel" aria-hidden="true">
                                         <div className="modal-dialog">
                                             <div className="modal-content">
                                                 <div className="modal-header">
-                                                    <h1 className="modal-title fs-5" id="deleteEventLabel">Modal title</h1>
                                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div className="modal-body text-center">
                                                     <h3 className="mb-3 text-danger">
-                                                        ⚠️ Eliminar Evento
+                                                        ⚠️ Eliminar Evento {e.name}
                                                     </h3>
                                                     <p className="mb-4">
                                                         ¿Seguro que quieres eliminar este evento?
@@ -132,7 +123,7 @@ export const EventList = (props) => {
                                                     </div>
                                                 </div>
                                                 <div className="modal-footer">
-                                                    <button className="btn btn-secondary" onClick={() => navigate("/events")}>Cancelar</button>
+                                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                                                     <button className="btn btn-danger" onClick={() => { handleDelete(e.id) }}>Sí, eliminar</button>
                                                 </div>
                                             </div>
@@ -146,4 +137,4 @@ export const EventList = (props) => {
             </div>
         </div>
     );
-};
+});

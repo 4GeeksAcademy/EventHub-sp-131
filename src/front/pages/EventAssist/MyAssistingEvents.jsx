@@ -15,7 +15,7 @@ export const MyAssistingEvents = () => {
             return;
         }
 
-        fetch(`${backendUrl}/api/user/assisting-events`, {
+        fetch(`${backendUrl}/api/assisting-events`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

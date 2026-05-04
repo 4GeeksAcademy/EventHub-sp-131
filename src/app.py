@@ -10,7 +10,7 @@ from flask_jwt_extended import JWTManager
 from api.models import db
 from api.routes import api
 from api.promotor import promotor
-from api.user import user
+from api.user import api as user
 from api.admins import admins
 from api.category import category
 from api.event import event
@@ -19,7 +19,9 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-
+from flask_socketio import SocketIO
+from api.socket_events import register_socket_events
+from api.image_search import image_search
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
@@ -29,10 +31,12 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 
 # Allow CORS requests to this API
+socketio = SocketIO(app, cors_allowed_origins="*")
+register_socket_events(socketio)
 CORS(app, resources={r"/api/*": {"origins": "*"}},
-    allow_headers=["Content-Type", "Authorization"],
-    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    supports_credentials=True)
+     allow_headers=["Content-Type", "Authorization"],
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+     supports_credentials=True)
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
@@ -45,7 +49,7 @@ else:
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
-   
+
 with app.app_context():
     db.create_all()
 # add the admin
@@ -57,11 +61,12 @@ setup_commands(app)
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
 app.register_blueprint(promotor, url_prefix='/api/promotor')
-app.register_blueprint(user, url_prefix='/api')
 app.register_blueprint(group, url_prefix='/api')
 app.register_blueprint(admins, url_prefix='/api')
 app.register_blueprint(event, url_prefix='/api')
 app.register_blueprint(category, url_prefix='/api')
+app.register_blueprint(user, url_prefix='/api')
+app.register_blueprint(image_search, url_prefix="/api")
 
 app.config["JWT_SECRET_KEY"] = "super-secret-status-python-flask-token-secure-private"
 jwt = JWTManager(app)
@@ -97,4 +102,4 @@ def serve_any_other_file(path):
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
-    app.run(host='0.0.0.0', port=PORT, debug=True)
+    socketio.run(app, host='0.0.0.0', port=PORT, debug=True)

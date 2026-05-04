@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 export const DeletePromotor = () => {
@@ -21,6 +22,12 @@ export const DeletePromotor = () => {
             console.log("Error on fetch: ", error.message)
         }
     }
+
+    useEffect(() => {
+            if (!localStorage.getItem("adminAuth")) {
+                navigate("/admin/login");
+            }
+        }, [])
 
     return (
         <div>

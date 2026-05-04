@@ -23,6 +23,11 @@ export const PromotorDetail = () => {
     }
 
     useEffect(() => {
+        
+            if (!localStorage.getItem("adminAuth")) {
+                navigate("/admin/login");
+            }
+        
         getPromotorById(theId)
     }, [])
 

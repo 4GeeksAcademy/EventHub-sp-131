@@ -1,88 +1,109 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage } from "@cloudinary/react";
 import { Resize } from "@cloudinary/url-gen/actions";
 import CloudinaryUploadWidget from "../CloudinaryUploadWidget";
-import { AdvancedMarker, APIProvider, Map, } from '@vis.gl/react-google-maps';
-
-
+import { Map } from "../Map";
+import { useArtistSearch } from "../../hooks/useArtistSearch";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const geoApiKey = import.meta.env.VITE_GEOCODING_API_KEY;
+
+const cloudName = 'dxv6ytl25';
+const uploadPreset = 'ml_default';
 
 export const CreateEventForm = (props) => {
     const navigate = useNavigate();
 
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
+    const [lat, setLatitude] = useState("")
+    const [lng, setLongitude]= useState("");
     const [description, setDescription] = useState("");
     const [date_event, setDateEvent] = useState("");
     const [capacity, setCapacity] = useState("");
-    const [publicId, setPublicId] = useState('');
+    const [publicId, setPublicId] = useState("");
+    const [imgFromApi, setImgFromApi] = useState("");
     const [mapCenter, setMapCenter] = useState({ lat: 39.9514572, lng: -4.3435391 });
-    const [defaultZoom, setDefaultZoom] = useState(3)
-    const [isProgrammaticMove, setIsProgrammaticMove] = useState(false);
-    const autocompleteRef = useRef(null);
+    const [defZoom, setDefZoom] = useState(3)
+    const [markerPosition, setMarkerPosition] = useState(null);
 
-    const cloudName = 'dxv6ytl25';
-    const uploadPreset = 'ml_default';
+    const {
+        artistQuery,
+        setArtistQuery,
+        artistSuggestions,
+        isDropdownOpen,
+        containerRef,
+        selectArtist,
+        selectedArtist,
+    } = useArtistSearch();
+
+    const urlApi = props.type === undefined
+        ? "events"
+        : `${props.type}/${props.id}/events`;
+
+    const cld = useMemo(() => new Cloudinary({ cloud: { cloudName, uploadPreset } }), []);
+    const uwConfig = useMemo(() => ({ cloudName, uploadPreset }), []);
+
+    async function geoloc(lat, lng) {
+        console.log("lat ",lat," long ",lng);
+        try {
+            const resp = await fetch(
+                `https://geocode.googleapis.com/v4/geocode/location/${lat},${lng}?key=${geoApiKey}`
+            );
+            if (resp.ok) {
+                const data = await resp.json();
+                setLocation(data.results[0].formattedAddress);
+            }
+        } catch (err) {
+            console.error("Error obteniendo dirección:", err);
+        }
+    }
 
     useEffect(() => {
-        const autocomplete = autocompleteRef.current;
-        if (!autocomplete) return;
-
-        const handlePlaceSelect = async (event) => {
-            let place = null
-
-            if (event.placePrediction) {
-                place = event.placePrediction.toPlace();
-            } else if (event.place) {
-                place = event.place
-
-            }
-            if (!place) return;
-
-            try {
-                await place.fetchFields({ fields: ["location", "formattedAddress", "displayName", "viewport"] });;
-                if (place.location) {
-                    const newCenter = {
-                        lat: place.location.lat(),
-                        lng: place.location.lng()
-                    };
-                    setIsProgrammaticMove(newCenter);
-                    setMapCenter(newCenter)                    
-                    geoloc(newCenter.lat, newCenter.lng)
-                    setDefaultZoom(13)
-
-                }
-            } catch (error) {
-                console.error("Error al obtener datos del place:", error);
-            }
+        if (!selectedArtist) {
+            setName("");
+            setLocation("");
+            setLatitude("");
+            setLongitude("");
+            setDateEvent("");
+            setImgFromApi("");
+            setDescription("");
+            setMapCenter({ lat: 39.9514572, lng: -4.3435391 });
+            setMarkerPosition(null);
+            setDefZoom(3);
         }
-        autocomplete.addEventListener("gmp-select", handlePlaceSelect);
-        return () => {
-            autocomplete.removeEventListener("gmp-select", handlePlaceSelect);
-        };
-    }, [])
+    }, [selectedArtist]);
 
+    //console.log(selectedArtist);
+    
 
-    const cld = useMemo(() => new Cloudinary({
-        cloud: {
-            cloudName,
-            uploadPreset
-        }
-    }), []);
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        setArtistQuery(value);
+        setName(value);
+    };
 
-    const uwConfig = useMemo(() => ({
-        cloudName,
-        uploadPreset
-    }), []);
+    const handleSuggestionSelected = (item) => {
+        selectArtist(item);
+        setName(item?.name);
+        setLocation(`${item?._embedded.venues[0].name} ${item?._embedded.venues[0].address.line1} ${item?._embedded.venues[0].city.name} ${item?._embedded.venues[0].country.name}`)
+        setLatitude(parseFloat(item?._embedded.venues[0].location.latitude) ?? mapCenter.lat)
+        setLongitude(parseFloat(item?._embedded.venues[0].location.longitude)?? mapCenter.lng)
+        setDateEvent(item?.dates.start.dateTime.slice(0, 16))
+        setImgFromApi(item?.images[0].url)
+        setDescription(item?.description)
+        setMapCenter({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) })
+        setMarkerPosition({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) })
+        setDefZoom(13)
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const resp = await fetch(`${backendUrl}/api/${props.type}/${props.id}/events`, {
+        
+        const finalImg = publicId ?? imgFromApi
+        const resp = await fetch(`${backendUrl}/api/${urlApi}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -91,98 +112,101 @@ export const CreateEventForm = (props) => {
             body: JSON.stringify({
                 name,
                 location,
+                lat,
+                lng,
                 description,
                 date_event,
                 capacity: Number(capacity),
-                publicId
+                "media": finalImg
             })
         });
 
         if (resp.ok) {
+            setName("");
+            setLocation("");
+            setDateEvent("");
+            setImgFromApi("");
+            setDescription("")
+            setMapCenter({ lat: 39.9514572, lng: -4.3435391 });
+            setMarkerPosition(null);
+            setDefZoom(3);
+            props.onSuccess?.();
         } else {
             console.error("Error creando evento");
         }
     };
 
-    async function geoloc(lat, long) {
-        const resp = await fetch(`https://geocode.googleapis.com/v4/geocode/location/${lat},${long}?key=${geoApiKey}`, {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (resp.ok) {
-            const data = await resp.json()
-            setLocation(data.results[0].formattedAddress)
-        } else {
-            console.error("Error creando evento");
-        }
-    }
-
-    const dragMarkerOnMap = (e) => {
-        const newCenter = {
-            lat: e.latLng.lat(),
-            lng: e.latLng.lng()
-        };
-        setIsProgrammaticMove(newCenter);
-        setMapCenter(newCenter);
-        setDefaultZoom(13)
-        geoloc(newCenter.lat, newCenter.lng)
-    }
-
     return (
         <div className="container my-4">
             <div className="row justify-content-center">
                 <div className="col-md-6">
-
                     <h2 className="mb-4 text-center">Crear Evento</h2>
 
                     <form onSubmit={handleSubmit}>
 
-                        <div className="mb-3">
+                        {(publicId || imgFromApi) &&
+                            (
+                                <div className="p-4 mb-3 text-center">
+                                    {publicId ?
+                                        <AdvancedImage
+                                            cldImg={cld.image(publicId).resize(Resize.scale().width(450).height(250))}
+                                        />
+                                        :
+                                        <img src={imgFromApi} style={{ width: "450px", height: "250px" }} />
+                                    }
+                                </div>
+                            )}
+                        {/* Imagen */}
+                        <div className="mb-3 d-flex justify-content-center">
+                            <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} />
+                        </div>
+                        {/* Nombre con autocomplete de artistas */}
+                        <div className="mb-3" ref={containerRef}>
                             <label className="form-label">Nombre</label>
                             <input
                                 type="text"
                                 className="form-control"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
+                                value={artistQuery}
+                                onChange={handleInputChange}
                                 required
+                            />
+                            {isDropdownOpen && artistSuggestions.length > 0 && (
+                                <div className="border rounded-bottom-1">
+                                    <ul className="list-group">
+                                        {artistSuggestions.map((suggestion) => (
+                                            <li
+                                                key={suggestion.id || suggestion.name}
+                                                onClick={() => handleSuggestionSelected(suggestion)}
+                                                className="list-group-item list-group-item-action p-2"
+                                                style={{ cursor: "pointer" }}
+                                            >
+                                                {suggestion.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Mapa */}
+                        <div className="mb-3">
+                            <label className="form-label">Ubicación</label>
+                            <Map
+                                location={location}
+                                mapCenter={mapCenter}
+                                setLatitude={setLatitude}
+                                setLongitude={setLongitude}
+                                defZoom={defZoom}
+                                setDefZoom={setDefZoom}
+                                setMapCenter={setMapCenter}
+                                markerPosition={markerPosition}
+                                setMarkerPosition={setMarkerPosition}
+                                onLocationChange={geoloc}
+                                height={'400px'}
                             />
                         </div>
 
-                        <div className="mb-3">
-                            <label className="form-label">Ubicación</label>
-                            <p>{location}</p>
-                            <APIProvider apiKey={geoApiKey} version='beta' libraries={['marker', 'places']}>
-                                <div style={{ marginBottom: "10px" }}>
-                                    <gmp-place-autocomplete
-                                        ref={autocompleteRef}
-                                        placeholder="Busca una ubicación"
-                                        style={{
-                                            width: "100%",
-                                            height: "40px",
-                                            padding: "8px",
-                                            fontSize: "16px"
-                                        }}
-                                    />
-                                </div>
-                                <Map
-                                    style={{ width: "100%", height: "400px" }}
-                                    zoom={defaultZoom}
-                                    id="my-map"
-                                    mapId="8c732c82e4ec29d9"
-                                    center={mapCenter}
-                                    onCameraChanged={(ev) => {
-                                        console.log(defaultZoom);
-                                        setMapCenter(ev.detail.center)
-                                    }
-                                    }>
-                                    <AdvancedMarker position={isProgrammaticMove ? isProgrammaticMove : null} draggable={true} onDragEnd={(e) => dragMarkerOnMap(e)}></AdvancedMarker>
-                                </Map>
-
-                            </APIProvider>
-                        </div>
-
+                        {/* Descripción */}
                         <div className="mb-3">
                             <label className="form-label">Descripción</label>
                             <textarea
@@ -194,6 +218,7 @@ export const CreateEventForm = (props) => {
                             />
                         </div>
 
+                        {/* Fecha */}
                         <div className="mb-3">
                             <label className="form-label">Fecha</label>
                             <input
@@ -205,6 +230,7 @@ export const CreateEventForm = (props) => {
                             />
                         </div>
 
+                        {/* Capacidad */}
                         <div className="mb-3">
                             <label className="form-label">Capacidad</label>
                             <input
@@ -216,17 +242,8 @@ export const CreateEventForm = (props) => {
                             />
                         </div>
 
-                        <div className="mb-3">
-                            <label className="form-label me-3">Imagen</label>
-                            <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} />
-                        </div>
 
-                        {/* Preview */}
-                        {publicId && (
-                            <div className="p-4 mb-3 text-center">
-                                <AdvancedImage cldImg={cld.image(publicId).resize(Resize.scale().width(450).height(250))} />
-                            </div>
-                        )}
+
 
                         <div className="d-flex justify-content-between">
                             <button type="submit" className="btn btn-success">
@@ -236,7 +253,7 @@ export const CreateEventForm = (props) => {
 
                     </form>
                 </div>
-            </div >
-        </div >
+            </div>
+        </div>
     );
 };
