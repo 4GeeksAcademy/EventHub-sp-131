@@ -18,6 +18,7 @@ export const UserEvents = () => {
     const navigate = useNavigate();
     const [selectedEvent, setSelectedEvent] = useState(null)
     const [userLocation, setUserLocation] = useState(null);
+    const [infoWindowEvent, setInfoWindowEvent] = useState(null);
     console.log("userloc ",userLocation);
     
     const [searchLocation, setSearchLocation] = useState(null);
@@ -242,7 +243,7 @@ export const UserEvents = () => {
                             </div>
                             <div className="w-auto d-flex gap-2">
                                 <label className="form-label">Nombre</label>
-                                <input
+                                <inputInfoWindowEvent
                                     type="text"
                                     className="form-control"
                                     value={artistFilter}
@@ -272,7 +273,7 @@ export const UserEvents = () => {
                                 </div>
                             ) : (
                                 filteredEvents.map((event) => (
-                                    <div key={event.id} className="col-md-6 col-lg-4" onMouseEnter={() => setSelectedEvent(event)} onMouseLeave={() => setSelectedEvent(null)}>
+                                    <div key={event.id} className="col-md-6 col-lg-4" onMouseEnter={() => setSelectedEvent(event)} onMouseLeave={() => setSelectedEvent(null)} onClick={() => setInfoWindowEvent(event)}>
                                         <div className="card shadow-sm h-auto rounded-4 overflow-hidden" style={{ border: event.id === selectedEvent?.id ? "1px solid black" : "" }}>
                                             {event.media ? (
                                                 <img
@@ -369,7 +370,9 @@ export const UserEvents = () => {
                                 selectedEvent={selectedEvent}
                                 setSelectedEvent={setSelectedEvent}
                                 height={'700px'}
-                            >
+                                infoWindowEvent={infoWindowEvent}
+                                setInfoWindowEvent={setInfoWindowEvent}
+                                >
                             </Map>
                         </div>
                     )}
