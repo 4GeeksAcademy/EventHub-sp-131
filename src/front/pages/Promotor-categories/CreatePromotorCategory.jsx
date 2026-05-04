@@ -19,9 +19,9 @@ export const CreatePromotorCategory = () => {
 
     const loadData = () => {
         Promise.all([
-            fetch(`${API_URL}/promotors`).then((resp) => resp.json()),
-            fetch(`${API_URL}/categories`).then((resp) => resp.json()),
-            fetch(`${API_URL}/promotor-categories`).then((resp) => resp.json())
+            fetch(`${API_URL}/api/promotors`).then((resp) => resp.json()),
+            fetch(`${API_URL}/api/categories`).then((resp) => resp.json()),
+            fetch(`${API_URL}/api/promotor-categories`).then((resp) => resp.json())
         ])
             .then(([promotorsData, categoriesData, relationsData]) => {
                 setPromotors(Array.isArray(promotorsData) ? promotorsData : []);

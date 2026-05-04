@@ -102,7 +102,7 @@ export const CreateEventForm = (props) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        const finalImg = publicId ?? imgFromApi
+        const finalImg = publicId ? publicId : imgFromApi
         const resp = await fetch(`${backendUrl}/api/${urlApi}`, {
             method: "POST",
             headers: {

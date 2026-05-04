@@ -44,29 +44,6 @@ export const EditEvent = () => {
     console.log(media);
     const authApiA = import.meta.env.VITE_BACKEND_URL
 
-    // 🔽 Cargar evento
-    const getEvent = async () => {
-    try {
-        const resp = await fetch(`${backendUrl}/api/events/${id}`);
-        const data = await resp.json();
-
-
-        const e = data;
-
-        
-        if (e.date_event) {
-            setDateEvent(e.date_event.slice(0, 16));
-        }
-        
-    } catch (error) {
-        console.error("Error:", error);
-    }
-};
-
-    useEffect(() => {
-        getEvent();
-    }, [id]);
-
     const {
         artistQuery,
         setArtistQuery,
@@ -76,8 +53,6 @@ export const EditEvent = () => {
         selectArtist,
         selectedArtist,
     } = useArtistSearch();
-
-    console.log(selectedArtist);
 
     const urlApi = props.type === undefined
         ? "events"
@@ -117,7 +92,6 @@ export const EditEvent = () => {
     }
 
     useEffect(() => {
-        console.log("test", !selectArtist);
         if (!selectedArtist) {
 
             setName("");
@@ -151,7 +125,6 @@ export const EditEvent = () => {
         setMapCenter({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) })
         setMarkerPosition({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) })
         setDefZoom(13)
-        setMedia(publicId ? publicId : imgFromApi)
     };
 
     useEffect(() => {
@@ -168,9 +141,6 @@ export const EditEvent = () => {
             const resp = await fetch(`${backendUrl}/api/${urlApi}/${id}`);
             const data = await resp.json();
             const e = props.type !== undefined ? data.event : data;
-            console.log(e);
-
-
             setName(e.name || "");
             setLocation(e.location || "");
             setDescription(e.description || "");
@@ -185,8 +155,6 @@ export const EditEvent = () => {
     }
 
     async function geoloc(lat, lng) {
-        console.log("lat ",lat," long ",lng);
-        
         try {
             const resp = await fetch(
                 `https://geocode.googleapis.com/v4/geocode/location/${lat},${lng}?key=${geoApiKey}`
@@ -285,6 +253,10 @@ export const EditEvent = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        const finalMedia = publicId ? publicId : imgFromApi;
+        console.log(media);
+
         try {
             const resp = await fetch(`${backendUrl}/api/${urlApi}/${id}`, {
                 method: "PUT",
@@ -292,7 +264,7 @@ export const EditEvent = () => {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${localStorage.getItem("token")}`
                 },
-                body: JSON.stringify({ name, location, description, date_event, capacity: Number(capacity), media })
+                body: JSON.stringify({ name, location, description, date_event, capacity: Number(capacity), media: finalMedia })
             });
             if (!resp.ok) throw new Error("Error actualizando evento");
         } catch (err) {

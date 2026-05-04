@@ -19,11 +19,11 @@ export const EventList = forwardRef((props, ref) => {
         }
         const data = await resp.json();
         setEvents(data.events);
-    },[props.type, props.profile.id]);
+    }, [props.type, props.profile.id]);
 
     useImperativeHandle(ref, () => ({
         refreshEvents: getEvents
-    }),[getEvents]);
+    }), [getEvents]);
 
     useEffect(() => {
         getEvents();
@@ -66,11 +66,6 @@ export const EventList = forwardRef((props, ref) => {
                 {events.map(e => (
                     <div key={e.id} className="col-md-4 mb-4" >
                         <div className="card h-100 shadow-sm">
-                            <Link to={`/${props.type}/private/${props.profile.id}/event/${e.id}`}>
-                                <button type="button" className="btn btn-outline-primary btn-sm">
-                                    Ver evento
-                                </button>
-                            </Link>
                             {e.media && (
                                 <img
                                     src={e.media}
@@ -80,7 +75,15 @@ export const EventList = forwardRef((props, ref) => {
                             )}
 
                             <div className="card-body d-flex flex-column">
-                                <h5 className="card-title">{e.name}</h5>
+                                <div className="d-flex justify-content-between">
+                                    <h5 className="card-title">{e.name}</h5>
+                                    <Link to={`/${props.type}/private/${props.profile.id}/event/${e.id}`}>
+                                        <button type="button" className="btn btn-outline-primary btn-sm">
+                                            Ver evento
+                                        </button>
+                                    </Link>
+
+                                </div>
                                 <p className="card-text text-muted mb-1">
                                     📍 {e.location}
                                 </p>

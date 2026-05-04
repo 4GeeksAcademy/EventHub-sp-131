@@ -73,7 +73,7 @@ export const Map = ({ location, mapCenter, setMapCenter, markerPosition, setMark
                     onDragEnd={handleDragEnd}
                 />
                 <div>
-                    {events.length &&
+                    {events &&
                         events.map((event) => {
                             return (
                                 <AdvancedMarker
