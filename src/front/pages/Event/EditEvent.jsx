@@ -276,9 +276,9 @@ export const EditEvent = () => {
             : navigate(`/${props.type}/private`);
     };
 
-    if (!store.adminAuth) {
+/*     if (!store.adminAuth) {
         return <Navigate to="/admin/login" />;
-    }
+    } */
 
     return (
         <div className="container my-4">
