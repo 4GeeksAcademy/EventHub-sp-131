@@ -1,7 +1,14 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const CategoryPanel = () => {
+	const { store } = useGlobalReducer();
+
+	if (!store.adminAuth) {
+				return <Navigate to="/admin/login" />;
+	}
+
 	return (
 		<div className="container mt-5">
 			<h2 className="mb-4">Panel de Categorías</h2>

@@ -1,10 +1,11 @@
-import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
+import { useNavigate, useParams, Navigate } from "react-router-dom";
 
 export const DeleteUser = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const { id } = useParams();
     const navigate = useNavigate();
+    const { store } = useGlobalReducer();
 
     const handleDelete = async () => {
         await fetch(`${backendUrl}/api/users/${id}`, {
@@ -15,6 +16,10 @@ export const DeleteUser = () => {
             state: { message: "Usuario eliminado correctamente" }
         });
     };
+
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container py-5">

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const AdminDetails = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const { id } = useParams();
+    const { store } = useGlobalReducer();
 
     const [admin, setAdmin] = useState(null);
     const [message, setMessage] = useState("");
@@ -26,6 +28,10 @@ export const AdminDetails = () => {
                 setMessage(error.message);
             });
     }, [backendUrl, id]);
+
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container py-5">

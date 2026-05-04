@@ -7,7 +7,7 @@ export const Home = () => {
 
 	const { store, dispatch } = useGlobalReducer()
 
-return (
+	return (
 		<div className="text-center mt-5">
 			<h1 className="display-4">Hello Rigo!!</h1>
 			<p className="lead">
@@ -39,7 +39,7 @@ return (
 					</Link>
 				</div>
 				<div>
-					<Link to="/category-panel">
+					<Link className="p-2" to="/category-panel">
 						<button className="btn btn-primary">Category CRUD</button>
 					</Link>
 				</div>
@@ -59,7 +59,7 @@ return (
 					</Link>
 				</div>
 				<div>
-					<Link to="/saved-event">
+					<Link className="p-2" to="/saved-event">
 						<button className="btn btn-primary">
 							Saved Event CRUD
 						</button>
@@ -91,26 +91,26 @@ return (
 					</Link>
 				</div>
 				<div>
-				    <Link className="p-2" to="/group-event">
-	                   <button className="btn btn-primary">Group-Event CRUD</button>
-                     </Link>
+					<Link className="p-2" to="/group-event">
+						<button className="btn btn-primary">Group-Event CRUD</button>
+					</Link>
 				</div>
-				<div>	
+				<div>
 					<Link className="p-2" to="/event-category">
 						<button className="btn btn-primary">Event Category CRUD</button>
 					</Link>
 				</div>
-				<div>	
+				<div>
 					<Link className="p-2" to="/event-promotor">
 						<button className="btn btn-primary">Event Promotor CRUD</button>
 					</Link>
 				</div>
-			</div> 
 				<div>
 					<Link className="p-2" to="/event-assists">
 						<button className="btn btn-primary">Event Assist CRUD</button>
 					</Link>
 				</div>
 			</div>
+		</div>
 	)
 }; 

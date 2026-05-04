@@ -1,10 +1,12 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
 
 export const DeleteSavedEvent = () => {
 
     const urlAPI = import.meta.env.VITE_BACKEND_URL
     const { theId } = useParams()
     const navigate = useNavigate()
+    const { store } = useGlobalReducer();
 
     async function deleteSavedEvent(id) {
         try {
@@ -20,6 +22,10 @@ export const DeleteSavedEvent = () => {
         catch (error) {
             console.log("Error on fetch: ", error.message)
         }
+    }
+
+    if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
     }
 
     return (

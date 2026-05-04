@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams, Navigate } from "react-router-dom";
 import { BackButton } from "../../components/BackButton";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const EventDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { store } = useGlobalReducer();
 
     const [event, setEvent] = useState(null);
     const [comments, setComments] = useState([]);
@@ -115,6 +117,10 @@ export const EventDetails = () => {
 
     if (!event) {
         return <p className="text-center mt-5">Cargando evento...</p>;
+    }
+
+    if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
     }
 
     return (

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 import { PromotorCategoryForm } from "../../components/PromotorCategoryForm";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL || "/api";
@@ -7,6 +8,7 @@ const API_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 export const EditPromotorCategory = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { store } = useGlobalReducer();
 
     const [promotors, setPromotors] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -83,6 +85,10 @@ export const EditPromotorCategory = () => {
                 setMessage("Hubo un error actualizando la relación.");
             });
     };
+
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container mt-5">

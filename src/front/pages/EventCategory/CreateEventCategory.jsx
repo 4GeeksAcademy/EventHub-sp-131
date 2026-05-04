@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { use } from "react";
 
 export const CreateEventCategory = () => {
@@ -11,6 +11,7 @@ export const CreateEventCategory = () => {
     const [allEvents, setAllEvents] = useState([])
     const [allCategroy, setAllCategroy] = useState([])
     const [message, setMessage] = useState("");
+    const { store } = useGlobalReducer();
 
     const navigate = useNavigate()
 
@@ -77,6 +78,10 @@ export const CreateEventCategory = () => {
         getData("events")
         getData("categories")
     }, [])
+
+    if (!store.adminAuth) {
+            return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div style={{ "width": "60%", "margin": "auto", marginTop: "4rem" }}>

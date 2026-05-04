@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 
 const CreateEventAssist = () => {
@@ -9,6 +9,7 @@ const CreateEventAssist = () => {
   const [events, setEvents] = useState([]);
   const [userId, setUserId] = useState("");
   const [eventId, setEventId] = useState("");
+  const { store } = useGlobalReducer();
 
   const navigate = useNavigate();
 
@@ -52,6 +53,10 @@ const CreateEventAssist = () => {
       alert(error.error || "Error al crear asistencia");
     }
   };
+
+  if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
+  }
 
   return (
     <div className="container mt-5">

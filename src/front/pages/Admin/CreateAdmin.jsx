@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const CreateAdmin = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const navigate = useNavigate();
+    const { store } = useGlobalReducer();
 
     const [message, setMessage] = useState("");
     const [form, setForm] = useState({
@@ -44,6 +46,10 @@ export const CreateAdmin = () => {
                 setMessage(error.message);
             });
     };
+
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container py-5">

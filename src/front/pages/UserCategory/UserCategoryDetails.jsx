@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
 
 export const UserCategoryDetail = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const { theId } = useParams();
+    const { store } = useGlobalReducer();
 
     const [user_category, setUserCategory] = useState(null);
     const [userData, setUserData] = useState()
@@ -52,6 +54,10 @@ export const UserCategoryDetail = () => {
             getDataById(user_category.category_id, "categories")
         }
     }, [user_category])
+
+    if (!store.adminAuth) {
+            return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container py-5">

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation, Navigate } from "react-router-dom";
 import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage } from "@cloudinary/react";
 import { Resize } from "@cloudinary/url-gen/actions";
@@ -24,6 +24,7 @@ export const EditEvent = () => {
 
     const navigate = useNavigate();
     const { id } = useParams();
+    
 
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
@@ -43,6 +44,28 @@ export const EditEvent = () => {
     console.log(media);
     const authApiA = import.meta.env.VITE_BACKEND_URL
 
+    // 🔽 Cargar evento
+    const getEvent = async () => {
+    try {
+        const resp = await fetch(`${backendUrl}/api/events/${id}`);
+        const data = await resp.json();
+
+
+        const e = data;
+
+        
+        if (e.date_event) {
+            setDateEvent(e.date_event.slice(0, 16));
+        }
+        
+    } catch (error) {
+        console.error("Error:", error);
+    }
+};
+
+    useEffect(() => {
+        getEvent();
+    }, [id]);
 
     const {
         artistQuery,
@@ -55,8 +78,6 @@ export const EditEvent = () => {
     } = useArtistSearch();
 
     console.log(selectedArtist);
-
-
 
     const urlApi = props.type === undefined
         ? "events"
@@ -282,6 +303,10 @@ export const EditEvent = () => {
             ? navigate("/events")
             : navigate(`/${props.type}/private`);
     };
+
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container my-4">

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const GroupCategoryList = () => {
 	const [relations, setRelations] = useState([]);
+	const { store } = useGlobalReducer();
 
 	const getRelations = () => {
 		fetch(import.meta.env.VITE_BACKEND_URL + "/api/group-categories")
@@ -27,6 +29,10 @@ export const GroupCategoryList = () => {
 	useEffect(() => {
 		getRelations();
 	}, []);
+
+	if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
+    }
 
 	return (
 		<div className="container mt-4">

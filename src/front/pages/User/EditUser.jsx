@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const EditUser = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const { id } = useParams();
     const navigate = useNavigate();
+    const { store } = useGlobalReducer();
 
     const [form, setForm] = useState({});
 
@@ -37,6 +39,10 @@ export const EditUser = () => {
             state: { message: "Usuario actualizado correctamente" }
         });
     };
+
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container py-5">

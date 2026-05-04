@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const GroupDetail = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const { theId } = useParams();
+    const { store } = useGlobalReducer();
 
     const [group, setGroup] = useState(null);
     const [message, setMessage] = useState("");
@@ -25,6 +27,10 @@ export const GroupDetail = () => {
     useEffect(() => {
         getGroupById(theId)
     }, [])
+
+    if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container py-5">

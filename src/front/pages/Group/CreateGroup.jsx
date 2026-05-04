@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 
 export const CreateGroup = () => {
 
@@ -9,6 +9,7 @@ export const CreateGroup = () => {
     const [media, setMedia] = useState("")
     const [location, setLocation] = useState("")
     const [description, setDescription] = useState("")
+    const { store } = useGlobalReducer();
 
     const navigate = useNavigate()
 
@@ -55,6 +56,10 @@ export const CreateGroup = () => {
         catch (error) {
             console.log("Error on fetch: ", error.message)
         }
+    }
+
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
     }
 
     return (

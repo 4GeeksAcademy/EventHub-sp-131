@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const CreateComment = () => {
     const [users, setUsers] = useState([]);
     const [events, setEvents] = useState([]);
+    const navigate = useNavigate();
+    const { store } = useGlobalReducer();
 
     const [selectedUser, setSelectedUser] = useState("");
     const [selectedEvent, setSelectedEvent] = useState("");
@@ -51,10 +54,7 @@ export const CreateComment = () => {
             });
 
             if (response.ok) {
-                alert("Comentario creado 🔥");
-                setMessage("");
-                setSelectedUser("");
-                setSelectedEvent("");
+                navigate("/comments");
             } else {
                 alert("Error al crear comentario");
             }
@@ -63,6 +63,10 @@ export const CreateComment = () => {
             console.error(error);
         }
     };
+
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container mt-5">

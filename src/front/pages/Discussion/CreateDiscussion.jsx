@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { use } from "react";
 
 export const CreateDiscussion = () => {
@@ -11,6 +11,7 @@ export const CreateDiscussion = () => {
     const [allUsers, setAllUsers] = useState([])
     const [allGroups, setAllGroups] = useState([])
     const [discussionMessage, setDiscussionMessage] = useState("")
+    const { store } = useGlobalReducer();
 
     const [message, setMessage] = useState("");
 
@@ -84,6 +85,10 @@ export const CreateDiscussion = () => {
         getData("users")
         getData("group")
     }, [])
+
+    if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div style={{ "width": "60%", "margin": "auto", marginTop: "4rem" }}>

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 import { PromotorCategoryForm } from "../../components/PromotorCategoryForm";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL || "/api"
@@ -8,6 +10,7 @@ export const CreatePromotorCategory = () => {
     const [categories, setCategories] = useState([]);
     const [relations, setRelations] = useState([]);
     const [message, setMessage] = useState("");
+    const { store } = useGlobalReducer();
 
     const [formData, setFormData] = useState({
         promotor_id: "",
@@ -74,6 +77,10 @@ export const CreatePromotorCategory = () => {
                 setMessage("Hubo un error creando la relación.");
             });
     };
+
+    if (!store.adminAuth) {
+    return <Navigate to="/admin/login" />;
+    }
 
     return (
         <div className="container mt-5">
