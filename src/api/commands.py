@@ -1,3 +1,4 @@
+import math
 import click
 import random
 from sqlalchemy import select, func
@@ -5,7 +6,7 @@ from api.models import db, User, Admin, Promotor, Category, Event, Group, Promot
 
 """
 In this file, you can add as many commands as you want using the @app.cli.command decorator
-Flask commands are usefull to run cronjobs or tasks outside of the API but sill in integration 
+Flask commands are usefull to run cronjobs or tasks outside of the API but sill in integration
 with youy database, for example: Import the price of bitcoin every night as 12am
 """
 
@@ -19,6 +20,31 @@ def get_next_id(model):
 def relation_exists(model, **kwargs):
     """Comprueba si ya existe una relación con los campos dados."""
     return db.session.execute(select(model).filter_by(**kwargs)).scalar() is not None
+
+
+def generate_random_point_in_circle(center_lat, center_lng, radius_km):
+    """
+    Genera un punto aleatorio dentro de un círculo de radio `radius_km` km
+    """
+    # Radio de la Tierra en km
+    R = 6371.0
+
+    # Distancia aleatoria (distribución uniforme en área)
+    r = radius_km * math.sqrt(random.random())
+
+    # Ángulo aleatorio
+    theta = random.uniform(0, 2 * math.pi)
+
+    # Convertir a delta lat/lng
+    dy = r * math.cos(theta)
+    dx = r * math.sin(theta)
+
+    # Aproximación (bastante precisa para este rango)
+    new_lat = center_lat + (dy / R) * (180 / math.pi)
+    new_lng = center_lng + \
+        (dx / (R * math.cos(math.radians(center_lat)))) * (180 / math.pi)
+
+    return new_lat, new_lng
 
 
 def setup_commands(app):
@@ -128,19 +154,26 @@ def setup_commands(app):
     @app.cli.command("insert-test-events")
     @click.argument("count")
     def insert_test_event(count):
-        print("Creating test events")
+        print("Creating test events within 840km of Madrid (KM 0)")
+        CENTER_LAT = 40.4168
+        CENTER_LNG = -3.7038
+        RADIUS_KM = 840
+
         start_id = get_next_id(Event)
         created = 0
+
         for x in range(start_id, start_id + int(count)):
             try:
+                lat, lng = generate_random_point_in_circle(CENTER_LAT, CENTER_LNG, RADIUS_KM)
+
                 event = Event()
-                event.name = f"Event {x}"
-                event.location = "Some Place"
+                event.name = f"Evento {x} - {random.choice(['Concierto', 'Festival', 'Partido', 'Obra de Teatro', 'Conferencia'])}"
+                event.location = "Arena"
                 event.description = f"Description of Event number {x}"
-                event.capacity = 10
-                event.date_event = "2026-04-01T13:45:00"
-                event.lat = round(random.uniform(-90, 90), 6)
-                event.lng = round(random.uniform(-180, 180), 6)
+                event.capacity = random.randint(50, 5000)
+                event.date_event = f"2026-{random.randint(4,12):02d}-{random.randint(1,28):02d}T{random.randint(10,23):02d}:{random.randint(0,59):02d}:00"
+                event.lat = round(lat, 6)
+                event.lng = round(lng, 6)
                 db.session.add(event)
                 db.session.commit()
                 print(f"Event: {event.name} created.")

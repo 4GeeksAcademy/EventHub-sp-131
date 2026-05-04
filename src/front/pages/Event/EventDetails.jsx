@@ -119,9 +119,9 @@ export const EventDetails = () => {
         return <p className="text-center mt-5">Cargando evento...</p>;
     }
 
-    if (!store.adminAuth) {
+/*     if (!store.adminAuth) {
     return <Navigate to="/admin/login" />;
-    }
+    } */
 
     return (
         <div className="container mt-5">
