@@ -99,6 +99,7 @@ import { SearchByImage } from "./pages/SearchByImage.jsx";
 import { AboutUs } from "./pages/AboutUs.jsx";
 import { Contact } from "./pages/Contact.jsx";
 import { PromotingAnEvent} from "./pages/PromotingAnEvent.jsx"
+import { Discover } from "./pages/SwipeEvent/Discover";
 export const router = createBrowserRouter(
   createRoutesFromElements(
     // CreateRoutesFromElements function allows you to build route elements declaratively.
@@ -203,6 +204,7 @@ export const router = createBrowserRouter(
       <Route path="/chat" element={<Chat />} />
       <Route path="/promotor/chat" element={<ChatPromotor />} />
       <Route path="/search-by-image" element={<SearchByImage />} />
+      <Route path="/discover" element={<Discover />} />
     </Route>
   )
 );

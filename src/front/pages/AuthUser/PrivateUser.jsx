@@ -57,9 +57,26 @@ export const PrivateUser = () => {
 		<div className="container mt-5">
 			<div className="mb-4">
 				<h1 className="fw-bold">Mi perfil</h1>
+				<button
+					className="btn btn-danger rounded-circle shadow"
+					style={{
+						position: "fixed",
+						bottom: "20px",
+						right: "20px",
+						width: "60px",
+						height: "60px",
+						fontSize: "20px"
+					}}
+					onClick={() => navigate("/discover")}
+					>
+					🔥
+				</button>
 				<p className="text-muted mb-0">
 					Gestiona tu actividad dentro de la plataforma.
 				</p>
+				<Link to="/search-by-image" className="btn btn-outline-primary">
+                            Buscar eventos 🔍
+                </Link>
 			</div>
 
 			{store.privateUser ? (
@@ -165,6 +182,7 @@ export const PrivateUser = () => {
 							</div>
 						</div>
 					</div>
+					
 				</>
 			) : (
 				<p>Cargando...</p>
