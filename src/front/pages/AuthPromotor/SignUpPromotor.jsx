@@ -1,6 +1,6 @@
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import rigoImageUrl from "../../assets/img/rigo-baby.jpg";
+import EventHubHeroImage from "../../assets/img/EventHubHeroImage.png";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const PromotorSignUp = () => {
@@ -87,17 +87,14 @@ export const PromotorSignUp = () => {
   }, [])
 
   return (
-    <>
+    <div style={{ background: `linear-gradient(rgba(10, 10, 15, 0.75), rgba(10, 10, 15, 0.85)), url(${EventHubHeroImage}) center/cover no-repeat`}}>
       {store.promotorAuth === "true" ?
         <Navigate to="/promotor/private" />
         :
         null }
       <div className="container row mx-auto mt-5">
-        <div className="col-4 ms-5">
-          <img src={rigoImageUrl} alt="" style={{ width: "100%" }} />
-        </div>
-        <div className="col-8 pt-4 w-50">
-          <h2 className="d-flex justify-content-center mb-5">Register as a promotor</h2>
+        <div className="pt-4 w-50 mx-auto forms">
+          <h2 className="d-flex justify-content-center mb-5">Register to EventHub</h2>
           <form onSubmit={signUpPromotor}>
             <div className="mb-3">
               <label htmlFor="name" className="form-label">Name</label>
@@ -126,7 +123,7 @@ export const PromotorSignUp = () => {
             </div>
             <button type="submit" className="btn btn-primary d-grid gap-2 col-6 mx-auto">Sign Up</button>
           </form>
-          <div className="d-flex p-3 gap-4 align-items-center">
+          <div className="d-flex p-3 gap-4 align-items-center" style={{ justifySelf: "center" }}>
             <p>Already have an accout?</p>
             <Link to="/promotor/login">
               <button className="btn btn-primary">Login</button>
@@ -134,6 +131,6 @@ export const PromotorSignUp = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
