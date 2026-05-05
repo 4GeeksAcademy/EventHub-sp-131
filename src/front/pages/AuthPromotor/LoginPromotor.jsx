@@ -1,5 +1,5 @@
 import { Link, useNavigate, Navigate } from "react-router-dom";
-import rigoImageUrl from "../../assets/img/rigo-baby.jpg";
+import EventHubHeroImage from "../../assets/img/EventHubHeroImage.png";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import { useEffect, useState } from "react";
 
@@ -66,18 +66,18 @@ export const LoginPromotor = () => {
   }, [errorMsg])
 
   return (
-    <>
+    <div style={{ background: `linear-gradient(rgba(10, 10, 15, 0.75), rgba(10, 10, 15, 0.85)), url(${EventHubHeroImage}) center/cover no-repeat`}}>
       {store.promotorAuth === "true" ?
         <Navigate to="/promotor/private" />
         : null}
       <div className="container row mx-auto mt-5">
         <div className="d-flex justify-content-end mb-4">
           <Link to="/">
-            <button type="button" className="btn btn-outline-dark mt-3">Back</button>
+            <button type="button" className="btn btn-outline mt-3">Back</button>
           </Link>
         </div>
-        <div className="col-8 pt-4 w-50">
-          <h2 className="d-flex justify-content-center mb-5">Login as promotor</h2>
+        <div className="pt-4 w-50 mx-auto forms">
+          <h2 className="d-flex justify-content-center mb-5">Login</h2>
           {errorMsg &&
             errorMsg != "" ?
             <div className="alert alert-danger" role="alert">
@@ -87,28 +87,25 @@ export const LoginPromotor = () => {
             null
           }
           <form onSubmit={loginUser}>
-            <div className="mb-3">
+            <div className="mb-3 m-auto" style={{ width: "500px" }}>
               <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
               <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" onChange={(e) => setEmail(e.target.value)} value={email} style={errorMsg != "" ? { border: "1px red solid" } : {}} />
               <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
             </div>
-            <div className="mb-3">
+            <div className="mb-3 m-auto" style={{ width: "500px" }}>
               <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
               <input type="password" className="form-control" id="exampleInputPassword1" onChange={(e) => setPw(e.target.value)} value={pw} style={errorMsg != "" ? { border: "1px red solid" } : {}} />
             </div>
             <button type="submit" className="btn btn-primary d-grid gap-2 col-6 mx-auto" onClick={loginUser}>Login</button>
           </form>
-          <div className="d-flex p-3 gap-4 align-items-center">
-            <p>Not registered?</p>
+          <div className="d-flex p-3 gap-4 align-items-center" style={{ justifySelf: "center" }}>
+            <p className="">Not registered?</p>
             <Link to="/promotor/sign-up">
               <button className="btn btn-primary">Sign Up Here</button>
             </Link>
           </div>
         </div>
-        <div className="col-4 ms-5">
-          <img src={rigoImageUrl} alt="" />
-        </div>
       </div>
-    </>
+    </div>
   );
 };

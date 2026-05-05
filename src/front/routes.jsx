@@ -76,6 +76,7 @@ import DeleteEventAssist from "./pages/EventAssist/DeleteEventAssist";
 import { LoginUser } from "./pages/AuthUser/LoginUser";
 import { PrivateUser } from "./pages/AuthUser/PrivateUser";
 import { LoginPromotor } from "./pages/AuthPromotor/LoginPromotor";
+import { PromotorSignUp } from "./pages/AuthPromotor/SignUpPromotor.jsx"
 import { PrivatePromotor } from "./pages/AuthPromotor/PrivatePromotor";
 import { EventPromotor } from "./pages/Event-promotor/EventPromotor";
 import { CreateEventPromotor } from "./pages/Event-promotor/CreateEventPromotor";
@@ -95,6 +96,9 @@ import { EventDetail } from "./pages/EventDetail";
 import { Chat } from "./pages/Chat.jsx";
 import { ChatPromotor } from "./pages/ChatPromotor.jsx";
 import { SearchByImage } from "./pages/SearchByImage.jsx";
+import { AboutUs } from "./pages/AboutUs.jsx";
+import { Contact } from "./pages/Contact.jsx";
+import { PromotingAnEvent} from "./pages/PromotingAnEvent.jsx"
 export const router = createBrowserRouter(
   createRoutesFromElements(
     // CreateRoutesFromElements function allows you to build route elements declaratively.
@@ -112,6 +116,9 @@ export const router = createBrowserRouter(
       <Route path="/admin/edit/:id" element={<EditAdmin />} />
       <Route path="/admin/details/:id" element={<AdminDetails />} />
       <Route path="/" element={<Home />} />
+      <Route path="/about" element={<AboutUs/>}></Route>
+      <Route path="/promote" element={<PromotingAnEvent/>}></Route>
+      <Route path="/contact" element={<Contact/>}></Route>
       <Route path="/single/:theId" element={<Single />} />  {/* Dynamic route for single items */}
       <Route path="/demo" element={<Demo />} />
       <Route path="/user" element={<User />} />
@@ -176,6 +183,7 @@ export const router = createBrowserRouter(
       <Route path="/create-event-assist" element={<CreateEventAssist />} />
       <Route path="/delete-event-assist/:id" element={<DeleteEventAssist />} />
       <Route path="/promotor/login" element={<LoginPromotor />} />
+      <Route path="/promotor/sign-up" element={<PromotorSignUp/>}></Route>
       <Route path="/promotor/private" element={<PrivatePromotor />} />
       <Route path="/event-promotor" element={<EventPromotor />} />
       <Route path="/create-event-promotor" element={<CreateEventPromotor />} />
