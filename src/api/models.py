@@ -514,3 +514,11 @@ class Message(db.Model):
             "text": self.text,
             "created_at": self.created_at.isoformat()
         }
+
+class UserEventPreference(db.Model):
+    __tablename__ = "user_event_preferences"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    event_id = db.Column(db.Integer, nullable=False)
+    liked = db.Column(db.Boolean, nullable=False)

@@ -1,0 +1,1148 @@
+:root {
+  --main-background: #0a0a0f;
+
+  --eh-primary: #8b2cff;
+  --eh-primary-dark: #5b21b6;
+  --eh-pink: #ff2f7d;
+  --eh-orange: #ff8a18;
+
+  --eh-bg: #0f0f1a;
+  --eh-card: #171721;
+  --eh-sidebar: #14141f;
+  --eh-border: #2a2a38;
+
+  --eh-text: #f1f1f5;
+  --eh-muted: #a3a3b8;
+  --eh-white: #ffffff;
+
+  --eh-shadow: 0 16px 38px rgba(0, 0, 0, 0.4);
+  --eh-shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Open Sans", sans-serif;
+  background-color: var(--main-background);
+  color: #e9ecef;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--main-background);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  padding: 0 20px;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #4361ee, #b20d5d);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero h1 {
+  font-size: 4.8rem;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+.lead {
+  font-size: 1.4rem;
+  margin-bottom: 2.5rem;
+  opacity: 0.9;
+}
+
+.btn {
+  padding: 14px 36px;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s;
+  margin: 0 10px;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #4361ee, #b20d5d);
+  color: white;
+  border: none;
+}
+
+.btn-outline {
+  border: 2px solid #e9ecef;
+  color: #e9ecef;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+}
+
+/* About */
+.about {
+  background-color: #16191f;
+  padding: 100px 0;
+}
+
+.section-title {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.feature-item {
+  margin-bottom: 2rem;
+}
+
+.feature-item h5 {
+  color: #4361ee;
+  margin-bottom: 0.5rem;
+}
+
+.about-image {
+  max-width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Contact */
+.contact-form input,
+.contact-form textarea {
+  background-color: #1e2229;
+  border: 1px solid #343a40;
+  color: #e9ecef;
+  border-radius: 10px;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: #4361ee;
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+
+/* Footer */
+.footer {
+  background: #0a0a0f;
+  padding: 40px 0;
+  border-top: 1px solid #343a40;
+}
+
+/* NAVBAR STICKY + HOVER */
+.sticky-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background-color: var(--main-background);
+  backdrop-filter: blur(12px);
+}
+
+.nav-hover {
+  color: #e9ecef t;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-hover:hover {
+  color: #b20d5d t;
+}
+
+.nav-hover::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: #b20d5d;
+  transition: width 0.3s ease;
+}
+
+.nav-hover:hover::after {
+  width: 100%;
+}
+
+/* Ajustes extra */
+.navbar-nav .nav-link {
+  padding: 8px 16px;
+  font-size: 1.02rem;
+}
+
+.header-section {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.forms {
+  background-color: var(--main-background);
+  border: 2px solid grey;
+  border-radius: 8rem;
+}
+
+.tinderContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.home-visual-card {
+  position: absolute;
+  width: 320px;
+  max-width: 90vw;
+  height: 450px;
+  background: white;
+  border-radius: 20px;
+  padding: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.home-visual-card .card-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 15px;
+}
+<<<<<<< ft--29-tinder-like-discover-event
+=======
+
+/*  EVENTHUB DASHBOARD */
+
+.eventhub-dashboard,
+.eventhub-dashboard * {
+  box-sizing: border-box;
+}
+
+.eventhub-dashboard {
+  min-height: 100vh;
+  display: flex;
+  background: var(--main-background);
+  color: var(--eh-text);
+}
+
+/* SIDEBAR */
+
+.eventhub-sidebar {
+  width: 280px t;
+  min-width: 280px t;
+  max-width: 280px t;
+  min-height: 100vh;
+  background: var(--eh-sidebar) t;
+  border-right: 1px solid var(--eh-border);
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.eventhub-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+.eventhub-logo-img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+}
+
+.eventhub-sidebar-brand h5 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1;
+  font-weight: 900;
+  color: var(--eh-text);
+}
+
+.eventhub-sidebar-brand h5 span {
+  color: var(--eh-pink);
+}
+
+.eventhub-sidebar-brand small {
+  display: block;
+  margin-top: 4px;
+  color: var(--eh-muted);
+  font-size: 13px;
+  text-transform: capitalize;
+}
+
+.eventhub-sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 22px;
+  margin-bottom: 28px;
+  background: linear-gradient(
+    135deg,
+    var(--eh-primary),
+    var(--eh-pink),
+    var(--eh-orange)
+  );
+  color: var(--eh-white);
+  box-shadow: 0 14px 30px rgba(194, 24, 184, 0.22);
+}
+
+.eventhub-sidebar-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: var(--eh-white);
+  color: var(--eh-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.eventhub-sidebar-user strong {
+  display: block;
+  color: var(--eh-white);
+  font-size: 15px;
+  font-weight: 900;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.eventhub-sidebar-user span {
+  display: block;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.eventhub-sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.eventhub-sidebar-link {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-decoration: none;
+  color: var(--eh-muted);
+  padding: 14px 16px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-weight: 800;
+  transition: 0.2s ease;
+  text-align: left;
+}
+
+.eventhub-sidebar-link i {
+  font-size: 18px;
+  width: 20px;
+  text-align: center;
+}
+
+.eventhub-sidebar-link:hover,
+.eventhub-sidebar-link.active {
+  background: linear-gradient(90deg, var(--eh-primary), var(--eh-pink));
+  color: var(--eh-white);
+  box-shadow: 0 10px 24px rgba(139, 44, 255, 0.18);
+}
+
+.eventhub-logout-btn {
+  margin-top: auto;
+  border: none;
+  border-radius: 16px;
+  padding: 14px;
+  background: linear-gradient(90deg, var(--eh-primary), var(--eh-pink));
+  color: var(--eh-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 900;
+}
+
+/* MAIN */
+
+.eventhub-main {
+  flex: 1;
+  min-width: 0;
+  padding: 28px 36px;
+  background: var(--eh-bg) t;
+  overflow-x: hidden;
+}
+
+.eventhub-topbar {
+  background: var(--eh-card);
+  border-radius: 28px;
+  padding: 24px 28px;
+  margin-bottom: 28px;
+  box-shadow: var(--eh-shadow-soft);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.eventhub-topbar h1 {
+  margin: 0;
+  color: var(--eh-text);
+  font-weight: 900;
+  font-size: 32px;
+}
+
+.eventhub-topbar p {
+  margin: 6px 0 0;
+  color: var(--eh-muted);
+}
+
+.eventhub-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.eventhub-icon-btn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 16px;
+  background: var(--eh-primary-soft);
+  color: var(--eh-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  position: relative;
+}
+
+.eventhub-icon-btn:hover {
+  background: var(--eh-pink-soft);
+  color: var(--eh-pink);
+}
+
+.eventhub-notification-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--eh-orange);
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.eventhub-user-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.eventhub-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--eh-primary),
+    var(--eh-pink),
+    var(--eh-orange)
+  );
+  color: var(--eh-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+}
+
+.eventhub-user-pill strong {
+  display: block;
+  color: var(--eh-text);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.eventhub-user-pill span {
+  color: var(--eh-muted);
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+/* DROPDOWNS */
+
+.eventhub-more-wrapper,
+.eventhub-notification-wrapper {
+  position: relative;
+}
+
+.eventhub-more-menu,
+.eventhub-notification-menu {
+  position: absolute;
+  top: 58px;
+  right: 0;
+  width: 240px;
+  background: var(--eh-card);
+  border-radius: 20px;
+  border: 1px solid var(--eh-border);
+  box-shadow: var(--eh-shadow);
+  padding: 10px;
+  z-index: 100;
+}
+
+.eventhub-more-menu button {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 12px 14px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  color: var(--eh-text);
+}
+
+.eventhub-more-menu button:hover {
+  background: var(--eh-primary-soft);
+  color: var(--eh-primary);
+}
+
+.eventhub-notification-menu h6 {
+  margin: 8px;
+  font-weight: 900;
+  color: var(--eh-text);
+}
+
+.eventhub-notification-item {
+  background: var(--eh-bg);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.eventhub-notification-item strong {
+  display: block;
+  color: var(--eh-text);
+}
+
+.eventhub-notification-item span {
+  color: var(--eh-muted);
+  font-size: 13px;
+}
+
+/* PANELS */
+
+.eventhub-dashboard-body {
+  width: 100%;
+}
+
+.eventhub-panel {
+  background: var(--eh-card);
+  border-radius: 28px;
+  padding: 30px;
+  box-shadow: var(--eh-shadow);
+  color: var(--eh-text);
+}
+
+.eventhub-kicker {
+  display: block;
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--eh-pink);
+  margin-bottom: 10px;
+}
+
+/* USER DASHBOARD */
+
+.eventhub-user-dashboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) 380px;
+  gap: 28px;
+}
+
+.eventhub-user-profile-main {
+  background: var(--eh-card);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: var(--eh-shadow);
+}
+
+.eventhub-user-cover {
+  height: 180px;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(255, 255, 255, 0.28),
+      transparent 34%
+    ),
+    linear-gradient(135deg, var(--eh-primary), var(--eh-pink), var(--eh-orange));
+  padding: 30px;
+  color: var(--eh-white);
+}
+
+.eventhub-user-cover h3 {
+  margin-top: 10px;
+  font-weight: 900;
+  color: var(--eh-white);
+}
+
+.eventhub-user-profile-content {
+  padding: 0 32px 32px;
+}
+
+.eventhub-user-avatar-large {
+  width: 108px;
+  height: 108px;
+  border-radius: 30px;
+  background: var(--eh-white);
+  color: var(--eh-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  font-weight: 900;
+  margin-top: -54px;
+  border: 6px solid var(--eh-white);
+  box-shadow: var(--eh-shadow);
+}
+
+.eventhub-user-main-info {
+  margin-top: 18px;
+  margin-bottom: 30px;
+}
+
+.eventhub-user-main-info h2 {
+  font-size: 34px;
+  font-weight: 900;
+  color: var(--eh-text);
+}
+
+.eventhub-user-main-info p {
+  color: var(--eh-muted);
+}
+
+.eventhub-user-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.eventhub-user-info-grid div {
+  background: var(--eh-bg);
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.eventhub-user-info-grid span {
+  display: block;
+  color: var(--eh-muted);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.eventhub-user-info-grid strong {
+  font-weight: 900;
+  color: var(--eh-text);
+}
+
+.eventhub-user-side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.eventhub-user-action-card,
+.eventhub-user-mini-card {
+  background: var(--eh-card);
+  border-radius: 28px;
+  padding: 28px;
+  box-shadow: var(--eh-shadow);
+  color: var(--eh-text);
+}
+
+.eventhub-user-action-card h4,
+.eventhub-user-mini-card h5 {
+  font-weight: 900;
+  margin-bottom: 10px;
+  color: var(--eh-text);
+}
+
+.eventhub-user-action-card p,
+.eventhub-user-mini-card p {
+  color: var(--eh-muted);
+}
+
+.eventhub-action-buttons {
+  display: grid;
+  gap: 12px;
+}
+
+/* PROMOTOR DASHBOARD */
+
+.eventhub-promotor-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.eventhub-promotor-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) 380px;
+  gap: 28px;
+}
+
+.eventhub-promotor-profile-card,
+.eventhub-promotor-message-card,
+.eventhub-promotor-guide {
+  background: var(--eh-card);
+  border-radius: 28px;
+  padding: 30px;
+  box-shadow: var(--eh-shadow);
+  color: var(--eh-text);
+}
+
+.eventhub-promotor-profile-card {
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(255, 138, 24, 0.18),
+      transparent 28%
+    ),
+    linear-gradient(135deg, var(--eh-primary), var(--eh-pink), var(--eh-orange));
+  color: var(--eh-white);
+}
+
+.eventhub-promotor-profile-card h2,
+.eventhub-promotor-profile-card p,
+.eventhub-promotor-profile-card .eventhub-kicker {
+  color: var(--eh-white);
+}
+
+.eventhub-promotor-profile-card h2 {
+  font-size: 34px;
+  font-weight: 900;
+  margin: 8px 0 4px;
+}
+
+.eventhub-promotor-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.eventhub-promotor-info-grid div {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+  padding: 18px;
+}
+
+.eventhub-promotor-info-grid span {
+  display: block;
+  color: rgba(255, 255, 255, 0.78);
+  margin-bottom: 8px;
+}
+
+.eventhub-promotor-info-grid strong {
+  color: var(--eh-white);
+  font-weight: 900;
+}
+
+.eventhub-promotor-message-card h3,
+.eventhub-promotor-guide h3 {
+  font-weight: 900;
+  color: var(--eh-text);
+}
+
+.eventhub-promotor-message-card p,
+.eventhub-promotor-guide p {
+  color: var(--eh-muted);
+}
+
+.eventhub-promotor-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.eventhub-promotor-guide-grid div {
+  background: var(--eh-bg);
+  border-radius: 22px;
+  padding: 22px;
+}
+
+.eventhub-promotor-guide-grid i {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: var(--eh-primary-soft);
+  color: var(--eh-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.eventhub-promotor-guide-grid h5 {
+  font-weight: 900;
+  color: var(--eh-text);
+}
+
+/* BUTTONS */
+
+.eventhub-main-btn,
+.eventhub-secondary-btn {
+  border: none;
+  text-decoration: none t;
+  padding: 13px 18px;
+  border-radius: 16px;
+  font-weight: 900;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.eventhub-main-btn {
+  background: linear-gradient(90deg, var(--eh-primary), var(--eh-pink));
+  color: var(--eh-white) t;
+}
+
+.eventhub-secondary-btn {
+  background: var(--eh-primary-soft);
+  color: var(--eh-primary) t;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+  .eventhub-user-dashboard,
+  .eventhub-promotor-overview,
+  .eventhub-promotor-guide-grid,
+  .eventhub-user-info-grid,
+  .eventhub-promotor-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .eventhub-dashboard {
+    flex-direction: column;
+  }
+
+  .eventhub-sidebar {
+    width: 100% t;
+    min-width: 100% t;
+    max-width: 100% t;
+    min-height: auto;
+  }
+
+  .eventhub-main {
+    padding: 20px;
+  }
+
+  .eventhub-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}
+/* ADMIN DASHBOARD */
+
+.eventhub-admin-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.eventhub-admin-hero {
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(255, 138, 24, 0.2),
+      transparent 28%
+    ),
+    linear-gradient(135deg, var(--eh-primary), var(--eh-pink), var(--eh-orange));
+  color: var(--eh-white);
+  border-radius: 28px;
+  padding: 34px;
+  box-shadow: var(--eh-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.eventhub-admin-hero h2 {
+  color: var(--eh-white);
+  font-size: 34px;
+  font-weight: 900;
+  margin: 8px 0;
+}
+
+.eventhub-admin-hero p {
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0;
+  max-width: 760px;
+}
+
+.eventhub-admin-hero .eventhub-kicker {
+  color: var(--eh-white);
+}
+
+.eventhub-admin-badge {
+  width: 86px;
+  height: 86px;
+  min-width: 86px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--eh-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+}
+
+.eventhub-admin-modules {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.eventhub-admin-card {
+  background: var(--eh-card);
+  color: var(--eh-text);
+  text-decoration: none;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: var(--eh-shadow);
+  border: 1px solid var(--eh-border);
+  display: flex;
+  gap: 18px;
+  transition: 0.2s ease;
+}
+
+.eventhub-admin-card:hover {
+  transform: translateY(-4px);
+  color: var(--eh-text);
+}
+
+.eventhub-admin-card-icon {
+  width: 54px;
+  height: 54px;
+  min-width: 54px;
+  border-radius: 18px;
+  background: var(--eh-primary-soft);
+  color: var(--eh-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.eventhub-admin-card h4 {
+  font-weight: 900;
+  color: var(--eh-text);
+  margin-bottom: 8px;
+}
+
+.eventhub-admin-card p {
+  color: var(--eh-muted);
+  margin-bottom: 0;
+}
+
+@media (max-width: 1200px) {
+  .eventhub-admin-modules {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .eventhub-admin-modules {
+    grid-template-columns: 1fr;
+  }
+
+  .eventhub-admin-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* EVENTHUB CHAT - Bootstrap friendly */
+
+.eh-chat-page {
+  min-height: 100vh;
+  background: #070710;
+}
+
+.eh-chat-row {
+  min-height: calc(100vh - 3rem);
+}
+
+.eh-chat-card {
+  background: #11111b t;
+  border-radius: 28px t;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  color: #ffffff;
+}
+
+.eh-chat-label {
+  color: #ff2f92;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.eh-chat-user {
+  background: #181824 t;
+  border-radius: 20px t;
+  padding: 14px t;
+  color: #ffffff t;
+  border: 1px solid transparent t;
+}
+
+.eh-chat-user:hover,
+.eh-chat-user.active {
+  background: linear-gradient(135deg, #8b2cff, #ff2f92, #ff8a1f) t;
+  border-color: rgba(255, 255, 255, 0.16) t;
+}
+
+.eh-chat-avatar {
+  width: 54px;
+  height: 54px;
+  min-width: 54px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #8b2cff, #ff2f92);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+}
+
+.eh-chat-header {
+  background: #11111b t;
+  padding: 22px 26px t;
+}
+
+.eh-chat-messages {
+  height: 520px;
+  overflow-y: auto;
+  background: #0b0b14;
+  padding: 26px t;
+}
+
+.eh-message-bubble {
+  max-width: 72%;
+  border-radius: 22px;
+  padding: 14px 16px;
+}
+
+.eh-message-bubble.mine {
+  background: linear-gradient(135deg, #8b2cff, #ff2f92, #ff8a1f);
+  color: #ffffff;
+  border-bottom-right-radius: 8px;
+}
+
+.eh-message-bubble.theirs {
+  background: #242436;
+  color: #ffffff;
+  border-bottom-left-radius: 8px;
+}
+
+.eh-chat-footer {
+  background: #11111b t;
+  padding: 18px t;
+}
+
+.eh-chat-input {
+  background: #181824 t;
+  color: #ffffff t;
+  border: 1px solid rgba(255, 255, 255, 0.08) t;
+  border-radius: 18px t;
+}
+
+.eh-chat-input:focus {
+  box-shadow: none t;
+  border-color: #ff2f92 t;
+}
+
+.eh-chat-send-btn {
+  background: linear-gradient(90deg, #8b2cff, #ff2f92, #ff8a1f) t;
+  color: #ffffff t;
+  font-weight: 900 t;
+  border-radius: 18px t;
+  padding: 13px 22px t;
+  border: none t;
+}
+
+.eh-chat-empty {
+  background: #181824 t;
+  color: #b8b8c7 t;
+  border: none t;
+}
+
+.eh-chat-placeholder-icon {
+  color: #ff2f92;
+  font-size: 42px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 992px) {
+  .eh-chat-messages {
+    height: 420px;
+  }
+
+  .eh-message-bubble {
+    max-width: 88%;
+  }
+}
+.eh-back-profile-btn {
+  background: transparent t;
+  border: 1px solid rgba(255, 255, 255, 0.15) t;
+  color: #ffffff t;
+  border-radius: 16px t;
+  padding: 10px 18px t;
+  font-weight: 700 t;
+  transition: 0.2s ease;
+}
+
+.eh-back-profile-btn:hover {
+  background: linear-gradient(90deg, #8b2cff, #ff2f92, #ff8a1f) t;
+
+  border-color: transparent t;
+  color: white t;
+}
+>>>>>>> develop
