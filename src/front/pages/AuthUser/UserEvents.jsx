@@ -19,13 +19,13 @@ export const UserEvents = () => {
     const [selectedEvent, setSelectedEvent] = useState(null)
     const [userLocation, setUserLocation] = useState(null);
     const [infoWindowEvent, setInfoWindowEvent] = useState(null);
-    console.log("userloc ",userLocation);
-    
+    console.log("userloc ", userLocation);
+
     const [searchLocation, setSearchLocation] = useState(null);
     const [defZoom, setDefZoom] = useState(12)
     const [mapCenter, setMapCenter] = useState({ lat: 40.4168, lng: -3.7038 });
     console.log(mapCenter);
-    
+
     const [markerPosition, setMarkerPosition] = useState({ lat: 40.4168, lng: -3.7038 });
 
     const getEvents = () => {
@@ -204,10 +204,11 @@ export const UserEvents = () => {
 
     return (
         <>
-            <div className="container-flex mt-5 mx-4">
+            <div className="container-fluid mt-5 mx-4">
+                {/* Header */}
                 <div className="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h1 className="fw-bold mb-1">Eventos disponibles</h1>
+                        <h1 className="fw-bold mb-1 text-white">Eventos disponibles</h1>
                         <p className="text-muted mb-0">
                             Explora eventos, guarda tus favoritos y confirma asistencia.
                         </p>
@@ -222,112 +223,127 @@ export const UserEvents = () => {
                 </div>
 
                 {message && (
-                    <div className="alert alert-info shadow-sm">
+                    <div className="alert alert-info shadow-sm mb-4">
                         {message}
                     </div>
                 )}
-                <div className="row g-4">
-                    <div className="col">
-                        <div className="d-flex row mb-2">
-                            <div className="w-auto">
-                                <select className="form-select" defaultValue="" onChange={(e) => setCategoryFilter(e.target.value)}>
-                                    <option value="" disabled defaultValue>Seleccionar categoría</option>
-                                    {categories?.map(cat => (
-                                        <option key={cat.id}>{cat.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="w-auto">
-                                <label className="form-label me-2">Distance(KM)</label>
-                                <input type="number" onChange={(e) => setDistanceFiler(e.target.value)} value={distanceFilter} />
-                            </div>
-                            <div className="w-auto d-flex gap-2">
-                                <label className="form-label">Nombre</label>
+
+                {/* Filtros Mejorados */}
+                <div className="card bg-dark border-secondary mb-4 p-3">
+                    <div className="d-flex flex-wrap gap-3 align-items-end">
+                        <div>
+                            <label className="form-label text-white small mb-1">Categoría</label>
+                            <select
+                                className="form-select bg-dark text-white border-secondary"
+                                style={{ width: "220px" }}
+                                onChange={(e) => setCategoryFilter(e.target.value)}
+                            >
+                                <option value="">Todas las categorías</option>
+                                {categories?.map(cat => (
+                                    <option key={cat.id} value={cat.name}>{cat.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="form-label text-white small mb-1">Distancia máx.</label>
+                            <div className="input-group" style={{ width: "160px" }}>
                                 <input
-                                    type="text"
-                                    className="form-control"
-                                    value={artistFilter}
-                                    onChange={(e) => setArtistFilter(e.target.value)}
+                                    type="number"
+                                    className="form-control bg-dark text-white border-secondary"
+                                    value={distanceFilter}
+                                    onChange={(e) => setDistanceFiler(e.target.value)}
                                 />
-                            </div>
-                            <div className="w-auto d-flex gap-2">
-                                <label className="form-label">Fecha</label>
-                                <input
-                                    type="date"
-                                    className="form-control"
-                                    value={dateFilter}
-                                    onChange={(e) => setDateFilter(e.target.value)}
-                                    required
-                                />
+                                <span className="input-group-text bg-dark text-white border-secondary">km</span>
                             </div>
                         </div>
-                        <div className="row">
+
+                        <div>
+                            <label className="form-label text-white small mb-1">Artista / Nombre</label>
+                            <input
+                                type="text"
+                                className="form-control bg-dark text-white border-secondary"
+                                style={{ width: "240px" }}
+                                value={artistFilter}
+                                onChange={(e) => setArtistFilter(e.target.value)}
+                                placeholder="Buscar artista o evento..."
+                            />
+                        </div>
+
+                        <div>
+                            <label className="form-label text-white small mb-1">Fecha</label>
+                            <input
+                                type="date"
+                                className="form-control bg-dark text-white border-secondary"
+                                value={dateFilter}
+                                onChange={(e) => setDateFilter(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="row g-4">
+                    {/* Lista de Eventos - 3 por fila */}
+                    <div className="col-lg-7">
+                        <div className="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
                             {filteredEvents.length === 0 ? (
                                 <div className="col-12">
-                                    <div className="card shadow-sm p-5 text-center">
+                                    <div className="card bg-dark border-secondary p-5 text-center">
                                         <h4>No hay eventos cercanos disponibles</h4>
-                                        <p className="text-muted mb-0">
-                                            Cuando se creen eventos, aparecerán aquí.
-                                        </p>
+                                        <p className="text-muted">Intenta cambiar los filtros</p>
                                     </div>
                                 </div>
                             ) : (
                                 filteredEvents.map((event) => (
-                                    <div key={event.id} className="col-md-6 col-lg-4" onMouseEnter={() => setSelectedEvent(event)} onMouseLeave={() => setSelectedEvent(null)} onClick={() => setInfoWindowEvent(event)}>
-                                        <div className="card shadow-sm h-auto rounded-4 overflow-hidden" style={{ border: event.id === selectedEvent?.id ? "1px solid black" : "" }}>
+                                    <div
+                                        key={event.id}
+                                        className="col"
+                                        onMouseEnter={() => setSelectedEvent(event)}
+                                        onMouseLeave={() => setSelectedEvent(null)}
+                                        onClick={() => setInfoWindowEvent(event)}
+                                    >
+                                        <div className="card h-100 shadow-sm bg-dark border-secondary overflow-hidden"
+                                            style={{
+                                                border: event.id === selectedEvent?.id ? "2px solid #ff2f7d" : ""
+                                            }}>
+
                                             {event.media ? (
                                                 <img
                                                     src={event.media}
                                                     className="card-img-top"
-                                                    style={{ height: "210px", objectFit: "cover" }}
+                                                    style={{ height: "200px", objectFit: "cover" }}
                                                     alt={event.name}
                                                 />
                                             ) : (
-                                                <div
-                                                    className="bg-light d-flex align-items-center justify-content-center"
-                                                    style={{ height: "210px" }}
-                                                >
+                                                <div className="bg-secondary d-flex align-items-center justify-content-center"
+                                                    style={{ height: "200px" }}>
                                                     <span className="text-muted">Sin imagen</span>
                                                 </div>
                                             )}
 
                                             <div className="card-body d-flex flex-column p-4">
-                                                <h5 className="card-title fw-bold">{event.name}</h5>
+                                                <h5 className="card-title fw-bold text-white">{event.name}</h5>
 
-                                                <p className="text-muted mb-2">
-                                                    📍 {event.location || "Ubicación no disponible"} {event.distance ? event.distance.toFixed(1) + 'km away' : ''}
+                                                <p className="text-muted mb-2 small">
+                                                    📍 {event.location || "Ubicación no disponible"}
+                                                    {event.distance && ` • ${event.distance.toFixed(1)} km`}
                                                 </p>
 
-                                                <p className="small text-muted mb-2">
+                                                <p className="small text-muted mb-3">
                                                     📅 {event.date_event
-                                                        ? new Date(event.date_event).toLocaleString()
+                                                        ? new Date(event.date_event).toLocaleString('es-ES')
                                                         : "Fecha no disponible"}
                                                 </p>
 
-                                                <p className="card-text">
-                                                    {event.description || "Sin descripción"}
+                                                <p className="card-text flex-grow-1">
+                                                    {event.description?.substring(0, 110) || "Sin descripción"}...
                                                 </p>
 
-                                                <p className="mb-3">
-                                                    <strong>Capacidad:</strong> {event.capacity || "No definida"}
-                                                </p>
-
-                                                {event.categories &&
-                                                    event.categories.map((categoryRel) => {
-                                                        return (
-                                                            <div key={categoryRel.id}>
-                                                                <p className="p-1" style={{ width: "fit-content", textAlign: "center", textDecoration: "none", verticalAlign: "middle", backgroundColor: "#ffc107", border: "1px solid", borderRadius: "2rem" }}>
-                                                                    {categoryRel.name}
-                                                                </p>
-                                                            </div>
-                                                        )
-                                                    })
-                                                }
-
+                                                {/* Botones devueltos al final de la card */}
                                                 <div className="mt-auto d-grid gap-2">
                                                     <button
                                                         className="btn btn-primary"
-                                                        onClick={() => navigate(`/events/${event.id}`)}
+                                                        onClick={(e) => { e.stopPropagation(); navigate(`/events/${event.id}`); }}
                                                     >
                                                         Ver detalle
                                                     </button>
@@ -335,14 +351,14 @@ export const UserEvents = () => {
                                                     <div className="d-flex gap-2">
                                                         <button
                                                             className="btn btn-success w-100"
-                                                            onClick={() => handleSave(event.id)}
+                                                            onClick={(e) => { e.stopPropagation(); handleSave(event.id); }}
                                                         >
                                                             Guardar
                                                         </button>
 
                                                         <button
                                                             className="btn btn-warning w-100"
-                                                            onClick={() => handleAssist(event.id)}
+                                                            onClick={(e) => { e.stopPropagation(); handleAssist(event.id); }}
                                                         >
                                                             Asistir
                                                         </button>
@@ -355,25 +371,28 @@ export const UserEvents = () => {
                             )}
                         </div>
                     </div>
+
+                    {/* Mapa con margen derecho */}
                     {userLocation && (
-                        <div className="col h-100">
-                            <Map
-                                location={userLocation.address}
-                                mapCenter={mapCenter}
-                                setMapCenter={setMapCenter}
-                                defZoom={defZoom}
-                                setDefZoom={setDefZoom}
-                                markerPosition={markerPosition}
-                                setMarkerPosition={setMarkerPosition}
-                                onLocationChange={geoloc}
-                                events={filteredEvents}
-                                selectedEvent={selectedEvent}
-                                setSelectedEvent={setSelectedEvent}
-                                height={'700px'}
-                                infoWindowEvent={infoWindowEvent}
-                                setInfoWindowEvent={setInfoWindowEvent}
-                                >
-                            </Map>
+                        <div className="col-lg-5 pe-4">   {/* ← Margen derecho añadido */}
+                            <div className="sticky-top" style={{ top: "90px" }}>
+                                <Map
+                                    location={userLocation.address}
+                                    mapCenter={mapCenter}
+                                    setMapCenter={setMapCenter}
+                                    defZoom={defZoom}
+                                    setDefZoom={setDefZoom}
+                                    markerPosition={markerPosition}
+                                    setMarkerPosition={setMarkerPosition}
+                                    onLocationChange={geoloc}
+                                    events={filteredEvents}
+                                    selectedEvent={selectedEvent}
+                                    setSelectedEvent={setSelectedEvent}
+                                    height="720px"
+                                    infoWindowEvent={infoWindowEvent}
+                                    setInfoWindowEvent={setInfoWindowEvent}
+                                />
+                            </div>
                         </div>
                     )}
                 </div>

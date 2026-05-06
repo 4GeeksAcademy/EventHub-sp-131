@@ -87,7 +87,7 @@ export const Map = ({ location, mapCenter, setMapCenter, markerPosition, setMark
                                     onMouseLeave={() => setSelectedEvent(null)}
                                     style={{ border: event.id === selectedEvent?.id ? "1px solid black" : "" }}
                                     >
-                                    <div className="fs-6 badge text-bg-light border shadow p-2 bg-body-tertiary rounded">
+                                    <div className="fs-6 badge text-bg-light border shadow p-2 bg-body-ligth rounded">
                                         {event.name}
                                     </div>
                                 </AdvancedMarker>
@@ -97,7 +97,7 @@ export const Map = ({ location, mapCenter, setMapCenter, markerPosition, setMark
                         <InfoWindow position={{ lat: infoWindowEvent.latitude, lng: infoWindowEvent.longitude }}
                             onCloseClick={() => setInfoWindowEvent(null)}
                         >
-                            <div>
+                            <div className="text-dark">
                                 <h5>{infoWindowEvent.name}</h5>
                                 <p>{infoWindowEvent.date_event}</p>
                                 <p>Distancia: {infoWindowEvent.distance?.toFixed(1)} km</p>
