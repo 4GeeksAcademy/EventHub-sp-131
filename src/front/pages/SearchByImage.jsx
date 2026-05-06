@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+
 
 export const SearchByImage = () => {
     const [image, setImage] = useState(null);
@@ -85,7 +87,18 @@ export const SearchByImage = () => {
     };
 
     return (
-        <div className="container py-5">
+       <>
+         <div className="container-fluid px-4 pt-4">
+            <div className="d-flex justify-content-end">
+             <Link
+                  to="/user/private"
+                  className="btn eh-back-profile-btn" >
+                  <i className="bi bi-arrow-left me-2"></i>
+                       Volver al perfil
+             </Link>
+            </div>
+         </div>  
+         <div className="container py-5">
             <h1 className="mb-3">Buscar eventos por imagen</h1>
 
             <p className="text-muted">
@@ -199,5 +212,6 @@ export const SearchByImage = () => {
                 ))}
             </div>
         </div>
+      </>  
     );
 };

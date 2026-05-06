@@ -1,12 +1,119 @@
 import { Navigate, Link } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import { useEffect, useState } from "react";
+import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
 
 export const PrivateAdmin = () => {
   const { store, dispatch } = useGlobalReducer();
   const urlApi = import.meta.env.VITE_BACKEND_URL;
 
   const [loading, setLoading] = useState(true);
+  const [adminInfo, setAdminInfo] = useState(null);
+
+  const adminModules = [
+    {
+      title: "Admins",
+      text: "Gestiona administradores de la plataforma.",
+      to: "/admin",
+      icon: "bi bi-person-gear",
+    },
+    {
+      title: "Promotores",
+      text: "Gestiona cuentas de promotores.",
+      to: "/promotor",
+      icon: "bi bi-megaphone",
+    },
+    {
+      title: "Usuarios",
+      text: "Consulta y administra usuarios registrados.",
+      to: "/user",
+      icon: "bi bi-people",
+    },
+    {
+      title: "Categorías",
+      text: "Administra categorías de eventos.",
+      to: "/category-panel",
+      icon: "bi bi-tags",
+    },
+    {
+      title: "Eventos",
+      text: "Gestiona eventos creados en la plataforma.",
+      to: "/events",
+      icon: "bi bi-calendar-event",
+    },
+    {
+      title: "Grupos",
+      text: "Administra grupos y comunidades.",
+      to: "/group",
+      icon: "bi bi-diagram-3",
+    },
+    {
+      title: "Promotor-Categoría",
+      text: "Gestiona relaciones entre promotores y categorías.",
+      to: "/promotor-category/list",
+      icon: "bi bi-link-45deg",
+    },
+    {
+      title: "Saved Events",
+      text: "Consulta eventos guardados por usuarios.",
+      to: "/saved-event",
+      icon: "bi bi-bookmark-heart",
+    },
+    {
+      title: "Discusiones",
+      text: "Administra discusiones dentro de grupos.",
+      to: "/discussion",
+      icon: "bi bi-chat-square-text",
+    },
+    {
+      title: "Amigos",
+      text: "Gestiona relaciones de amistad entre usuarios.",
+      to: "/friend",
+      icon: "bi bi-person-plus",
+    },
+    {
+      title: "Comentarios",
+      text: "Revisa comentarios hechos en eventos.",
+      to: "/comments",
+      icon: "bi bi-chat-dots",
+    },
+    {
+      title: "User Category",
+      text: "Gestiona intereses o categorías de usuarios.",
+      to: "/user-category",
+      icon: "bi bi-person-lines-fill",
+    },
+    {
+      title: "Group Category",
+      text: "Gestiona categorías asociadas a grupos.",
+      to: "/group-category",
+      icon: "bi bi-collection",
+    },
+    {
+      title: "Group Event",
+      text: "Gestiona eventos asociados a grupos.",
+      to: "/group-event",
+      icon: "bi bi-calendar-range",
+    },
+    {
+      title: "Event Category",
+      text: "Gestiona categorías asociadas a eventos.",
+      to: "/event-category",
+      icon: "bi bi-calendar2-check",
+    },
+    {
+      title: "Event Promotor",
+      text: "Gestiona relaciones entre eventos y promotores.",
+      to: "/event-promotor",
+      icon: "bi bi-megaphone-fill",
+    },
+    {
+      title: "Event Assist",
+      text: "Consulta asistencias confirmadas por usuarios.",
+      to: "/event-assists",
+      icon: "bi bi-check-circle",
+    },
+  ];
 
   useEffect(() => {
     const token = localStorage.getItem("tokenAdmin")?.trim();
@@ -42,8 +149,9 @@ export const PrivateAdmin = () => {
       dispatch({ type: "ADD_LOGIN_STATUS_ADMIN", payload: true });
       localStorage.setItem("adminAuth", "true");
 
-      console.log("Admin validado:", data);
+      setAdminInfo(data.admin || data);
 
+      console.log("Admin validado:", data);
     } catch (error) {
       console.log("Error:", error.message);
       dispatch({ type: "ADD_LOGIN_STATUS_ADMIN", payload: false });
@@ -53,7 +161,18 @@ export const PrivateAdmin = () => {
   }
 
   if (loading) {
-    return <p className="text-center mt-5">Verificando sesión...</p>;
+    return (
+      <DashboardLayout
+        role="admin"
+        title="Panel Admin"
+        subtitle="Verificando sesión..."
+        userName="Admin"
+      >
+        <div className="eventhub-panel">
+          <p className="mb-0">Verificando sesión...</p>
+        </div>
+      </DashboardLayout>
+    );
   }
 
   if (!store.adminAuth) {
@@ -61,97 +180,42 @@ export const PrivateAdmin = () => {
   }
 
   return (
-    <div className="container">
-      <h1 className="text-center p-4">Panel Admin (Privado)</h1>
-      <div className="row row-cols-1 row-cols-sm-6 g-3">
-        <div>
-          <Link className="p-2" to="/admin" >
-            <button className="btn btn-primary">Admin CRUD</button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/promotor">
-            <button className="btn btn-primary">Promotor CRUD</button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/user">
-            <button className="btn btn-primary">User CRUD</button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/category-panel">
-            <button className="btn btn-primary">Category CRUD</button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/events">
-            <button className="btn btn-primary">Ir a CRUD Events</button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/group">
-            <button className="btn btn-primary">Group CRUD</button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/promotor-category/list">
-            <button className="btn btn-primary">Promotor-Category CRUD</button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/saved-event">
-            <button className="btn btn-primary">
-              Saved Event CRUD
-            </button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/discussion">
-            <button className="btn btn-primary">Discussion CRUD</button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/friend">
-            <button className="btn btn-primary">Friend CRUD</button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/comments">
-            <button className="btn btn-primary">Comments CRUD</button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/user-category">
-            <button className="btn btn-primary">User Category CRUD</button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/group-category">
-            <button className="btn btn-primary">Group-Category CRUD</button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/group-event">
-            <button className="btn btn-primary">Group-Event CRUD</button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/event-category">
-            <button className="btn btn-primary">Event Category CRUD</button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/event-promotor">
-            <button className="btn btn-primary">Event Promotor CRUD</button>
-          </Link>
-        </div>
-        <div>
-          <Link className="p-2" to="/event-assists">
-            <button className="btn btn-primary">Event Assist CRUD</button>
-          </Link>
-        </div>
+    <DashboardLayout
+      role="admin"
+      title="Panel Admin"
+      subtitle="Administra usuarios, promotores, eventos y relaciones internas de EventHub."
+      userName={adminInfo?.name || "Admin"}
+    >
+      <div className="eventhub-admin-dashboard">
+        <section className="eventhub-admin-hero">
+          <div>
+            <span className="eventhub-kicker">Administrador</span>
+            <h2>Centro de control</h2>
+            <p>
+              Desde aquí puedes acceder a los CRUDs principales y supervisar la estructura interna de la plataforma.
+            </p>
+          </div>
+
+          <div className="eventhub-admin-badge">
+            <i className="bi bi-shield-check"></i>
+          </div>
+        </section>
+
+        <section className="eventhub-admin-modules">
+          {adminModules.map((item) => (
+            <Link key={item.title} to={item.to} className="eventhub-admin-card">
+              <div className="eventhub-admin-card-icon">
+                <i className={item.icon}></i>
+              </div>
+
+              <div>
+                <h4>{item.title}</h4>
+                <p>{item.text}</p>
+              </div>
+            </Link>
+          ))}
+        </section>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
