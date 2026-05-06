@@ -74,6 +74,9 @@ export const PrivateUser = () => {
 				<p className="text-muted mb-0">
 					Gestiona tu actividad dentro de la plataforma.
 				</p>
+				<Link to="/search-by-image" className="btn btn-outline-primary">
+                            Buscar eventos 🔍
+                </Link>
 			</div>
 
 			{store.privateUser ? (

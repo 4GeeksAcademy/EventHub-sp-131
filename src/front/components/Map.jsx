@@ -3,9 +3,11 @@ import { AdvancedMarker, APIProvider, Map as GoogleMap, InfoWindow, Pin } from '
 
 const geoApiKey = import.meta.env.VITE_GEOCODING_API_KEY
 
-export const Map = ({ location, mapCenter, setMapCenter, markerPosition, setMarkerPosition, onLocationChange, defZoom, setDefZoom, setLatitude, setLongitude, events, selectedEvent, setSelectedEvent, height }) => {
+export const Map = ({ location, mapCenter, setMapCenter, markerPosition, setMarkerPosition, onLocationChange, defZoom, setDefZoom, setLatitude, setLongitude, events, selectedEvent, setSelectedEvent, height, infoWindowEvent, setInfoWindowEvent }) => {
     const autocompleteRef = useRef(null)
-    const [infoWindowEvent, setInfoWindowEvent] = useState(null);
+    console.log(infoWindowEvent);
+    
+    
 
     useEffect(() => {
         const autocomplete = autocompleteRef.current
