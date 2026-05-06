@@ -1,37 +1,62 @@
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom";
-import EventHubLogoImage from "../assets/img/EventHubLogoImage.png";
+import Carolina from "../assets/img/Carolina.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
 export const AboutUs = () => {
-    return (
-<section className="about py-5" id="about">
-    <div className="container">
-      <div className="row align-items-center">
-        <div className="col-lg-6">
-          <h2 className="section-title">¿Por qué Event Hub?</h2>
-          <p className="lead">Sabemos lo complicado que es organizar un evento exitoso. Por eso creamos la plataforma más intuitiva y poderosa del mercado.</p>
-          
-          <div className="features">
-            <div className="feature-item">
-              <h5>Gestión Completa</h5>
-              <p>Entradas, capacidad, listas de invitados, pagos y QR en un solo lugar.</p>
+  return (
+    <section className="about py-5" id="about">
+      <div className="container">
+        <div className="row align-items-center">
+          <h2 className="section-title">¿Quienes somos?</h2>
+
+          <div class="card-group gap-5">
+            <div class="card rounded">
+              <img src={Carolina} class="card-img-top rounded-top" alt="..." />
+              <div class="card-body">
+                <h5 class="card-title">Carolina Naranjo</h5>
+                <div className="d-flex justify-content-around">
+                  <a href="https://github.com/CarolinaNFeria" className="fs-3 text-light">
+                    <i class="fa-brands fa-github"></i>
+                  </a>
+                  <a href="https://www.linkedin.com/in/carolina-naranjo-feria-793132295/" className="fs-3 text-light">
+                    <i class="fa-brands fa-linkedin"></i>
+                  </a>
+                </div>
+              </div>
             </div>
-            <div className="feature-item">
-              <h5>Mapa Interactivo</h5>
-              <p>Encuentra eventos cerca de ti y comparte tu ubicación fácilmente.</p>
+            <div class="card rounded">
+              <img src="..." class="card-img-top rounded-top" alt="..."/>
+              <div class="card-body">
+                <h5 class="card-title">Kristhiam Altamiranda</h5>
+                <div className="d-flex justify-content-around">
+                  <a href="" className="fs-3 text-light">
+                    <i class="fa-brands fa-github"></i>
+                  </a>
+                  <a href="" className="fs-3 text-light">
+                    <i class="fa-brands fa-linkedin"></i>
+                  </a>
+                </div>
+              </div>
             </div>
-            <div className="feature-item">
-              <h5>Comunidad Real</h5>
-              <p>Conecta con artistas, organizadores y asistentes apasionados.</p>
+            <div class="card rounded">
+              <img src="..." class="card-img-top rounded-top" alt="..." />
+              <div class="card-body">
+                <h5 class="card-title">Matias Otero Sarra</h5>
+                <div className="d-flex justify-content-around">
+                  <a href="https://github.com/MatOtS" className="fs-3 text-light">
+                    <i class="fa-brands fa-github"></i>
+                  </a>
+                  <a href="https://www.linkedin.com/in/oterosarramatias/" className="fs-3 text-light">
+                    <i class="fa-brands fa-linkedin"></i>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="col-lg-6 text-center">
-          <img src={EventHubLogoImage} alt="Event Hub" className="about-image"/>
+
         </div>
       </div>
-    </div>
-  </section>
-    )
+    </section>
+  )
 }; 

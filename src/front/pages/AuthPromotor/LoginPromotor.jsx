@@ -13,7 +13,6 @@ export const LoginPromotor = () => {
 
   const navigate = useNavigate()
 
-
   async function loginUser(e) {
     e.preventDefault();
     try {
@@ -101,7 +100,7 @@ export const LoginPromotor = () => {
           <div className="d-flex p-3 gap-4 align-items-center" style={{ justifySelf: "center" }}>
             <p className="">Not registered?</p>
             <Link to="/promotor/sign-up">
-              <button className="btn btn-primary">Sign Up Here</button>
+              <button className="btn btn-secondary">Sign Up Here</button>
             </Link>
           </div>
         </div>

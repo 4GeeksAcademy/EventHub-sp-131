@@ -41,6 +41,10 @@ h5 {
   font-weight: 700;
 }
 
+.rounded {
+  border-radius: 1rem !important;
+}
+
 /* HERO */
 .hero {
   min-height: 100vh;
@@ -99,6 +103,11 @@ h5 {
   background: linear-gradient(90deg, #4361ee, #b20d5d);
   color: white;
   border: none;
+}
+
+.btn-secondary {
+  border: 2px solid;
+  background-color: var(--eh-primary-dark);
 }
 
 .btn-outline {
@@ -233,8 +242,6 @@ h5 {
   object-fit: cover;
   border-radius: 15px;
 }
-<<<<<<< ft--29-tinder-like-discover-event
-=======
 
 /*  EVENTHUB DASHBOARD */
 
@@ -1145,4 +1152,151 @@ h5 {
   border-color: transparent t;
   color: white t;
 }
->>>>>>> develop
+
+
+/* CSS Discover */
+
+/* Página completa */
+.discoverPage {
+  min-height: calc(100vh - 120px);
+  width: 100%;
+
+  background: radial-gradient(circle at top, #2b2b45, #12121c);
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  padding: 20px;
+}
+
+/* Título */
+.discoverTitle {
+  color: white;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Contenedor de cartas */
+.discoverPage .tinderContainer {
+  position: relative;
+  width: 100%;
+
+  height: 650px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Card */
+.discoverPage .card {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 340px;
+  max-width: 90vw;
+  height: 520px;
+
+  border-radius: 28px;
+  overflow: hidden;
+
+  background: #000;
+
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+
+  cursor: grab;
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+  backdrop-filter: blur(4px);
+
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.discoverPage .card:active {
+  cursor: grabbing;
+  transform: scale(1.04);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+}
+
+/* Imagen full */
+.discoverPage .card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Overlay oscuro */
+.discoverPage .card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.55) 15%,
+    rgba(0,0,0,0.15) 45%,
+    rgba(0,0,0,0) 100%
+  );
+}
+
+/* Texto */
+.discoverPage .card-content {
+  position: absolute;
+  bottom: 0;
+  padding: 20px;
+  z-index: 2;
+  color: white;
+}
+
+.discoverPage .card-title {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.discoverPage .card-subtitle {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.discoverPage .card-date {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+/* Overlays (✔ ❌) */
+.discoverPage .overlay {
+  position: absolute;
+  top: 25px;
+  font-size: 42px;
+  font-weight: bold;
+  padding: 6px 14px;
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 3;
+}
+
+.discoverPage .like {
+  right: 20px;
+  color: #00ff88;
+  border: 3px solid #00ff88;
+  transform: rotate(15deg);
+}
+
+.discoverPage .nope {
+  left: 20px;
+  color: #ff4d4d;
+  border: 3px solid #ff4d4d;
+  transform: rotate(-15deg);
+}
+/* CSS Discover */

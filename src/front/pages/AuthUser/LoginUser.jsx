@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import EventHubHeroImage from "../../assets/img/EventHubHeroImage.png";
 
 export const LoginUser = () => {
 	const [email, setEmail] = useState("");
@@ -37,8 +38,8 @@ export const LoginUser = () => {
 				}
 
 				localStorage.setItem("tokenUser", data.token);
-                localStorage.setItem("userAuth", "true");
-                localStorage.setItem("user", JSON.stringify(data.user));
+				localStorage.setItem("userAuth", "true");
+				localStorage.setItem("user", JSON.stringify(data.user));
 
 				dispatch({
 					type: "ADD_TOKEN_USER",
@@ -58,51 +59,45 @@ export const LoginUser = () => {
 	}
 
 	return (
-		<div className="container">
-			<div className="row justify-content-center">
-				<div className="col-md-6">
-					<div className="card shadow p-4 mt-5">
-						<h1 className="text-center mb-4">User Login</h1>
+		<div style={{ background: `linear-gradient(rgba(10, 10, 15, 0.75), rgba(10, 10, 15, 0.85)), url(${EventHubHeroImage}) center/cover no-repeat`}}>
+			<div className="container row mx-auto mt-3">
+				<div className="d-flex justify-content-end mb-1">
+					<Link to="/">
+						<button type="button" className="btn btn-outline mt-3">Back</button>
+					</Link>
+				</div>
+				<div className="pt-4 w-50 mx-auto forms">
+					<h1 className="d-flex justify-content-center mb-4">User Login</h1>
+					{error && <div className="alert alert-danger">{error}</div>}
+					<form onSubmit={handleLogin}>
+						<div className="mb-3 m-auto" style={{ width: "500px" }}>
+							<label className="form-label">Email</label>
+							<input
+								type="email"
+								className="form-control"
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+							/>
+						</div>
 
-						{error && <div className="alert alert-danger">{error}</div>}
-
-						<form onSubmit={handleLogin}>
-							<div className="mb-3">
-								<label className="form-label">Email</label>
-								<input
-									type="email"
-									className="form-control"
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
-								/>
-							</div>
-
-							<div className="mb-3">
-								<label className="form-label">Password</label>
-								<input
-									type="password"
-									className="form-control"
-									value={password}
-									onChange={(e) => setPassword(e.target.value)}
-								/>
-							</div>
-
-							<button className="btn btn-success w-100">
-								Iniciar Sesión
-							</button>
-
-							<button type="button" className="btn btn-outline-primary w-100 mt-2" onClick={() => navigate("/user/register")}>
-                                Crear cuenta
-                            </button>
-
-							<button
-								type="button"
-								className="btn btn-secondary w-100 mt-2"
-								onClick={() => navigate("/")}
-							>
-								Volver
-							</button>
-						</form>
+						<div className="mb-4 m-auto" style={{ width: "500px" }}>
+							<label className="form-label">Password</label>
+							<input
+								type="password"
+								className="form-control"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+							/>
+						</div>
+						<button className="btn btn-primary d-grid gap-2 col-6 mx-auto">
+							Iniciar Sesión
+						</button>
+					</form>
+					<div className="d-flex mt-2 p-3 gap-4 align-items-center" style={{ justifySelf: "center" }}>
+						<p className="">Not registered?</p>
+						<Link to="/user/register">
+							<button className="btn btn-secondary">Sign Up Here</button>
+						</Link>
 					</div>
 				</div>
 			</div>

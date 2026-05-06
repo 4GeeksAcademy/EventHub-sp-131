@@ -122,31 +122,30 @@ export const Navbar = () => {
 									</Link>
 								)
 							) : (
-								<button className="btn btn-outline-danger px-4" onClick={logOutUser}>
-									Log Out
-								</button>
+								<div>
+									<Link to="/user/private">
+										<button className="btn btn-primary px-4">
+											Dashboard
+										</button>
+									</Link>
+									<button className="btn btn-outline-danger px-4" onClick={logOutUser}>
+										Log Out
+									</button>
+								</div>
 							)
 							:
-							null
-						}
-						{!localStorage.getItem("promotorAuth") ?
-							/* 							location.pathname &&
-															!location.pathname.includes("login") ?
-															<div className="gap-3">
-																<div className="ml-auto">
-																	<Link to="/promotor/login">
-																		<button className="btn btn-primary">Promotor Login</button>
-																	</Link>
-																</div>
-															</div>
-															: null */
-							''
-							:
-							<div className="gap-3">
-								<div className="ml-auto">
-									<button className="btn btn-outline-danger" onClick={logOutPromotor}>Log Out</button>
+							localStorage.getItem("promotorAuth") && !localStorage.getItem("userAuth") ?
+								<Link to="/promotor/private">
+									<button className="btn btn-primary px-4">
+										Dashboard
+									</button>
+								</Link>
+								:
+								<div className="gap-3">
+									<div className="ml-auto">
+										<button className="btn btn-outline-danger" onClick={logOutPromotor}>Log Out</button>
+									</div>
 								</div>
-							</div>
 						}
 					</div>
 				</nav>

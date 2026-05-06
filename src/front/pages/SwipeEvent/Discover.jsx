@@ -1,5 +1,4 @@
 import SwipeDeck from "./SwipeDeck";
-import "./Discover.css";
 
 export const Discover = () => {
   return (

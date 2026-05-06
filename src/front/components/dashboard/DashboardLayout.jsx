@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import eventHubIcon from "../../assets/img/EventHubIcon.svg";
 
@@ -82,14 +82,15 @@ export const DashboardLayout = ({
     <div className="eventhub-dashboard">
       <aside className="eventhub-sidebar">
         <div className="eventhub-sidebar-brand">
-          <img src={eventHubIcon} alt="EventHub" className="eventhub-logo-img" />
-
+          <Link to="/" className="d-flex gap-2" style={{ color: "none", textDecoration: "none"}}>
+          <img src={eventHubIcon} alt="EventHub" className="eventhub-logo-img rounded" />
           <div>
             <h5>
               Event<span>Hub</span>
             </h5>
             <small>{role}</small>
           </div>
+          </Link>
         </div>
 
         <div className="eventhub-sidebar-user">
