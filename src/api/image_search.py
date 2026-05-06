@@ -1,241 +1,457 @@
 import os
 import requests
+import traceback
+
 from flask import Blueprint, request, jsonify
 
 image_search = Blueprint("image_search", __name__)
 
+HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY") or os.getenv("HUGGINGFACE_API_TOKEN")
 TICKETMASTER_API_KEY = os.getenv("TICKETMASTER_API_KEY")
-HUGGINGFACE_API_TOKEN = os.getenv("HUGGINGFACE_API_TOKEN")
 
 HUGGINGFACE_MODEL_URL = "https://router.huggingface.co/hf-inference/models/google/vit-base-patch16-224"
+TICKETMASTER_URL = "https://app.ticketmaster.com/discovery/v2/events.json"
+
+
+EVENT_CATEGORY_MAP = {
+    "football": {
+       "event_type": "football",
+       "classification": "Sports",
+       "keywords": [
+         "sports", "football", "soccer", "soccer ball", "football player",
+         "stadium", "goal", "goalkeeper", "sports ball",
+         "ballplayer", "scoreboard", "pitch"
+    ],
+    "search_terms": ["soccer", "football", "fútbol", "futbol", "laliga", "real madrid", "barcelona", "atletico madrid", "atlético madrid", "valencia cf", "sevilla fc", "real betis", "athletic club","villarreal","getafe","osasuna"]
+    },
+   
+    "basketball": {
+        "event_type": "basketball",
+        "classification": "Sports",
+        "keywords": [
+            "basketball", "basketball court", "basketball player",
+            "hoop", "backboard", "nba"
+        ],
+        "search_terms": ["basketball", "baloncesto"]
+    },
+    "tennis": {
+        "event_type": "tennis",
+        "classification": "Sports",
+        "keywords": [
+            "tennis", "tennis ball", "tennis racket",
+            "racket", "tennis court"
+        ],
+        "search_terms": ["tennis", "tenis"]
+    },
+    "boxing": {
+        "event_type": "boxing",
+        "classification": "Sports",
+        "keywords": [
+            "boxing", "boxer", "boxing glove", "ring"
+        ],
+        "search_terms": ["boxing", "boxeo"]
+    },
+    "concert": {
+        "event_type": "concert",
+        "classification": "Music",
+        "keywords": [
+            "concert", "stage", "microphone", "singer",
+            "band", "music", "festival", "guitar",
+            "drum", "audience", "spotlight", "crowd",
+            "performance", "theater curtain", "theatre curtain"
+        ],
+        "search_terms": ["concert", "music", "festival", "live music"]
+    },
+    "theatre": {
+        "event_type": "theatre",
+        "classification": "Arts & Theatre",
+        "keywords": [
+            "theatre", "theater", "actor", "actress",
+            "opera", "musical", "play", "drama"
+        ],
+        "search_terms": ["theatre", "theater", "musical", "opera"]
+    }
+}
 
 
 def analyze_image_with_huggingface(image_url):
-    if not HUGGINGFACE_API_TOKEN:
-        print("Falta HUGGINGFACE_API_TOKEN")
+    headers = {
+        "Authorization": f"Bearer {HUGGINGFACE_API_KEY}",
+        "Content-Type": "application/octet-stream"
+    }
+
+    try:
+        image_response = requests.get(image_url, timeout=25)
+
+        if image_response.status_code != 200:
+            print("Error descargando imagen:", image_response.status_code)
+            return []
+
+        response = requests.post(
+            HUGGINGFACE_MODEL_URL,
+            headers=headers,
+            data=image_response.content,
+            timeout=45
+        )
+
+        if response.status_code != 200:
+            print("Error Hugging Face:", response.status_code, response.text)
+            return []
+
+        data = response.json()
+        labels = []
+
+        if isinstance(data, list):
+            for item in data:
+                label = item.get("label", "").lower()
+                score = item.get("score", 0)
+
+                if label and score >= 0.15:
+                    labels.append({
+                        "label": label,
+                        "score": score
+                    })
+
+        return labels
+
+    except Exception as error:
+        print("Error en analyze_image_with_huggingface:", error)
         return []
 
-    image_response = requests.get(image_url)
 
-    if image_response.status_code != 200:
-        print("No se pudo descargar la imagen desde Cloudinary")
-        return []
+def detect_event_category(labels):
+    category_scores = {
+        "football": 0,
+        "basketball": 0,
+        "tennis": 0,
+        "boxing": 0,
+        "concert": 0,
+        "theatre": 0
+    }
 
-    content_type = image_response.headers.get("Content-Type", "image/jpeg")
-
-    response = requests.post(
-        HUGGINGFACE_MODEL_URL,
-        headers={
-            "Authorization": f"Bearer {HUGGINGFACE_API_TOKEN}",
-            "Content-Type": content_type
-        },
-        data=image_response.content
-    )
-
-    if response.status_code != 200:
-        print("Error Hugging Face:", response.status_code, response.text)
-        return []
-
-    data = response.json()
-
-    print("HuggingFace raw:", data)
-
-    labels = []
-
-    for item in data:
-        label = item.get("label")
-        score = item.get("score", 0)
-
-        if label and score > 0.05:
-            labels.append(label)
-
-    return labels
-
-
-def normalize_tags_to_keywords(tags):
-    keywords = []
-
-    music_words = [
-        "stage", "microphone", "guitar", "piano", "drum", "musician",
-        "singer", "concert", "spotlight", "performance", "band",
-        "audience", "crowd", "speaker", "music"
-    ]
-
-    sports_words = [
-        "stadium", "football", "soccer", "basketball", "ball",
-        "soccer ball", "sports ball", "jersey", "player", "team",
-        "racket", "tennis", "baseball", "swimming", "sport",
-        "sports", "arena"
-    ]
-
-    theatre_words = [
-        "theater", "theatre", "curtain", "stage curtain",
-        "ballet", "dance", "dancer", "costume", "opera", "drama"
-    ]
-
-    art_words = [
-        "museum", "painting", "art", "gallery",
-        "sculpture", "exhibition", "drawing"
-    ]
-
-    food_words = [
-        "restaurant", "food", "dish", "meal",
-        "menu", "chef", "table", "drink"
-    ]
-
-    outdoor_words = [
-        "beach", "park", "mountain", "lake",
-        "river", "forest", "landscape", "outdoor",
-        "umbrella"
-    ]
-
-    for tag in tags:
-        clean_tag = tag.lower().strip()
-
-        if any(word in clean_tag for word in sports_words):
-            keywords.append("sports")
-
-        elif any(word in clean_tag for word in music_words):
-            keywords.append("music")
-
-        elif any(word in clean_tag for word in theatre_words):
-            keywords.append("theatre")
-
-        elif any(word in clean_tag for word in art_words):
-            keywords.append("arts")
-
-        elif any(word in clean_tag for word in food_words):
-            keywords.append("food festival")
-
-        elif any(word in clean_tag for word in outdoor_words):
-            keywords.append("outdoor festival")
-
-    return list(set(keywords))
-
-
-def infer_event_keywords_from_labels(labels):
-    clean_labels = [label.lower().strip() for label in labels]
-
-    sports_signals = [
-        "sports ball", "soccer ball", "football", "soccer",
-        "stadium", "ball", "jersey", "player", "team",
-        "basketball", "tennis", "racket", "baseball"
-    ]
-
-    music_signals = [
-        "guitar", "microphone", "piano", "drum",
-        "speaker", "concert", "band", "musician", "singer"
+    concert_signals = [
+        "stage", "spotlight", "audience", "crowd", "concert",
+        "music", "band", "singer", "microphone", "guitar",
+        "drum", "festival", "performance", "theater curtain",
+        "theatre curtain"
     ]
 
     theatre_signals = [
-        "curtain", "theater", "theatre", "stage curtain",
-        "opera", "ballet", "drama"
+        "theatre", "theater", "opera", "actor", "actress",
+        "musical", "play", "drama"
     ]
 
-    if any(signal in label for label in clean_labels for signal in sports_signals):
-        return ["sports"]
+    football_signals = [
+        "sports", "football", "soccer", "soccer ball", "stadium",
+        "goal", "goalkeeper", "football player", "sports ball"
+    ]
 
-    if any(signal in label for label in clean_labels for signal in theatre_signals):
-        return ["theatre"]
+    basketball_signals = [
+        "basketball", "hoop", "backboard", "basketball court"
+    ]
 
-    if any(signal in label for label in clean_labels for signal in music_signals):
-        return ["music"]
+    tennis_signals = [
+        "tennis", "racket", "tennis ball", "tennis court"
+    ]
 
-    return normalize_tags_to_keywords(labels)
+    boxing_signals = [
+        "boxing", "boxer", "boxing glove", "ring"
+    ]
 
+    for detected in labels:
+        label = detected["label"].lower()
+        score = detected["score"]
 
-def search_ticketmaster(keyword, country_code="ES"):
-    url = "https://app.ticketmaster.com/discovery/v2/events.json"
+        if any(word in label for word in concert_signals):
+            category_scores["concert"] += score * 1.8
 
-    params = {
-        "apikey": TICKETMASTER_API_KEY,
-        "keyword": keyword,
-        "countryCode": country_code,
-        "size": 12,
-        "sort": "date,asc"
+        if any(word in label for word in theatre_signals):
+            category_scores["theatre"] += score * 1.2
+
+        if any(word in label for word in football_signals):
+            category_scores["football"] += score * 2
+
+        if any(word in label for word in basketball_signals):
+            category_scores["basketball"] += score * 2
+
+        if any(word in label for word in tennis_signals):
+            category_scores["tennis"] += score * 2
+
+        if any(word in label for word in boxing_signals):
+            category_scores["boxing"] += score * 2
+
+    category_scores = {
+        key: value for key, value in category_scores.items()
+        if value > 0
     }
 
-    response = requests.get(url, params=params)
+    if not category_scores:
+        return None
 
-    if response.status_code != 200:
-        print("Error Ticketmaster:", response.status_code, response.text)
-        return []
+    best_category_name = max(category_scores, key=category_scores.get)
+    best_config = EVENT_CATEGORY_MAP[best_category_name]
 
-    data = response.json()
-    events = data.get("_embedded", {}).get("events", [])
+    return {
+        **best_config,
+        "category_score": category_scores[best_category_name],
+        "category_scores": category_scores
+    }
 
-    clean_events = []
+
+def search_ticketmaster_events(config, city=None, country_code="ES"):
+    all_events = []
+
+    for search_term in config["search_terms"]:
+        params = {
+            "apikey": TICKETMASTER_API_KEY,
+            "keyword": search_term,
+            "countryCode": country_code,
+            "size": 50,
+            "sort": "date,asc"
+        }
+
+        if config["event_type"] != "football":
+            params["classificationName"] = config["classification"]
+
+        if city:
+            params["city"] = city
+
+        try:
+            response = requests.get(TICKETMASTER_URL, params=params, timeout=30)
+
+            print("Buscando en Ticketmaster:", params)
+            print("Status Ticketmaster:", response.status_code)
+
+            if response.status_code != 200:
+                print("Error Ticketmaster:", response.status_code, response.text)
+                continue
+
+            data = response.json()
+            events = data.get("_embedded", {}).get("events", [])
+
+            print("Eventos encontrados con", search_term, ":", len(events))
+
+            all_events.extend(events)
+
+        except Exception as error:
+            print("Error en search_ticketmaster_events:", error)
+
+    return all_events
+
+def remove_duplicate_events(events):
+    unique_events = []
+    seen_ids = set()
 
     for event in events:
-        venue = None
-        venues = event.get("_embedded", {}).get("venues", [])
+        event_id = event.get("id")
 
-        if len(venues) > 0:
-            venue = venues[0]
+        if event_id and event_id not in seen_ids:
+            seen_ids.add(event_id)
+            unique_events.append(event)
 
-        clean_events.append({
-            "id": event.get("id"),
-            "name": event.get("name"),
-            "url": event.get("url"),
-            "date": event.get("dates", {}).get("start", {}).get("localDate"),
-            "time": event.get("dates", {}).get("start", {}).get("localTime"),
-            "image": event.get("images", [{}])[0].get("url"),
-            "venue": venue.get("name") if venue else None,
-            "city": venue.get("city", {}).get("name") if venue else None,
-            "country": venue.get("country", {}).get("name") if venue else None
-        })
+    return unique_events
 
-    return clean_events
+
+def get_event_text(event):
+    text_parts = [
+        event.get("name", ""),
+        event.get("info", ""),
+        event.get("pleaseNote", "")
+    ]
+
+    venues = event.get("_embedded", {}).get("venues", [])
+
+    if venues:
+        venue = venues[0]
+        text_parts.append(venue.get("name", ""))
+        text_parts.append(venue.get("city", {}).get("name", ""))
+        text_parts.append(venue.get("country", {}).get("name", ""))
+
+    for classification in event.get("classifications", []):
+        text_parts.append(classification.get("segment", {}).get("name", ""))
+        text_parts.append(classification.get("genre", {}).get("name", ""))
+        text_parts.append(classification.get("subGenre", {}).get("name", ""))
+
+    return " ".join(text_parts).lower()
+
+
+def is_relevant_event(event, config):
+    text = get_event_text(event)
+
+    if config["event_type"] == "football":
+        blocked_words = [
+            "basketball", "baloncesto", "basket",
+            "tennis", "tenis",
+            "boxing", "boxeo",
+            "hockey", "motor", "motos"
+        ]
+
+        if any(word in text for word in blocked_words):
+            return False
+
+        football_words = [
+            "football", "soccer", "fútbol", "futbol",
+            "laliga", "liga", "fc ", "cf ",
+            "real madrid", "barcelona", "atlético", "atletico",
+            "uefa", "champions", "euro"
+        ]
+
+        classifications = event.get("classifications", [])
+
+        is_sport = any(
+            classification.get("segment", {}).get("name", "").lower() == "sports"
+            for classification in classifications
+        )
+
+        has_football_word = any(word in text for word in football_words)
+
+        return has_football_word or is_sport
+
+    return any(
+        term.lower() in text
+        for term in config["search_terms"]
+    )
+
+
+def score_event(event, config):
+    score = 0
+    text = get_event_text(event)
+    name = event.get("name", "").lower()
+
+    for term in config["search_terms"]:
+        term = term.lower()
+
+        if term in name:
+            score += 50
+
+        if term in text:
+            score += 20
+
+    for classification in event.get("classifications", []):
+        segment_name = classification.get("segment", {}).get("name", "").lower()
+
+        if config["classification"].lower() == segment_name:
+            score += 30
+
+    return score
+
+
+def format_event(event, config):
+    dates = event.get("dates", {}).get("start", {})
+    venues = event.get("_embedded", {}).get("venues", [])
+    venue = venues[0] if venues else {}
+
+    images = event.get("images", [])
+    image_url = images[0].get("url") if images else None
+
+    return {
+        "id": event.get("id"),
+        "name": event.get("name"),
+        "event_type": config["event_type"],
+        "classification": config["classification"],
+        "date": dates.get("localDate"),
+        "time": dates.get("localTime"),
+        "venue": venue.get("name"),
+        "city": venue.get("city", {}).get("name"),
+        "country": venue.get("country", {}).get("name"),
+        "image": image_url,
+        "url": event.get("url"),
+        "score": score_event(event, config)
+    }
 
 
 @image_search.route("/search-by-image", methods=["POST"])
 def search_by_image():
-    body = request.get_json()
+    try:
+        data = request.get_json(silent=True)
 
-    if body is None:
-        return jsonify({"message": "Debes enviar un JSON"}), 400
+        if not data:
+            return jsonify({"message": "No se enviaron datos"}), 400
 
-    image_url = body.get("image_url")
+        image_url = (
+            data.get("image_url")
+            or data.get("url")
+            or data.get("secure_url")
+        )
 
-    if not image_url:
-        return jsonify({"message": "image_url es obligatorio"}), 400
+        city = data.get("city")
+        country_code = data.get("country_code", "ES")
 
-    if not TICKETMASTER_API_KEY:
-        return jsonify({"message": "Falta TICKETMASTER_API_KEY"}), 500
+        if not image_url:
+            return jsonify({
+                "message": "Falta image_url",
+                "received_data": data
+            }), 400
 
-    labels = analyze_image_with_huggingface(image_url)
-    keywords = infer_event_keywords_from_labels(labels)
+        if not HUGGINGFACE_API_KEY:
+            return jsonify({"message": "Falta HUGGINGFACE_API_KEY en .env"}), 500
 
-    if len(keywords) == 0:
+        if not TICKETMASTER_API_KEY:
+            return jsonify({"message": "Falta TICKETMASTER_API_KEY en .env"}), 500
+
+        labels = analyze_image_with_huggingface(image_url)
+
+        if not labels:
+            return jsonify({
+                "message": "No se pudo detectar una categoría clara en la imagen",
+                "image_url": image_url,
+                "detected_labels": [],
+                "detected_event_type": None,
+                "category_scores": {},
+                "events_count": 0,
+                "events": []
+            }), 200
+
+        config = detect_event_category(labels)
+
+        if not config:
+            return jsonify({
+                "message": "La imagen fue analizada, pero no coincide con una categoría soportada",
+                "image_url": image_url,
+                "detected_labels": labels,
+                "detected_event_type": None,
+                "category_scores": {},
+                "events_count": 0,
+                "events": []
+            }), 200
+
+        ticketmaster_events = search_ticketmaster_events(
+            config=config,
+            city=city,
+            country_code=country_code
+        )
+
+        unique_events = remove_duplicate_events(ticketmaster_events)
+
+        relevant_events = [
+            event for event in unique_events
+            if is_relevant_event(event, config)
+        ]
+
+        formatted_events = [
+            format_event(event, config)
+            for event in relevant_events
+        ]
+
+        formatted_events.sort(key=lambda event: event["score"], reverse=True)
+
         return jsonify({
+            "message": "Búsqueda realizada correctamente",
             "image_url": image_url,
-            "labels_detected": labels,
-            "keywords": [],
-            "events": [],
-            "message": "No se pudo relacionar esta imagen con una categoría de eventos."
+            "detected_labels": labels,
+            "detected_event_type": config["event_type"],
+            "classification": config["classification"],
+            "category_score": config["category_score"],
+            "category_scores": config["category_scores"],
+            "events_count": len(formatted_events),
+            "events": formatted_events
         }), 200
 
-    all_events = []
+    except Exception as error:
+        print("ERROR EN /search-by-image:")
+        traceback.print_exc()
 
-    for keyword in keywords:
-        events = search_ticketmaster(keyword)
-        all_events.extend(events)
-
-    unique_events = {}
-
-    for event in all_events:
-        event_name = event.get("name") or ""
-        event_image = event.get("image") or ""
-        event_date = event.get("date") or ""
-
-        key = f"{event_name}-{event_image}-{event_date}"
-
-        if key not in unique_events:
-            unique_events[key] = event
-
-    return jsonify({
-        "image_url": image_url,
-        "labels_detected": labels,
-        "keywords": keywords,
-        "events": list(unique_events.values())
-    }), 200
+        return jsonify({
+            "message": "Error interno en search-by-image",
+            "error": str(error)
+        }), 500
