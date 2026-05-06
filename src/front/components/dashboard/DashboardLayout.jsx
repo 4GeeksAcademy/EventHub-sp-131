@@ -27,8 +27,8 @@ export const DashboardLayout = ({
 
     promotor: [
       { label: "Dashboard", to: "/promotor/private", icon: "bi bi-grid" },
-      { label: "Mis eventos", to: "/promotor/private", icon: "bi bi-calendar-event" },
-      { label: "Crear evento", icon: "bi bi-plus-circle", action: "create-event" },
+      { label: "Mis eventos", to: "/promotor/events", icon: "bi bi-calendar-event" },
+      { label: "Crear evento", icon: "bi bi-plus-circle", to: "/promotor/create-event" },
     ],
 
     admin: [

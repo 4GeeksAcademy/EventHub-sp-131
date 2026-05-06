@@ -43,7 +43,7 @@ const CloudinaryUploadWidget = ({ uwConfig, setPublicId }) => {
       ref={uploadButtonRef}
       id="upload_widget"
       type="button"
-      className="btn btn-primary mt-2"
+      className="btn btn-secondary mt-2"
     >
       Upload your Image
     </button>

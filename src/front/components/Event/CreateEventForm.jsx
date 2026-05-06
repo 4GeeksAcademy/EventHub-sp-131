@@ -246,7 +246,7 @@ export const CreateEventForm = (props) => {
 
 
                         <div className="d-flex justify-content-between">
-                            <button type="submit" className="btn btn-success">
+                            <button type="submit" className="btn btn-primary">
                                 Crear
                             </button>
                         </div>

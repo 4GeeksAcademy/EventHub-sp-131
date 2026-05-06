@@ -88,16 +88,18 @@ import { UserEvents } from "./pages/AuthUser/UserEvents";
 import { UserProfiles } from "./pages/AuthUser/UserProfiles";
 import { UserGroups } from "./pages/AuthUser/UserGroups";
 import { UserGroupDetail } from "./pages/AuthUser/UserGroupDetail";
-import { EventDetails} from "./pages/Event/EventDetails";
+import { EventDetails } from "./pages/Event/EventDetails";
 import { EventDetail } from "./pages/EventDetail";
 import { Chat } from "./pages/Chat.jsx";
 import { ChatPromotor } from "./pages/ChatPromotor.jsx";
 import { SearchByImage } from "./pages/SearchByImage.jsx";
 import { AboutUs } from "./pages/AboutUs.jsx";
 import { Contact } from "./pages/Contact.jsx";
-import { PromotingAnEvent} from "./pages/PromotingAnEvent.jsx"
+import { PromotingAnEvent } from "./pages/PromotingAnEvent.jsx"
 import { Discover } from "./pages/SwipeEvent/Discover";
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
+import { PromotorEvents } from "./pages/AuthPromotor/PromotorEvents.jsx";
+import { PromotorCreateEvent } from "./pages/AuthPromotor/PromotorCreateEvent.jsx";
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -130,7 +132,6 @@ export const router = createBrowserRouter(
         <Route path="/create-event" element={<CreateEvent />} />
         <Route path="/edit-event/:id" element={<EditEvent />} />
         <Route path="/delete-event/:id" element={<DeleteEvent />} />
-        <Route path="/events/:id" element={<EventDetails />} />
         <Route path="/group" element={<Group />} />
         <Route path="/group-create" element={<CreateGroup />} />
         <Route path="/group-edit/:theId" element={<EditGroup />} />
@@ -181,7 +182,6 @@ export const router = createBrowserRouter(
         <Route path="/promotor/login" element={<LoginPromotor />} />
         <Route path="/promotor/sign-up" element={<PromotorSignUp />} />
         <Route path="/admin/login" element={<LoginAdmin />} />
-        <Route path="/discover" element={<Discover />} />
       </Route>
 
       {/* RUTAS PRIVADAS FUERA DEL LAYOUT GLOBAL */}
@@ -198,6 +198,10 @@ export const router = createBrowserRouter(
       <Route path="/user/profiles" element={<UserProfiles />} />
       <Route path="/user/groups" element={<UserGroups />} />
       <Route path="/user/group/:theId" element={<UserGroupDetail />} />
+      <Route path="/events/:id" element={<EventDetails />} />
+      <Route path="/discover" element={<Discover />} />
+      <Route path="/promotor/events" element={<PromotorEvents/>}/>
+      <Route path="/promotor/create-event" element={<PromotorCreateEvent />} />
     </>
   )
 );
