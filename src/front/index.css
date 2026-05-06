@@ -1,5 +1,22 @@
 :root {
-    --main-background: #0a0a0f;
+  --main-background: #0a0a0f;
+
+  --eh-primary: #8b2cff;
+  --eh-primary-dark: #5b21b6;
+  --eh-pink: #ff2f7d;
+  --eh-orange: #ff8a18;
+
+  --eh-bg: #0f0f1a;
+  --eh-card: #171721;
+  --eh-sidebar: #14141f;
+  --eh-border: #2a2a38;
+
+  --eh-text: #f1f1f5;
+  --eh-muted: #a3a3b8;
+  --eh-white: #ffffff;
+
+  --eh-shadow: 0 16px 38px rgba(0, 0, 0, 0.4);
+  --eh-shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 * {
@@ -9,14 +26,18 @@
 }
 
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   background-color: var(--main-background);
   color: #e9ecef;
   line-height: 1.6;
 }
 
-h1, h2, h3, h4, h5 {
-  font-family: 'Poppins', sans-serif;
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: "Poppins", sans-serif;
   font-weight: 700;
 }
 
@@ -32,7 +53,10 @@ h1, h2, h3, h4, h5 {
 
 .hero-overlay {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: var(--main-background);
 }
 
@@ -44,7 +68,7 @@ h1, h2, h3, h4, h5 {
 }
 
 .gradient-text {
-  background: linear-gradient(90deg, #4361EE, #B20D5D);
+  background: linear-gradient(90deg, #4361ee, #b20d5d);
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -72,7 +96,7 @@ h1, h2, h3, h4, h5 {
 }
 
 .btn-primary {
-  background: linear-gradient(90deg, #4361EE, #B20D5D);
+  background: linear-gradient(90deg, #4361ee, #b20d5d);
   color: white;
   border: none;
 }
@@ -103,7 +127,7 @@ h1, h2, h3, h4, h5 {
 }
 
 .feature-item h5 {
-  color: #4361EE;
+  color: #4361ee;
   margin-bottom: 0.5rem;
 }
 
@@ -124,7 +148,7 @@ h1, h2, h3, h4, h5 {
 
 .contact-form input:focus,
 .contact-form textarea:focus {
-  border-color: #4361EE;
+  border-color: #4361ee;
   box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
 }
 
@@ -137,46 +161,46 @@ h1, h2, h3, h4, h5 {
 
 /* NAVBAR STICKY + HOVER */
 .sticky-navbar {
-    position: sticky;
-    top: 0;
-    z-index: 1030;
-    background-color: var(--main-background);
-    backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background-color: var(--main-background);
+  backdrop-filter: blur(12px);
 }
 
 .nav-hover {
-    color: #e9ecef !important;
-    transition: all 0.3s ease;
-    position: relative;
+  color: #e9ecef t;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .nav-hover:hover {
-    color: #B20D5D !important;
+  color: #b20d5d t;
 }
 
 .nav-hover::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -4px;
-    left: 0;
-    background-color: #B20D5D;
-    transition: width 0.3s ease;
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: #b20d5d;
+  transition: width 0.3s ease;
 }
 
 .nav-hover:hover::after {
-    width: 100%;
+  width: 100%;
 }
 
 /* Ajustes extra */
 .navbar-nav .nav-link {
-    padding: 8px 16px;
-    font-size: 1.02rem;
+  padding: 8px 16px;
+  font-size: 1.02rem;
 }
 
 .header-section {
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .forms {
@@ -191,7 +215,7 @@ h1, h2, h3, h4, h5 {
   margin-top: 40px;
 }
 
- .home-visual-card {
+.home-visual-card {
   position: absolute;
   width: 320px;
   max-width: 90vw;
@@ -199,7 +223,7 @@ h1, h2, h3, h4, h5 {
   background: white;
   border-radius: 20px;
   padding: 15px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   overflow: hidden;
 }
 
@@ -210,31 +234,7 @@ h1, h2, h3, h4, h5 {
   border-radius: 15px;
 }
 
-  /*  EVENTHUB DASHBOARD */
-
-:root {
-  --eh-primary: #8b2cff;
-  --eh-primary-dark: #5b21b6;
-  --eh-pink: #ff2f7d;
-  --eh-orange: #ff8a18;
-
-  --eh-primary-soft: #f0e7ff;
-  --eh-pink-soft: #ffe4f0;
-  --eh-orange-soft: #fff1df;
-
-  --eh-bg: #f6f4ff;
-  --eh-card: #ffffff;
-  --eh-sidebar: #ffffff;
-
-  --eh-text: #111827;
-  --eh-muted: #667085;
-  --eh-white: #ffffff;
-
-  --eh-border: #e7e3f5;
-
-  --eh-shadow: 0 16px 38px rgba(91, 33, 182, 0.1);
-  --eh-shadow-soft: 0 8px 24px rgba(91, 33, 182, 0.08);
-}
+/*  EVENTHUB DASHBOARD */
 
 .eventhub-dashboard,
 .eventhub-dashboard * {
@@ -244,18 +244,18 @@ h1, h2, h3, h4, h5 {
 .eventhub-dashboard {
   min-height: 100vh;
   display: flex;
-  background: var(--eh-bg) !important;
-  color: var(--eh-text) !important;
+  background: var(--main-background);
+  color: var(--eh-text);
 }
 
 /* SIDEBAR */
 
 .eventhub-sidebar {
-  width: 280px !important;
-  min-width: 280px !important;
-  max-width: 280px !important;
+  width: 280px t;
+  min-width: 280px t;
+  max-width: 280px t;
   min-height: 100vh;
-  background: var(--eh-sidebar) !important;
+  background: var(--eh-sidebar) t;
   border-right: 1px solid var(--eh-border);
   padding: 24px 18px;
   display: flex;
@@ -280,7 +280,7 @@ h1, h2, h3, h4, h5 {
   font-size: 26px;
   line-height: 1;
   font-weight: 900;
-  color: var(--eh-text) !important;
+  color: var(--eh-text);
 }
 
 .eventhub-sidebar-brand h5 span {
@@ -302,7 +302,12 @@ h1, h2, h3, h4, h5 {
   padding: 16px;
   border-radius: 22px;
   margin-bottom: 28px;
-  background: linear-gradient(135deg, var(--eh-primary), var(--eh-pink), var(--eh-orange));
+  background: linear-gradient(
+    135deg,
+    var(--eh-primary),
+    var(--eh-pink),
+    var(--eh-orange)
+  );
   color: var(--eh-white);
   box-shadow: 0 14px 30px rgba(194, 24, 184, 0.22);
 }
@@ -349,8 +354,8 @@ h1, h2, h3, h4, h5 {
   width: 100%;
   border: none;
   background: transparent;
-  text-decoration: none !important;
-  color: var(--eh-muted) !important;
+  text-decoration: none;
+  color: var(--eh-muted);
   padding: 14px 16px;
   border-radius: 16px;
   display: flex;
@@ -370,7 +375,7 @@ h1, h2, h3, h4, h5 {
 .eventhub-sidebar-link:hover,
 .eventhub-sidebar-link.active {
   background: linear-gradient(90deg, var(--eh-primary), var(--eh-pink));
-  color: var(--eh-white) !important;
+  color: var(--eh-white);
   box-shadow: 0 10px 24px rgba(139, 44, 255, 0.18);
 }
 
@@ -394,7 +399,7 @@ h1, h2, h3, h4, h5 {
   flex: 1;
   min-width: 0;
   padding: 28px 36px;
-  background: var(--eh-bg) !important;
+  background: var(--eh-bg) t;
   overflow-x: hidden;
 }
 
@@ -466,7 +471,12 @@ h1, h2, h3, h4, h5 {
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--eh-primary), var(--eh-pink), var(--eh-orange));
+  background: linear-gradient(
+    135deg,
+    var(--eh-primary),
+    var(--eh-pink),
+    var(--eh-orange)
+  );
   color: var(--eh-white);
   display: flex;
   align-items: center;
@@ -590,7 +600,11 @@ h1, h2, h3, h4, h5 {
 .eventhub-user-cover {
   height: 180px;
   background:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.28), transparent 34%),
+    radial-gradient(
+      circle at top left,
+      rgba(255, 255, 255, 0.28),
+      transparent 34%
+    ),
     linear-gradient(135deg, var(--eh-primary), var(--eh-pink), var(--eh-orange));
   padding: 30px;
   color: var(--eh-white);
@@ -719,7 +733,11 @@ h1, h2, h3, h4, h5 {
 
 .eventhub-promotor-profile-card {
   background:
-    radial-gradient(circle at top right, rgba(255, 138, 24, 0.18), transparent 28%),
+    radial-gradient(
+      circle at top right,
+      rgba(255, 138, 24, 0.18),
+      transparent 28%
+    ),
     linear-gradient(135deg, var(--eh-primary), var(--eh-pink), var(--eh-orange));
   color: var(--eh-white);
 }
@@ -806,7 +824,7 @@ h1, h2, h3, h4, h5 {
 .eventhub-main-btn,
 .eventhub-secondary-btn {
   border: none;
-  text-decoration: none !important;
+  text-decoration: none t;
   padding: 13px 18px;
   border-radius: 16px;
   font-weight: 900;
@@ -817,12 +835,12 @@ h1, h2, h3, h4, h5 {
 
 .eventhub-main-btn {
   background: linear-gradient(90deg, var(--eh-primary), var(--eh-pink));
-  color: var(--eh-white) !important;
+  color: var(--eh-white) t;
 }
 
 .eventhub-secondary-btn {
   background: var(--eh-primary-soft);
-  color: var(--eh-primary) !important;
+  color: var(--eh-primary) t;
 }
 
 /* RESPONSIVE */
@@ -843,9 +861,9 @@ h1, h2, h3, h4, h5 {
   }
 
   .eventhub-sidebar {
-    width: 100% !important;
-    min-width: 100% !important;
-    max-width: 100% !important;
+    width: 100% t;
+    min-width: 100% t;
+    max-width: 100% t;
     min-height: auto;
   }
 
@@ -869,7 +887,11 @@ h1, h2, h3, h4, h5 {
 
 .eventhub-admin-hero {
   background:
-    radial-gradient(circle at top right, rgba(255, 138, 24, 0.2), transparent 28%),
+    radial-gradient(
+      circle at top right,
+      rgba(255, 138, 24, 0.2),
+      transparent 28%
+    ),
     linear-gradient(135deg, var(--eh-primary), var(--eh-pink), var(--eh-orange));
   color: var(--eh-white);
   border-radius: 28px;
@@ -988,8 +1010,8 @@ h1, h2, h3, h4, h5 {
 }
 
 .eh-chat-card {
-  background: #11111b !important;
-  border-radius: 28px !important;
+  background: #11111b t;
+  border-radius: 28px t;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
   color: #ffffff;
 }
@@ -1002,17 +1024,17 @@ h1, h2, h3, h4, h5 {
 }
 
 .eh-chat-user {
-  background: #181824 !important;
-  border-radius: 20px !important;
-  padding: 14px !important;
-  color: #ffffff !important;
-  border: 1px solid transparent !important;
+  background: #181824 t;
+  border-radius: 20px t;
+  padding: 14px t;
+  color: #ffffff t;
+  border: 1px solid transparent t;
 }
 
 .eh-chat-user:hover,
 .eh-chat-user.active {
-  background: linear-gradient(135deg, #8b2cff, #ff2f92, #ff8a1f) !important;
-  border-color: rgba(255, 255, 255, 0.16) !important;
+  background: linear-gradient(135deg, #8b2cff, #ff2f92, #ff8a1f) t;
+  border-color: rgba(255, 255, 255, 0.16) t;
 }
 
 .eh-chat-avatar {
@@ -1029,15 +1051,15 @@ h1, h2, h3, h4, h5 {
 }
 
 .eh-chat-header {
-  background: #11111b !important;
-  padding: 22px 26px !important;
+  background: #11111b t;
+  padding: 22px 26px t;
 }
 
 .eh-chat-messages {
   height: 520px;
   overflow-y: auto;
   background: #0b0b14;
-  padding: 26px !important;
+  padding: 26px t;
 }
 
 .eh-message-bubble {
@@ -1059,35 +1081,35 @@ h1, h2, h3, h4, h5 {
 }
 
 .eh-chat-footer {
-  background: #11111b !important;
-  padding: 18px !important;
+  background: #11111b t;
+  padding: 18px t;
 }
 
 .eh-chat-input {
-  background: #181824 !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 18px !important;
+  background: #181824 t;
+  color: #ffffff t;
+  border: 1px solid rgba(255, 255, 255, 0.08) t;
+  border-radius: 18px t;
 }
 
 .eh-chat-input:focus {
-  box-shadow: none !important;
-  border-color: #ff2f92 !important;
+  box-shadow: none t;
+  border-color: #ff2f92 t;
 }
 
 .eh-chat-send-btn {
-  background: linear-gradient(90deg, #8b2cff, #ff2f92, #ff8a1f) !important;
-  color: #ffffff !important;
-  font-weight: 900 !important;
-  border-radius: 18px !important;
-  padding: 13px 22px !important;
-  border: none !important;
+  background: linear-gradient(90deg, #8b2cff, #ff2f92, #ff8a1f) t;
+  color: #ffffff t;
+  font-weight: 900 t;
+  border-radius: 18px t;
+  padding: 13px 22px t;
+  border: none t;
 }
 
 .eh-chat-empty {
-  background: #181824 !important;
-  color: #b8b8c7 !important;
-  border: none !important;
+  background: #181824 t;
+  color: #b8b8c7 t;
+  border: none t;
 }
 
 .eh-chat-placeholder-icon {
@@ -1106,23 +1128,18 @@ h1, h2, h3, h4, h5 {
   }
 }
 .eh-back-profile-btn {
-  background: transparent !important;
-  border: 1px solid rgba(255,255,255,0.15) !important;
-  color: #ffffff !important;
-  border-radius: 16px !important;
-  padding: 10px 18px !important;
-  font-weight: 700 !important;
+  background: transparent t;
+  border: 1px solid rgba(255, 255, 255, 0.15) t;
+  color: #ffffff t;
+  border-radius: 16px t;
+  padding: 10px 18px t;
+  font-weight: 700 t;
   transition: 0.2s ease;
 }
 
 .eh-back-profile-btn:hover {
-  background: linear-gradient(
-    90deg,
-    #8b2cff,
-    #ff2f92,
-    #ff8a1f
-  ) !important;
+  background: linear-gradient(90deg, #8b2cff, #ff2f92, #ff8a1f) t;
 
-  border-color: transparent !important;
-  color: white !important;
+  border-color: transparent t;
+  color: white t;
 }
