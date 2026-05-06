@@ -1,11 +1,12 @@
 const EventCard = ({ event }) => {
   return (
-    <div className="card">
+    <div className="card home-visual-card">
       {event.media && (
         <img src={event.media} alt={event.name} className="card-img" />
       )}
 
       <h2>{event.name}</h2>
+
       <p>{event.location}</p>
 
       <p>

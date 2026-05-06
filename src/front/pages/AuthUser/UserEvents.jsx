@@ -243,7 +243,7 @@ export const UserEvents = () => {
                             </div>
                             <div className="w-auto d-flex gap-2">
                                 <label className="form-label">Nombre</label>
-                                <inputInfoWindowEvent
+                                <input
                                     type="text"
                                     className="form-control"
                                     value={artistFilter}

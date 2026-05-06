@@ -1,6 +1,3 @@
-// Import necessary components and functions from react-router-dom.
-
-
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -100,111 +97,107 @@ import { AboutUs } from "./pages/AboutUs.jsx";
 import { Contact } from "./pages/Contact.jsx";
 import { PromotingAnEvent} from "./pages/PromotingAnEvent.jsx"
 import { Discover } from "./pages/SwipeEvent/Discover";
+import { DashboardLayout } from "./components/dashboard/DashboardLayout";
 export const router = createBrowserRouter(
   createRoutesFromElements(
-    // CreateRoutesFromElements function allows you to build route elements declaratively.
-    // Create your routes here, if you want to keep the Navbar and Footer in all views, add your new routes inside the containing Route.
-    // Root, on the contrary, create a sister Route, if you have doubts, try it!
-    // Note: keep in mind that errorElement will be the default page when you don't get a route, customize that page to make your project more attractive.
-    // Note: The child paths of the Layout element replace the Outlet component with the elements contained in the "element" attribute of these child paths.
+    <>
+      <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>}>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/promote" element={<PromotingAnEvent />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/create" element={<CreateAdmin />} />
+        <Route path="/admin/edit/:id" element={<EditAdmin />} />
+        <Route path="/admin/details/:id" element={<AdminDetails />} />
+        <Route path="/single/:theId" element={<Single />} />
+        <Route path="/demo" element={<Demo />} />
+        <Route path="/user" element={<User />} />
+        <Route path="/create-user" element={<CreateUser />} />
+        <Route path="/edit-user/:id" element={<EditUser />} />
+        <Route path="/delete-user/:id" element={<DeleteUser />} />
+        <Route path="/promotor" element={<Promotor />} />
+        <Route path="/promotor-create" element={<CreatePromotor />} />
+        <Route path="/promotor-edit/:theId" element={<EditPromotor />} />
+        <Route path="/promotor-delete/:theId" element={<DeletePromotor />} />
+        <Route path="/promotor/:theId/detail" element={<PromotorDetail />} />
+        <Route path="/category-panel" element={<CategoryPanel />} />
+        <Route path="/categories" element={<CategoriesList />} />
+        <Route path="/categories/create" element={<CategoryCreate />} />
+        <Route path="/categories/edit/:id" element={<CategoryEdit />} />
+        <Route path="/categories/:id" element={<CategoryDetail />} />
+        <Route path="/events" element={<Event />} />
+        <Route path="/create-event" element={<CreateEvent />} />
+        <Route path="/edit-event/:id" element={<EditEvent />} />
+        <Route path="/delete-event/:id" element={<DeleteEvent />} />
+        <Route path="/events/:id" element={<EventDetails />} />
+        <Route path="/group" element={<Group />} />
+        <Route path="/group-create" element={<CreateGroup />} />
+        <Route path="/group-edit/:theId" element={<EditGroup />} />
+        <Route path="/group-delete/:theId" element={<DeleteGroup />} />
+        <Route path="/group/:theId/detail" element={<GroupDetail />} />
+        <Route path="/comments" element={<Comments />} />
+        <Route path="/create-comment" element={<CreateComment />} />
+        <Route path="/edit-comment/:id" element={<EditComment />} />
+        <Route path="/delete-comment/:id" element={<DeleteComment />} />
+        <Route path="/friend" element={<Friend />} />
+        <Route path="/friend-create" element={<CreateFriend />} />
+        <Route path="/friend-delete/:theId" element={<DeleteFriend />} />
+        <Route path="/friend/:theId/detail" element={<FriendDetail />} />
+        <Route path="/promotor-category/create" element={<CreatePromotorCategory />} />
+        <Route path="/promotor-category/list" element={<PromotorCategoryList />} />
+        <Route path="/promotor-category/edit/:id" element={<EditPromotorCategory />} />
+        <Route path="/discussion" element={<Discussion />} />
+        <Route path="/discussion-create" element={<CreateDiscussion />} />
+        <Route path="/discussion-delete/:theId" element={<DeleteDiscussion />} />
+        <Route path="/discussion/:theId/detail" element={<DiscussionDetail />} />
+        <Route path="/saved-event" element={<SavedEvent />} />
+        <Route path="/saved-event-create" element={<CreateSavedEvent />} />
+        <Route path="/saved-event-delete/:theId" element={<DeleteSavedEvent />} />
+        <Route path="/saved-event/:theId/detail" element={<SavedEventDetail />} />
+        <Route path="/user-category" element={<UserCategory />} />
+        <Route path="/user-category/:theId/detail" element={<UserCategoryDetail />} />
+        <Route path="/user-category-create" element={<CreateUserCategory />} />
+        <Route path="/user-category-delete/:theId" element={<DeleteUserCategory />} />
+        <Route path="/group-category" element={<GroupCategoryList />} />
+        <Route path="/add-group-category" element={<AddGroupCategory />} />
+        <Route path="/edit-group-category/:id" element={<EditGroupCategory />} />
+        <Route path="/group-event" element={<GroupEventList />} />
+        <Route path="/create-group-event" element={<CreateGroupEvent />} />
+        <Route path="/edit-group-event/:id" element={<EditGroupEvent />} />
+        <Route path="/event-category" element={<EventCategory />} />
+        <Route path="/event-category/:theId/detail" element={<EventCategoryDetail />} />
+        <Route path="/event-category-delete/:theId" element={<DeleteEventCategory />} />
+        <Route path="/event-category-create" element={<CreateEventCategory />} />
+        <Route path="/event-assists" element={<EventAssistUser />} />
+        <Route path="/create-event-assist" element={<CreateEventAssist />} />
+        <Route path="/delete-event-assist/:id" element={<DeleteEventAssist />} />
+        <Route path="/event-promotor" element={<EventPromotor />} />
+        <Route path="/create-event-promotor" element={<CreateEventPromotor />} />
+        <Route path="/edit-event-promotor/:id" element={<EditEventPromotor />} />
+        <Route path="/delete-event-promotor/:id" element={<DeleteEventPromotor />} />
+        <Route path="/user/login" element={<LoginUser />} />
+        <Route path="/user/register" element={<RegisterUser />} />
+        <Route path="/promotor/login" element={<LoginPromotor />} />
+        <Route path="/promotor/sign-up" element={<PromotorSignUp />} />
+        <Route path="/admin/login" element={<LoginAdmin />} />
+        <Route path="/discover" element={<Discover />} />
+      </Route>
 
-    // Root Route: All navigation will start from here.
-    <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>} >
-
-      {/* Nested Routes: Defines sub-routes within the BaseHome component. */}
-      <Route path="/admin" element={<Admin />} />
-      <Route path="/admin/create" element={<CreateAdmin />} />
-      <Route path="/admin/edit/:id" element={<EditAdmin />} />
-      <Route path="/admin/details/:id" element={<AdminDetails />} />
-      <Route path="/" element={<Home />} />
-      <Route path="/about" element={<AboutUs/>}></Route>
-      <Route path="/promote" element={<PromotingAnEvent/>}></Route>
-      <Route path="/contact" element={<Contact/>}></Route>
-      <Route path="/single/:theId" element={<Single />} />  {/* Dynamic route for single items */}
-      <Route path="/demo" element={<Demo />} />
-      <Route path="/user" element={<User />} />
-      <Route path="/create-user" element={<CreateUser />} />
-      <Route path="/edit-user/:id" element={<EditUser />} />
-      <Route path="/delete-user/:id" element={<DeleteUser />} />
-      <Route path="/promotor" element={<Promotor />} />
-      <Route path="/promotor-create" element={<CreatePromotor />} />
-      <Route path="/promotor-edit/:theId" element={<EditPromotor />} />
-      <Route path="/promotor-delete/:theId" element={<DeletePromotor />} />
-      <Route path="/promotor/:theId/detail" element={<PromotorDetail />} />
-      <Route path="/category-panel" element={<CategoryPanel />} />
-      <Route path="/categories" element={<CategoriesList />} />
-      <Route path="/categories/create" element={<CategoryCreate />} />
-      <Route path="/categories/edit/:id" element={<CategoryEdit />} />
-      <Route path="/categories/:id" element={<CategoryDetail />} />
-      <Route path="/events" element={<Event />} />
-      <Route path="/create-event" element={<CreateEvent />} />
-      <Route path="/edit-event/:id" element={<EditEvent />} />
-      <Route path="/delete-event/:id" element={<DeleteEvent />} />
-      <Route path="/group" element={<Group />} />
-      <Route path="/group-create" element={<CreateGroup />} />
-      <Route path="/group-edit/:theId" element={<EditGroup />} />
-      <Route path="/group-delete/:theId" element={<DeleteGroup />} />
-      <Route path="/group/:theId/detail" element={<GroupDetail />} />
-      <Route path="/comments" element={<Comments />} />
-      <Route path="/create-comment" element={<CreateComment />} />
-      <Route path="/edit-comment/:id" element={<EditComment />} />
-      <Route path="/delete-comment/:id" element={<DeleteComment />} />
-      <Route path="/friend" element={<Friend />} />
-      <Route path="/friend-create" element={<CreateFriend />} />
-      <Route path="/friend-delete/:theId" element={<DeleteFriend />} />
-      <Route path="/friend/:theId/detail" element={<FriendDetail />} />
-      <Route path="/promotor-category/create" element={<CreatePromotorCategory />} />
-      <Route path="/promotor-category/list" element={<PromotorCategoryList />} />
-      <Route path="/promotor-category/edit/:id" element={<EditPromotorCategory />} />
-      <Route path="/discussion" element={<Discussion />} />
-      <Route path="/discussion-create" element={<CreateDiscussion />} />
-      <Route path="/discussion-delete/:theId" element={<DeleteDiscussion />} />
-      <Route path="/discussion/:theId/detail" element={<DiscussionDetail />} />
-      <Route path="/saved-event" element={<SavedEvent />} />
-      <Route path="/saved-event-create" element={<CreateSavedEvent />} />
-      <Route path="/saved-event-delete/:theId" element={<DeleteSavedEvent />} />
-      <Route path="/saved-event/:theId/detail" element={<SavedEventDetail />} />
-      <Route path="/user-category" element={<UserCategory />} />
-      <Route path="/user-category/:theId/detail" element={<UserCategoryDetail />} />
-      <Route path="/user-category-create" element={<CreateUserCategory />} />
-      <Route path="/user-category-delete/:theId" element={<DeleteUserCategory />} />
-      <Route path="/group-category" element={<GroupCategoryList />} />
-      <Route path="/add-group-category" element={<AddGroupCategory />} />
-      <Route path="/edit-group-category/:id" element={<EditGroupCategory />} />
-      <Route path="/user/login" element={<LoginUser />} />
-      <Route path="/user/private" element={<PrivateUser />} />
-      <Route path="/group-event" element={<GroupEventList />} />
-      <Route path="/create-group-event" element={<CreateGroupEvent />} />
-      <Route path="/edit-group-event/:id" element={<EditGroupEvent />} />
-      <Route path="/event-category" element={<EventCategory/>} />
-      <Route path="/event-category/:theId/detail" element={<EventCategoryDetail/>} />
-      <Route path="/event-category-delete/:theId" element={<DeleteEventCategory/>} />
-      <Route path="/event-category-create" element={<CreateEventCategory/>} />
-      <Route path="/event-assists" element={<EventAssistUser />} />
-      <Route path="/create-event-assist" element={<CreateEventAssist />} />
-      <Route path="/delete-event-assist/:id" element={<DeleteEventAssist />} />
-      <Route path="/promotor/login" element={<LoginPromotor />} />
-      <Route path="/promotor/sign-up" element={<PromotorSignUp/>}></Route>
-      <Route path="/promotor/private" element={<PrivatePromotor />} />
-      <Route path="/event-promotor" element={<EventPromotor />} />
-      <Route path="/create-event-promotor" element={<CreateEventPromotor />} />
-      <Route path="/edit-event-promotor/:id" element={<EditEventPromotor />} />
-      <Route path="/delete-event-promotor/:id" element={<DeleteEventPromotor />} />
-      <Route path="/admin/login" element={<LoginAdmin />} />
+      {/* RUTAS PRIVADAS FUERA DEL LAYOUT GLOBAL */}
       <Route path="/admin/private" element={<PrivateAdmin />} />
+      <Route path="/promotor/private" element={<PrivatePromotor />} />
+      <Route path="/user/private" element={<PrivateUser />} />
+      <Route path="/:type/private/:ownerId/event/:id" element={<EventDetail />} />
+      <Route path="/chat" element={<Chat />} />
+      <Route path="/promotor/chat" element={<ChatPromotor />} />
+      <Route path="/search-by-image" element={<SearchByImage />} />
       <Route path="/user/saved-events" element={<MySavedEvents />} />
       <Route path="/user/assisting-events" element={<MyAssistingEvents />} />
-      <Route path="/events/:id" element={<EventDetails />} />
-      <Route path="/:type/private/:ownerId/event/:id" element={<EventDetail />} />
-      <Route path="/user/register" element={<RegisterUser />} />
       <Route path="/user/events" element={<UserEvents />} />
       <Route path="/user/profiles" element={<UserProfiles />} />
       <Route path="/user/groups" element={<UserGroups />} />
       <Route path="/user/group/:theId" element={<UserGroupDetail />} />
-      <Route path="/chat" element={<Chat />} />
-      <Route path="/promotor/chat" element={<ChatPromotor />} />
-      <Route path="/search-by-image" element={<SearchByImage />} />
-      <Route path="/discover" element={<Discover />} />
-    </Route>
+    </>
   )
 );
