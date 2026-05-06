@@ -1,9 +1,10 @@
 import SwipeDeck from "./SwipeDeck";
+import "./Discover.css";
 
 export const Discover = () => {
   return (
-    <div className="container mt-5 text-center">
-      <h1 className="mb-4">🔥 Match Events</h1>
+    <div className="discoverPage">
+      <h1 className="discoverTitle">🔥 Match Events</h1>
       <SwipeDeck />
     </div>
   );
