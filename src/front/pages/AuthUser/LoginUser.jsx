@@ -4,103 +4,202 @@ import useGlobalReducer from "../../hooks/useGlobalReducer";
 import EventHubHeroImage from "../../assets/img/EventHubHeroImage.png";
 
 export const LoginUser = () => {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const [error, setError] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
-	const { store, dispatch } = useGlobalReducer();
-	const navigate = useNavigate();
+    const { store, dispatch } = useGlobalReducer();
+    const navigate = useNavigate();
 
-	useEffect(() => {
-		if (store.userAuth && localStorage.getItem("tokenUser")) {
-			navigate("/user/private");
-		}
-	}, [store.userAuth, navigate]);
+    useEffect(() => {
+        if (store.userAuth && localStorage.getItem("tokenUser")) {
+            navigate("/user/private");
+        }
+    }, [store.userAuth, navigate]);
 
-	function handleLogin(e) {
-		e.preventDefault();
+    function handleLogin(e) {
+        e.preventDefault();
 
-		fetch(import.meta.env.VITE_BACKEND_URL + "/api/user/login", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify({
-				email: email,
-				password: password
-			})
-		})
-			.then((resp) => resp.json().then((data) => ({ ok: resp.ok, data })))
-			.then(({ ok, data }) => {
-				if (!ok) {
-					setError("Bad email or password");
-					return;
-				}
+        fetch(import.meta.env.VITE_BACKEND_URL + "/api/user/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email,
+                password
+            })
+        })
+            .then((resp) => resp.json().then((data) => ({ ok: resp.ok, data })))
+            .then(({ ok, data }) => {
+                if (!ok) {
+                    setError("Bad email or password");
+                    return;
+                }
 
-				localStorage.setItem("tokenUser", data.token);
-				localStorage.setItem("userAuth", "true");
-				localStorage.setItem("user", JSON.stringify(data.user));
+                localStorage.setItem("tokenUser", data.token);
+                localStorage.setItem("userAuth", "true");
+                localStorage.setItem("user", JSON.stringify(data.user));
 
-				dispatch({
-					type: "ADD_TOKEN_USER",
-					payload: data.token
-				});
+                dispatch({
+                    type: "ADD_TOKEN_USER",
+                    payload: data.token
+                });
 
-				dispatch({
-					type: "ADD_LOGIN_STATUS_USER",
-					payload: true
-				});
+                dispatch({
+                    type: "ADD_LOGIN_STATUS_USER",
+                    payload: true
+                });
 
-				navigate("/user/private");
-			})
-			.catch(() => {
-				setError("Something went wrong");
-			});
-	}
+                navigate("/user/private");
+            })
+            .catch(() => {
+                setError("Something went wrong");
+            });
+    }
 
-	return (
-		<div style={{ background: `linear-gradient(rgba(10, 10, 15, 0.75), rgba(10, 10, 15, 0.85)), url(${EventHubHeroImage}) center/cover no-repeat`}}>
-			<div className="container row mx-auto mt-3">
-				<div className="d-flex justify-content-end mb-1">
-					<Link to="/">
-						<button type="button" className="btn btn-outline mt-3">Back</button>
-					</Link>
-				</div>
-				<div className="pt-4 w-50 mx-auto forms">
-					<h1 className="d-flex justify-content-center mb-4">User Login</h1>
-					{error && <div className="alert alert-danger">{error}</div>}
-					<form onSubmit={handleLogin}>
-						<div className="mb-3 m-auto" style={{ width: "500px" }}>
-							<label className="form-label">Email</label>
-							<input
-								type="email"
-								className="form-control"
-								value={email}
-								onChange={(e) => setEmail(e.target.value)}
-							/>
-						</div>
+    return (
+        <div
+            className="login-page"
+            style={{
+                background: `
+                linear-gradient(rgba(5, 8, 22, 0.82), rgba(5, 8, 22, 0.92)),
+                url(${EventHubHeroImage})
+                center/cover no-repeat`
+            }}
+        >
+            <div className="login-overlay container-fluid">
 
-						<div className="mb-4 m-auto" style={{ width: "500px" }}>
-							<label className="form-label">Password</label>
-							<input
-								type="password"
-								className="form-control"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-							/>
-						</div>
-						<button className="btn btn-primary d-grid gap-2 col-6 mx-auto">
-							Iniciar Sesión
-						</button>
-					</form>
-					<div className="d-flex mt-2 p-3 gap-4 align-items-center" style={{ justifySelf: "center" }}>
-						<p className="">Not registered?</p>
-						<Link to="/user/register">
-							<button className="btn btn-secondary">Sign Up Here</button>
-						</Link>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+                <div className="row min-vh-100 align-items-center">
+
+                    {/* LEFT SIDE */}
+                    <div className="col-lg-6 d-none d-lg-flex flex-column justify-content-center px-5">
+
+                        <div className="branding-content">
+                            <h1 className="brand-title">EVENT HUB</h1>
+
+                            <h2 className="hero-text">
+                                Conecta.
+                                <br />
+                                Descubre.
+                                <br />
+                                Vive la experiencia.
+                            </h2>
+
+                            <p className="hero-subtext">
+                                Descubre eventos inolvidables,
+                                conecta con personas y vive momentos únicos.
+                            </p>
+
+                            <div className="stats-container mt-5">
+                                <div>
+                                    <h3>+500</h3>
+                                    <p>Eventos</p>
+                                </div>
+
+                                <div>
+                                    <h3>+20K</h3>
+                                    <p>Usuarios</p>
+                                </div>
+
+                                <div>
+                                    <h3>24/7</h3>
+                                    <p>Experiencias</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* RIGHT SIDE */}
+                    <div className="col-lg-6 d-flex justify-content-center align-items-center">
+
+                        <div className="login-card">
+
+                            <Link to="/" className="back-link">
+                                ← Volver
+                            </Link>
+
+                            <h1 className="login-title">
+                                Bienvenido de nuevo
+                            </h1>
+
+                            <p className="login-subtitle">
+                                Tu próxima experiencia comienza aquí.
+                            </p>
+
+                            {error && (
+                                <div className="alert alert-danger">
+                                    {error}
+                                </div>
+                            )}
+
+                            <form onSubmit={handleLogin}>
+
+                                <div className="mb-4">
+                                    <label className="form-label login-label">
+                                        Email
+                                    </label>
+
+                                    <input
+                                        type="email"
+                                        className="form-control login-input"
+                                        placeholder="Ingresa tu correo electrónico"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </div>
+
+                                <div className="mb-4">
+                                    <label className="form-label login-label">
+                                        Password
+                                    </label>
+
+                                    <input
+                                        type="password"
+                                        className="form-control login-input"
+                                        placeholder="Ingresa tu contraseña"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                </div>
+
+                                <button className="btn login-btn w-100">
+                                    Inicia sesión
+                                </button>
+                            </form>
+
+                            <div className="signup-container">
+                                <p>
+                                    ¿No tienes cuenta?
+                                </p>
+
+                                <Link
+                                    to="/user/register"
+                                    className="signup-link"
+                                >
+                                    Crear Cuenta
+                                </Link>
+                            </div>
+
+                            <div className="promoter-container">
+
+                                <p className="promoter-text">
+                                    ¿Gestionas eventos?
+                                </p>
+
+                                <Link
+                                    to="/promotor/login"
+                                    className="promoter-link"
+                                >
+                                    Inicia sesión como promotor
+                                </Link>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 };
