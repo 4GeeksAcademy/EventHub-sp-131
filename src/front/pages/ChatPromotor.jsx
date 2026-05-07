@@ -7,7 +7,7 @@ import { ChatWindow } from "../components/chat/ChatWindow";
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 const socket = io(API_URL, {
-  transports: ["polling", "websocket"],
+  transports: ["websocket", "polling"],
 });
 
 export const ChatPromotor = () => {

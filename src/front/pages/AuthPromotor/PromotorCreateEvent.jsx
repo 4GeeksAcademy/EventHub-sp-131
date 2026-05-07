@@ -38,7 +38,7 @@ export const PromotorCreateEvent = () => {
                     <CreateEventForm
                         id={profileInfo.id}
                         type="promotor"
-                        onSuccess={() => navigate("/promotor/private/events")}
+                        onSuccess={() => navigate("/promotor/events")}
                     />
                 </div>
             ) : (

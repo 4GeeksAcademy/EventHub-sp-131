@@ -2,9 +2,11 @@
 # exit on error
 set -o errexit
 
+echo "=== Installing frontend dependencies ==="
 npm install
+
+echo "=== Building React frontend ==="
 npm run build
 
-pipenv install
-
-pipenv run upgrade
+echo "=== Installing Python dependencies ==="
+pip install -r requirements.txt
