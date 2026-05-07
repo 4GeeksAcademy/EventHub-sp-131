@@ -1,10 +1,12 @@
-Flask==2.2.5
-Jinja2==3.1.2
-Werkzeug==2.2.3
-click==8.1.3
-itsdangerous==2.1.2
+# ==================== CORE ====================
+Flask==2.3.3
+Werkzeug==3.0.6
+Jinja2==3.1.4
+click==8.1.7
+itsdangerous==2.2.0
 
-Flask-Admin==2.0.0
+# Extensiones Flask
+Flask-Admin>=2.0.0
 Flask-Cors==3.0.10
 Flask-Migrate>=4.0.0
 Flask-SQLAlchemy>=3.1.0
@@ -12,16 +14,19 @@ Flask-Swagger==0.2.14
 flask-jwt-extended>=4.6.0
 Flask-SocketIO>=5.0.0
 
+# Base de datos
 SQLAlchemy>=2.0.0
 psycopg2-binary>=2.9.0
 alembic>=1.13.0
 
+# Otros
 gunicorn>=21.0.0
 PyYAML>=6.0.1
 python-dateutil>=2.9.0
 python-dotenv==0.15.0
 cloudinary==1.24.0
-WTForms==2.3.3
+WTForms>=3.0.0
 requests>=2.32.0
 
+# Compatibilidad
 setuptools<82
