@@ -22,5 +22,6 @@ python-dateutil>=2.9.0
 python-dotenv==0.15.0
 cloudinary==1.24.0
 WTForms==2.3.3
+requests>=2.32.0
 
 setuptools<82

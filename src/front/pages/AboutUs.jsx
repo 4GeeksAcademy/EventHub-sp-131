@@ -1,5 +1,6 @@
 import React from "react";
 import Carolina from "../assets/img/Carolina.jpg";
+import Matias from "../assets/img/Matias.jpeg"
 
 export const AboutUs = () => {
   const team = [
@@ -22,7 +23,7 @@ export const AboutUs = () => {
     {
       name: "Matias Otero Sarra",
       role: "Full Stack Developer",
-      image: null,
+      image: Matias,
       github: "https://github.com/MatOtS",
       linkedin: "https://www.linkedin.com/in/oterosarramatias/",
       initials: "MO",
