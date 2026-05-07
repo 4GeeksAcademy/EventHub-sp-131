@@ -1,11 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
 import { CreateEventForm } from "../../components/Event/CreateEventForm";
 import { usePromotorAuth } from "../../hooks/usePromotorAuth";
 
 export const PromotorCreateEvent = () => {
     const navigate = useNavigate();
-    const { profileInfo, loading } = usePromotorAuth();
+    const { profileInfo, loading, isAuthorized } = usePromotorAuth();
 
     if (loading) {
         return (
@@ -21,6 +21,8 @@ export const PromotorCreateEvent = () => {
             </DashboardLayout>
         );
     }
+
+    if (isAuthorized === false) return <Navigate to="/promotor/login" replace />;
 
     return (
         <DashboardLayout

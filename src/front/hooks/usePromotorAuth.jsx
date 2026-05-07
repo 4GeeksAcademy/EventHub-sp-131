@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "./useGlobalReducer";
 
 const urlApi = import.meta.env.VITE_BACKEND_URL;
 
 export function usePromotorAuth() {
     const { dispatch } = useGlobalReducer();
-    const navigate = useNavigate();
     const [profileInfo, setProfileInfo] = useState(null);
     const [loading, setLoading] = useState(true);
-
+    const [isAuthorized, setIsAuthorized] = useState(null);
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
-            navigate("/promotor/login");
+            setIsAuthorized(false);
+            setLoading(false);
             return;
         }
         authUser(token);
@@ -32,23 +31,23 @@ export function usePromotorAuth() {
             if (!response.ok) {
                 dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: false });
                 localStorage.removeItem("promotorAuth");
-                navigate("/promotor/login");
+                setIsAuthorized(false);
                 return;
             }
 
             dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: true });
             localStorage.setItem("promotorAuth", "true");
-
             const data = await response.json();
             setProfileInfo(data.promotor);
+            setIsAuthorized(true);
         } catch (error) {
             console.error("Error on auth:", error.message);
             dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: false });
-            navigate("/promotor/login");
+            setIsAuthorized(false);
         } finally {
             setLoading(false);
         }
     }
 
-    return { profileInfo, loading };
+    return { profileInfo, loading, isAuthorized };
 }

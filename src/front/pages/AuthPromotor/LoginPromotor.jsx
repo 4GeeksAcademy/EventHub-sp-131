@@ -77,9 +77,7 @@ export const LoginPromotor = () => {
             }}
         >
 
-            {store.promotorAuth === true &&
-                <Navigate to="/promotor/private" />
-            }
+           {store.promotorAuth == true && <Navigate to="/promotor/private" />}
 
             <div className="container-fluid">
 

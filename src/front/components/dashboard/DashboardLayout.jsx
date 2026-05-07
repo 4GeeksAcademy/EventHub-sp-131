@@ -1,5 +1,6 @@
 import { NavLink, useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const DashboardLayout = ({
   role,
@@ -12,6 +13,7 @@ export const DashboardLayout = ({
   const navigate = useNavigate();
   const [openMenu, setOpenMenu] = useState(false);
   const [openNotifications, setOpenNotifications] = useState(false);
+  const { store, dispatch } = useGlobalReducer();
 
   const menus = {
     user: [
@@ -52,6 +54,8 @@ export const DashboardLayout = ({
       localStorage.removeItem("token");
       localStorage.removeItem("tokenPromotor");
       localStorage.removeItem("promotorAuth");
+      dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: false })
+      dispatch({ type: "ADD_TOKEN_PROMOTOR", payload: null })
       navigate("/promotor/login");
       return;
     }
