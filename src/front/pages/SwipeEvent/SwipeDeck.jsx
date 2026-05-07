@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import TinderCard from "react-tinder-card";
 import EventCard from "./EventCard";
 
-const SwipeDeck = () => {
+const  SwipeDeck = () => {
   const [events, setEvents] = useState([]);
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL;

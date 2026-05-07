@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, Navigate } from "react-router-dom";
-import { BackButton } from "../../components/BackButton";
+import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -13,6 +13,7 @@ export const EventDetails = () => {
     const [event, setEvent] = useState(null);
     const [comments, setComments] = useState([]);
     const [message, setMessage] = useState("");
+    const [messageInfo, setMessageInfo] = useState("");
     const [promotorId, setPromotorId] = useState(null);
 
     const getEvent = () => {
@@ -99,11 +100,11 @@ export const EventDetails = () => {
                 }
 
                 navigate("/chat", {
-                   state: {
-                    chatId: data.id,
-                    promotorId: data.promotor_id,
-                    promotorName: data.promotor_name
-                   }
+                    state: {
+                        chatId: data.id,
+                        promotorId: data.promotor_id,
+                        promotorName: data.promotor_name
+                    }
                 });
             })
             .catch(() => alert("No se pudo crear el chat"));
@@ -119,71 +120,109 @@ export const EventDetails = () => {
         return <p className="text-center mt-5">Cargando evento...</p>;
     }
 
-/*     if (!store.adminAuth) {
-    return <Navigate to="/admin/login" />;
-    } */
+    const handleAssist = (eventId) => {
+        const tokenUser = localStorage.getItem("tokenUser");
+
+        if (!tokenUser) {
+            navigate("/user/login");
+            return;
+        }
+
+        fetch(`${backendUrl}/api/events/${eventId}/assist`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + tokenUser
+            }
+        })
+            .then((resp) => {
+                if (!resp.ok) throw new Error();
+                setMessageInfo("Asistencia confirmada correctamente");
+            })
+            .catch(() => setMessageInfo("Ya confirmaste asistencia o no se pudo procesar"));
+    };
+
+    /*     if (!store.adminAuth) {
+        return <Navigate to="/admin/login" />;
+        } */
 
     return (
-        <div className="container mt-5">
+        <DashboardLayout
+            role="user"
+            title="Mi perfil"
+            subtitle="Bienvenida a tu espacio personal en EventHub."
+            userName={store.privateUser?.name}
+        >
+            <div className="container mt-5">
 
-            <BackButton />
-
-            <div className="card shadow mb-4">
-                {event.media && (
-                    <img
-                        src={event.media}
-                        className="card-img-top"
-                        style={{ height: "350px", objectFit: "cover" }}
-                        alt={event.name}
-                    />
+                {messageInfo && (
+                    <div className="alert alert-info shadow-sm mb-4">
+                        {messageInfo}
+                    </div>
                 )}
+                <div className="card shadow mb-4 mt-2">
+                    {event.media && (
+                        <img
+                            src={event.media}
+                            className="card-img-top"
+                            style={{ height: "350px", objectFit: "cover" }}
+                            alt={event.name}
+                        />
+                    )}
 
-                <div className="card-body">
-                    <h2>{event.name}</h2>
+                    <div className="card-body">
+                        <h2>{event.name}</h2>
 
-                    <p><strong>Ubicación:</strong> {event.location}</p>
-                    <p><strong>Descripción:</strong> {event.description}</p>
-                    <p><strong>Fecha:</strong> {new Date(event.date_event).toLocaleString()}</p>
-                    <p><strong>Capacidad:</strong> {event.capacity}</p>
+                        <p><strong>Ubicación:</strong> {event.location}</p>
+                        <p><strong>Descripción:</strong> {event.description}</p>
+                        <p><strong>Fecha:</strong> {new Date(event.date_event).toLocaleString()}</p>
+                        <p><strong>Capacidad:</strong> {event.capacity}</p>
 
-                    <button
-                        className="btn btn-success mt-3"
-                        onClick={handleContactPromotor}
-                    >
-                        Contactar promotor
-                    </button>
+                        <button
+                            className="btn btn-secondary mt-3"
+                            onClick={handleContactPromotor}
+                        >
+                            Contactar promotor
+                        </button>
+                        <button
+                            className="btn btn-tertiary mt-3"
+                            onClick={(e) => { e.stopPropagation(); handleAssist(event.id); }}
+                        >
+                            Asistir
+                        </button>
+                    </div>
+                </div>
+
+                <div className="card shadow p-4">
+                    <h4>Comentarios</h4>
+
+                    <form onSubmit={handleComment} className="mb-4">
+                        <textarea
+                            className="form-control mb-2"
+                            placeholder="Escribe un comentario..."
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                        />
+
+                        <button className="btn btn-tertiary">
+                            Comentar
+                        </button>
+                    </form>
+
+                    {comments.length === 0 ? (
+                        <p>No hay comentarios todavía</p>
+                    ) : (
+                        comments.map((comment) => (
+                            <div key={comment.id} className="border-bottom py-2">
+                                <p className="mb-1">{comment.message}</p>
+                                <small className="text-muted">
+                                    Usuario ID: {comment.user_id}
+                                </small>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
-
-            <div className="card shadow p-4">
-                <h4>Comentarios</h4>
-
-                <form onSubmit={handleComment} className="mb-4">
-                    <textarea
-                        className="form-control mb-2"
-                        placeholder="Escribe un comentario..."
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                    />
-
-                    <button className="btn btn-primary">
-                        Comentar
-                    </button>
-                </form>
-
-                {comments.length === 0 ? (
-                    <p>No hay comentarios todavía</p>
-                ) : (
-                    comments.map((comment) => (
-                        <div key={comment.id} className="border-bottom py-2">
-                            <p className="mb-1">{comment.message}</p>
-                            <small className="text-muted">
-                                Usuario ID: {comment.user_id}
-                            </small>
-                        </div>
-                    ))
-                )}
-            </div>
-        </div>
+        </DashboardLayout>
     );
 };

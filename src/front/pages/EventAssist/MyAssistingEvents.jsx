@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
+import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
+
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const MyAssistingEvents = () => {
     const [events, setEvents] = useState([]);
     const navigate = useNavigate();
+    const { store, dispatch } = useGlobalReducer();
 
     const getMyEvents = () => {
         const tokenUser = localStorage.getItem("tokenUser");
@@ -60,66 +64,67 @@ export const MyAssistingEvents = () => {
     }, []);
 
     return (
-        <div className="container mt-5">
-            <div className="d-flex justify-content-between mb-4">
-                <h2>Eventos a los que asistiré</h2>
+        <DashboardLayout
+            role="user"
+            title="Mi perfil"
+            subtitle="Bienvenida a tu espacio personal en EventHub."
+            userName={store.privateUser?.name}
+        >
 
-                <button
-                    className="btn btn-secondary"
-                    onClick={() => navigate("/user/private")}
-                >
-                    Volver
-                </button>
-            </div>
+            <div className="container mt-5">
+                <div className="d-flex justify-content-between mb-4">
+                    <h2>Eventos a los que asistiré</h2>
+                </div>
 
-            <div className="row">
-                {events.length === 0 ? (
-                    <p className="text-center p-5">
-                        No tienes eventos confirmados
-                    </p>
-                ) : (
-                    events.map((event) => (
-                        <div key={event.id} className="col-md-4 mb-4">
-                            <div className="card h-100 shadow-sm">
-                                {event.media && (
-                                    <img
-                                        src={event.media}
-                                        className="card-img-top"
-                                        style={{ height: "200px", objectFit: "cover" }}
-                                        alt={event.name}
-                                    />
-                                )}
+                <div className="row">
+                    {events.length === 0 ? (
+                        <p className="text-center p-5">
+                            No tienes eventos confirmados
+                        </p>
+                    ) : (
+                        events.map((event) => (
+                            <div key={event.id} className="col-md-4 mb-4">
+                                <div className="card h-100 shadow-sm">
+                                    {event.media && (
+                                        <img
+                                            src={event.media}
+                                            className="card-img-top"
+                                            style={{ height: "200px", objectFit: "cover" }}
+                                            alt={event.name}
+                                        />
+                                    )}
 
-                                <div className="card-body d-flex flex-column">
-                                    <h5>{event.name}</h5>
+                                    <div className="card-body d-flex flex-column">
+                                        <h5>{event.name}</h5>
 
-                                    <p>📍 {event.location}</p>
+                                        <p>📍 {event.location}</p>
 
-                                    <p className="small text-muted">
-                                        📅 {new Date(event.date_event).toLocaleString()}
-                                    </p>
+                                        <p className="small text-muted">
+                                            📅 {new Date(event.date_event).toLocaleString()}
+                                        </p>
 
-                                    <div className="mt-auto d-flex gap-2">
-                                        <button
-                                            className="btn btn-primary btn-sm"
-                                            onClick={() => navigate(`/events/${event.id}`)}
-                                        >
-                                            Ver
-                                        </button>
+                                        <div className="mt-auto d-flex gap-2">
+                                            <button
+                                                className="btn btn-primary btn-sm"
+                                                onClick={() => navigate(`/events/${event.id}`)}
+                                            >
+                                                Ver
+                                            </button>
 
-                                        <button
-                                            className="btn btn-danger btn-sm"
-                                            onClick={() => handleCancel(event.id)}
-                                        >
-                                            Cancelar
-                                        </button>
+                                            <button
+                                                className="btn btn-danger btn-sm"
+                                                onClick={() => handleCancel(event.id)}
+                                            >
+                                                Cancelar
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    ))
-                )}
+                        ))
+                    )}
+                </div>
             </div>
-        </div>
+        </DashboardLayout>
     );
 };

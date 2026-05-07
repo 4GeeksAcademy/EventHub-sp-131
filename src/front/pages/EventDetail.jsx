@@ -1,290 +1,245 @@
-import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import useGlobalReducer from "../hooks/useGlobalReducer";
+import { useEffect, useState } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { DashboardLayout } from "../components/dashboard/DashboardLayout";
+import { usePromotorAuth } from "../hooks/usePromotorAuth";
+
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const EventDetail = () => {
-    const { store, dispatch } = useGlobalReducer()
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    const { id } = useParams();
-    const { type } = useParams();
-    const { ownerId } = useParams();
-    const [event, setEvent] = useState(null);
-    const [eventCat, setEventCat] = useState(null)
+    const { profileInfo, loading } = usePromotorAuth();
+    const navigate = useNavigate();
+    const { id, type, ownerId } = useParams();
 
-    const [categories, setCategories] = useState(null)
-    const [eventAsistants, setEventAssistants] = useState(null)
-    const [comments, setComments] = useState(null)
-    const urlApi = import.meta.env.VITE_BACKEND_URL
-    const [message, setMessage] = useState("");
+    const [event, setEvent] = useState(null);
+    const [eventCat, setEventCat] = useState(null);
+    const [categories, setCategories] = useState(null);
+    const [eventAsistants, setEventAssistants] = useState(null);
+    const [comments, setComments] = useState(null);
+
+    const authHeader = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
+    };
+
+    // ── Carga inicial ────────────────────────────────────────────────────────
 
     useEffect(() => {
-        if (localStorage.getItem("promotorAuth") == true) {
-            setIsLogged(localStorage.getItem("promotorAuth"))
-        }
-        authUser(localStorage.getItem("token"));
-    }, [])
+        getEventById();
+        getEventAssistById();
+        getEventCategoryById();
+        getComments();
+    }, []);
 
-    async function authUser(token) {
-        try {
-            const response = await fetch(`${urlApi}api/promotor/private`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-            })
+    useEffect(() => {
+        if (eventCat) getCategories();
+    }, [eventCat]);
 
-            if (!response.ok) {
-                navigate('/promotor/login')
-            }
-            dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: response.ok })
-            localStorage.setItem("promotorAuth", response.ok)
-            const data = await response.json()
-        }
-
-        catch (error) {
-            console.log("Error on fetch: ", error.message)
-        }
-    }
+    // ── Fetches ──────────────────────────────────────────────────────────────
 
     async function getEventById() {
         try {
-            const response = await fetch(`${backendUrl}/api/${type}/${ownerId}/events/${id}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`
-                },
-            })
-            const data = await response.json()
-            setEvent(data.event)
-            return response
-        }
-        catch (error) {
-            console.log("Error on fetch: ", error.message)
+            const resp = await fetch(`${backendUrl}/api/${type}/${ownerId}/events/${id}`, { headers: authHeader });
+            const data = await resp.json();
+            setEvent(data.event);
+        } catch (err) {
+            console.error("Error cargando evento:", err);
         }
     }
 
     async function getEventCategoryById() {
         try {
-            const response = await fetch(`${backendUrl}/api/${type}/${ownerId}/events/${id}/event_category`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`
-                },
-            })
-            const data = await response.json()
-            setEventCat(data.eventCategories)
-            return response
-        }
-        catch (error) {
-            console.log("Error on fetch: ", error.message)
+            const resp = await fetch(`${backendUrl}/api/${type}/${ownerId}/events/${id}/event_category`, { headers: authHeader });
+            const data = await resp.json();
+            setEventCat(data.eventCategories);
+        } catch (err) {
+            console.error("Error cargando categorías:", err);
         }
     }
 
-    async function removeCategoryById(e) {
-        console.log(e.target.value);
+    async function getCategories() {
         try {
-            const response = await fetch(`${backendUrl}/api/${type}/${ownerId}/events/${id}/event_category/${e.target.value}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`
-                },
-            })
-            const data = await response.json()
-            return response
+            const resp = await fetch(`${backendUrl}/api/categories`, {
+                headers: { "Content-Type": "application/json" }
+            });
+            const data = await resp.json();
+            const filtered = data.filter(cat => !eventCat.some(item => item.name === cat.name));
+            setCategories(filtered);
+        } catch (err) {
+            console.error("Error cargando categorías globales:", err);
         }
-        catch (error) {
-            console.log("Error on fetch: ", error.message)
-        }
-        getEventCategoryById()
-        getCategories()
     }
 
     async function getEventAssistById() {
         try {
-            const response = await fetch(`${backendUrl}/api/${type}/events/${id}/event-assists`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`
-                },
-            })
-            const data = await response.json()
-            setEventAssistants(data.relations)
-            return response
+            const resp = await fetch(`${backendUrl}/api/${type}/events/${id}/event-assists`, { headers: authHeader });
+            const data = await resp.json();
+            setEventAssistants(data.relations);
+        } catch (err) {
+            console.error("Error cargando asistentes:", err);
         }
-        catch (error) {
-            console.log("Error on fetch: ", error.message)
-        }
-    }
-
-
-    async function getCategories() {
-        try {
-            const response = await fetch(`${backendUrl}/api/categories`, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
-            const data = await response.json()
-            const newCat = data.filter((cat) => !eventCat.some(item => item.name === cat.name))
-            setCategories(newCat)
-            return response
-        }
-        catch (error) {
-            console.log("Error on fetch: ", error.message)
-        }
-    }
-
-    async function addNewCat(e) {
-        const addedCategory = categories.find(cat => cat.name === e.target.value)
-        try {
-            const response = await fetch(`${backendUrl}/api/${type}/${ownerId}/events/${id}/event_category`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`
-                },
-                body: JSON.stringify({
-                    "event_id": parseInt(id),
-                    "category_id": addedCategory.id,
-                })
-            })
-        }
-        catch (error) {
-            console.log("Error on fetch: ", error.message)
-        }
-        getEventCategoryById()
-        getCategories()
     }
 
     async function getComments() {
         try {
-            const response = await fetch(`${backendUrl}/api/${type}/events/${id}/comments`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`
-                },
-            })
-            const data = await response.json()
-            setComments(data.comments)
-            return response
-        }
-        catch (error) {
-            console.log("Error on fetch: ", error.message)
+            const resp = await fetch(`${backendUrl}/api/${type}/events/${id}/comments`, { headers: authHeader });
+            const data = await resp.json();
+            setComments(data.comments);
+        } catch (err) {
+            console.error("Error cargando comentarios:", err);
         }
     }
 
-    useEffect(() => {
-        getEventById()
-        getEventAssistById()
-        getEventCategoryById()
-        getComments()
-    }, [])
-
-
-    useEffect(() => {
-        if (eventCat) {
-            getCategories()
+    async function addNewCat(e) {
+        const addedCategory = categories.find(cat => cat.name === e.target.value);
+        if (!addedCategory) return;
+        try {
+            await fetch(`${backendUrl}/api/${type}/${ownerId}/events/${id}/event_category`, {
+                method: "POST",
+                headers: authHeader,
+                body: JSON.stringify({ event_id: parseInt(id), category_id: addedCategory.id })
+            });
+        } catch (err) {
+            console.error("Error añadiendo categoría:", err);
         }
-    }, [eventCat])
+        getEventCategoryById();
+        getCategories();
+    }
+
+    async function removeCategoryById(e) {
+        try {
+            await fetch(`${backendUrl}/api/${type}/${ownerId}/events/${id}/event_category/${e.target.value}`, {
+                method: "DELETE",
+                headers: authHeader
+            });
+        } catch (err) {
+            console.error("Error eliminando categoría:", err);
+        }
+        getEventCategoryById();
+        getCategories();
+    }
+
+    // ── Render ───────────────────────────────────────────────────────────────
+
+    if (loading) {
+        return (
+            <DashboardLayout role="promotor" title="Detalle de evento" subtitle="Cargando..." userName="Promotor">
+                <div className="eventhub-panel">
+                    <p className="mb-0">Cargando...</p>
+                </div>
+            </DashboardLayout>
+        );
+    }
 
     return (
-        <div className="container py-5">
-            <div className="row justify-content-center">
-                <div className="col-lg-8">
-                    <div className="d-flex justify-content-between align-items-center mb-4">
-                        <Link to={`/${type}/private`} className="btn btn-outline-dark">
-                            Volver
-                        </Link>
-                    </div>
+        <DashboardLayout
+            role="promotor"
+            title="Detalle de evento"
+            subtitle="Gestiona la información de tu evento."
+            userName={profileInfo?.name}
+            onCreateEvent={() => navigate("/promotor/private/create-event")}
+        >
+            <div className="container py-5">
+                <div className="row justify-content-center">
+                    <div className="col-lg-8">
+                        {!event ? (
+                            <div className="alert alert-secondary">Cargando evento...</div>
+                        ) : (
+                            <div className="card shadow-sm border-0">
+                                {event.media && (
+                                    <img src={event.media} className="card-img-top" alt={event.name} />
+                                )}
 
-                    {message && (
-                        <div className="alert alert-danger">
-                            {message}
-                        </div>
-                    )}
+                                <div className="card-body p-4">
 
-                    {!event ? (
-                        <div className="alert alert-secondary">
-                            Cargando evento...
-                        </div>
-                    ) : (
-                        <div className="card shadow-sm border-0">
-                            <img src={event.media} className="card-img-top" alt="..." />
-                            <div className="card-body p-4">
-                                <div className="d-flex justify-content-between">
-                                    <h3 className="mb-4">{event.name}</h3>
-                                    <div>
-                                        <p className="card-text"><i className="fa-solid fa-location-dot"></i>  {event.location}</p>
-                                        <p><i className="fa-solid fa-calendar"></i> {event.date_event}</p>
+                                    {/* Cabecera */}
+                                    <div className="d-flex justify-content-between align-items-start mb-4">
+                                        <h3 className="mb-0">{event.name}</h3>
+                                        <div className="text-end">
+                                            <p className="mb-1">
+                                                <i className="fa-solid fa-location-dot me-1"></i>
+                                                {event.location}
+                                            </p>
+                                            <p className="mb-0">
+                                                <i className="fa-solid fa-calendar me-1"></i>
+                                                {new Date(event.date_event).toLocaleString()}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                                <p>{event.description}</p>
-                                <div>
-                                    <select className="form-select" aria-label="Default select example" onChange={(e) => addNewCat(e)}>
-                                        <option defaultValue>Open this select menu</option>
-                                        {categories &&
-                                            categories.map((cat) => {
-                                                return (
-                                                    <option key={cat.id}>{cat.name}</option>
-                                                )
-                                            })
-                                        }
-                                    </select>
-                                </div>
-                                <div className="d-flex py-3 gap-2 row row-cols-auto">
-                                    {eventCat &&
-                                        eventCat.map((categoryRel) => {
-                                            return (
-                                                <div key={categoryRel.id}>
-                                                    <p className="p-1" style={{ textAlign: "center", textDecoration: "none", verticalAlign: "middle", backgroundColor: "#ffc107", border: "1px solid", borderRadius: "2rem" }}>
-                                                        {categoryRel.category_name}
-                                                        <button type="button" className="btn rounded-end-circle p-1 ps-2" onClick={(e) => { removeCategoryById(e) }} value={categoryRel.id}>X</button>
-                                                    </p>
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                </div>
-                                <div>
-                                    Who's going
-                                    <div className="d-flex py-3 gap-2 row row-cols-auto">
-                                        {eventAsistants &&
-                                            eventAsistants.map((assistant) => {
-                                                return (
-                                                    <span key={assistant.id} className="badge d-flex align-items-center p-1 pe-2 text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-pill" >
+
+                                    <p>{event.description}</p>
+
+                                    {/* Categorías */}
+                                    <div className="mb-3">
+                                        <select
+                                            className="form-select"
+                                            onChange={addNewCat}
+                                            defaultValue=""
+                                        >
+                                            <option value="" disabled>Añadir categoría</option>
+                                            {categories?.map(cat => (
+                                                <option key={cat.id}>{cat.name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div className="d-flex py-3 gap-2 flex-wrap">
+                                        {eventCat?.map(categoryRel => (
+                                            <p key={categoryRel.id} className="p-1 mb-0 btn-secondary rounded" style={{
+                                            }}>
+                                                {categoryRel.category_name}
+                                                <button
+                                                    type="button"
+                                                    className="btn p-1"
+                                                    onClick={removeCategoryById}
+                                                    value={categoryRel.id}
+                                                >
+                                                    X
+                                                </button>
+                                            </p>
+                                        ))}
+                                    </div>
+
+                                    {/* Asistentes */}
+                                    <div className="mt-4">
+                                        <h6 className="fw-semibold mb-3">¿Quién asiste?</h6>
+                                        <div className="d-flex flex-wrap gap-2">
+                                            {eventAsistants?.length > 0
+                                                ? eventAsistants.map(assistant => (
+                                                    <span key={assistant.id} className="badge d-flex align-items-center p-1 pe-2 text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-pill">
                                                         <img className="rounded-circle me-1" width="24" height="24" src="https://github.com/mdo.png" alt={assistant.user_name} />
                                                         {assistant.user_name}
                                                     </span>
-                                                )
-                                            })
-                                        }
+                                                ))
+                                                : <p className="text-muted small">Nadie ha confirmado asistencia aún.</p>
+                                            }
+                                        </div>
                                     </div>
-                                </div>
-                                <div>
-                                    Comments
-                                    <div className="d-flex py-3 gap-2 row">
-                                        {comments &&
-                                            comments.map((comment) => {
-                                                return (
+
+                                    {/* Comentarios */}
+                                    <div className="mt-4">
+                                        <h6 className="fw-semibold mb-3">Comentarios</h6>
+                                        <div className="d-flex flex-column gap-3">
+                                            {comments?.length > 0
+                                                ? comments.map(comment => (
                                                     <div key={comment.id} className="border border-dark-subtle p-2 rounded">
-                                                        <span className="badge align-items-center p-1 pe-2 text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-pill w-auto" >
+                                                        <span className="badge align-items-center p-1 pe-2 text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-pill">
                                                             <img className="rounded-circle me-1" width="24" height="24" src="https://github.com/mdo.png" alt={comment.user.name} />
                                                             {comment.user.name}
                                                         </span>
-                                                        <p>{comment.message}</p>
+                                                        <p className="mt-2 mb-0">{comment.message}</p>
                                                     </div>
-                                                )
-                                            })
-                                        }
+                                                ))
+                                                : <p className="text-muted small">No hay comentarios todavía.</p>
+                                            }
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
-        </div >
+        </DashboardLayout>
     );
 };

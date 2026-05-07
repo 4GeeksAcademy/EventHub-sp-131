@@ -1,9 +1,13 @@
 import { useNavigate } from "react-router-dom";
 
-export const BackButton = ({ fallback = "/" }) => {
+export const BackButton = ({ fallback = "/" , where}) => {
     const navigate = useNavigate();
 
     const goBack = () => {
+        if (where) {
+            navigate(where)
+            return
+        }
         if (localStorage.getItem("tokenUser")) {
             navigate("/user/private");
             return;

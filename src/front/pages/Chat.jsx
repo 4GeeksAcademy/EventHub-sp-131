@@ -105,19 +105,29 @@ export const Chat = () => {
         text: messageText,
       }),
     })
-      .then((res) => {
+     .then((res) => {
         if (!res.ok) throw new Error("No se pudo enviar el mensaje");
         return res.json();
       })
       .then((data) => {
-        setMessages((prevMessages) => {
-          const exists = prevMessages.some((msg) => msg.id === data.id);
-          if (exists) return prevMessages;
-          return [...prevMessages, data];
-        });
+         const messageWithChatId = {
+         ...data,
+         chat_id: selectedChat.id,
+      };
 
-        getChats();
-      })
+      setMessages((prevMessages) => {
+        const exists = prevMessages.some((msg) => msg.id === messageWithChatId.id);
+        if (exists) return prevMessages;
+        return [...prevMessages, messageWithChatId];
+      });
+
+      socket.emit("send_message", {
+        chat_id: selectedChat.id,
+        message: messageWithChatId,
+      });
+
+      getChats();
+     })
       .catch((error) => {
         console.log("Error enviando mensaje:", error);
         alert("No se pudo enviar el mensaje");
@@ -133,7 +143,7 @@ export const Chat = () => {
         return;
       }
 
-      if (newMessage.chat_id && newMessage.chat_id !== activeChat.id) {
+      if (newMessage.chat_id && String(newMessage.chat_id) !== String(activeChat.id)) {
         getChats();
         return;
       }

@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Map } from "../../components/Map";
 import { artisticFilter } from "@cloudinary/url-gen/actions/effect";
+import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const geoApiKey = import.meta.env.VITE_GEOCODING_API_KEY
 
 export const UserEvents = () => {
+    const { store, dispatch } = useGlobalReducer();
     const [events, setEvents] = useState([]);
     const [filteredEvents, setFilteredEvents] = useState([])
     const [message, setMessage] = useState("");
@@ -55,28 +58,6 @@ export const UserEvents = () => {
                 setMessage("Evento guardado correctamente");
             })
             .catch(() => setMessage("Este evento ya está guardado o no se pudo guardar"));
-    };
-
-    const handleAssist = (eventId) => {
-        const tokenUser = localStorage.getItem("tokenUser");
-
-        if (!tokenUser) {
-            navigate("/user/login");
-            return;
-        }
-
-        fetch(`${backendUrl}/api/events/${eventId}/assist`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + tokenUser
-            }
-        })
-            .then((resp) => {
-                if (!resp.ok) throw new Error();
-                setMessage("Asistencia confirmada correctamente");
-            })
-            .catch(() => setMessage("Ya confirmaste asistencia o no se pudo procesar"));
     };
 
     useEffect(() => {
@@ -203,7 +184,12 @@ export const UserEvents = () => {
     }
 
     return (
-        <>
+        <DashboardLayout
+            role="user"
+            title="Mi perfil"
+            subtitle="Bienvenida a tu espacio personal en EventHub."
+            userName={store.privateUser?.name}
+        >
             <div className="container-fluid mt-5 mx-4">
                 {/* Header */}
                 <div className="d-flex justify-content-between align-items-center mb-4">
@@ -213,13 +199,6 @@ export const UserEvents = () => {
                             Explora eventos, guarda tus favoritos y confirma asistencia.
                         </p>
                     </div>
-
-                    <button
-                        className="btn btn-outline-secondary"
-                        onClick={() => navigate("/user/private")}
-                    >
-                        Volver al perfil
-                    </button>
                 </div>
 
                 {message && (
@@ -322,7 +301,12 @@ export const UserEvents = () => {
                                             )}
 
                                             <div className="card-body d-flex flex-column p-4">
-                                                <h5 className="card-title fw-bold text-white">{event.name}</h5>
+                                                <div className="d-flex justify-content-between">
+                                                    <h5 className="card-title fw-bold text-white">{event.name}</h5>
+                                                    <div className="d-flex gap-2">
+                                                        <i class="fa-regular fa-bookmark" onClick={(e) => { e.stopPropagation(); handleSave(event.id); }} style={{ cursor: "pointer"}}></i>
+                                                    </div>
+                                                </div>
 
                                                 <p className="text-muted mb-2 small">
                                                     📍 {event.location || "Ubicación no disponible"}
@@ -339,30 +323,14 @@ export const UserEvents = () => {
                                                     {event.description?.substring(0, 110) || "Sin descripción"}...
                                                 </p>
 
-                                                {/* Botones devueltos al final de la card */}
                                                 <div className="mt-auto d-grid gap-2">
                                                     <button
-                                                        className="btn btn-primary"
+                                                        className="btn btn-secondary"
                                                         onClick={(e) => { e.stopPropagation(); navigate(`/events/${event.id}`); }}
                                                     >
                                                         Ver detalle
                                                     </button>
 
-                                                    <div className="d-flex gap-2">
-                                                        <button
-                                                            className="btn btn-success w-100"
-                                                            onClick={(e) => { e.stopPropagation(); handleSave(event.id); }}
-                                                        >
-                                                            Guardar
-                                                        </button>
-
-                                                        <button
-                                                            className="btn btn-warning w-100"
-                                                            onClick={(e) => { e.stopPropagation(); handleAssist(event.id); }}
-                                                        >
-                                                            Asistir
-                                                        </button>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -372,10 +340,9 @@ export const UserEvents = () => {
                         </div>
                     </div>
 
-                    {/* Mapa con margen derecho */}
                     {userLocation && (
-                        <div className="col-lg-5 pe-4">   {/* ← Margen derecho añadido */}
-                            <div className="sticky-top" style={{ top: "90px" }}>
+                        <div className="col-lg-5 pe-4">  
+                            <div className="sticky-top" style={{ top: "110px" }}>
                                 <Map
                                     location={userLocation.address}
                                     mapCenter={mapCenter}
@@ -397,6 +364,6 @@ export const UserEvents = () => {
                     )}
                 </div>
             </div>
-        </>
+        </DashboardLayout>
     );
 };
