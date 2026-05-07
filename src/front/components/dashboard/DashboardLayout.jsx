@@ -1,6 +1,5 @@
 import { NavLink, useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
-import eventHubIcon from "../../assets/img/EventHubIcon.svg";
 
 export const DashboardLayout = ({
   role,
@@ -83,7 +82,7 @@ export const DashboardLayout = ({
       <aside className="eventhub-sidebar">
         <div className="eventhub-sidebar-brand">
           <Link to="/" className="d-flex gap-2" style={{ color: "none", textDecoration: "none"}}>
-          <img src={eventHubIcon} alt="EventHub" className="eventhub-logo-img rounded" />
+          <img src="/favicon.ico" alt="EventHub" className="eventhub-logo-img rounded"/>
           <div>
             <h5>
               Event<span>Hub</span>
@@ -218,17 +217,6 @@ export const DashboardLayout = ({
                       Chats
                     </button>
                   )}
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOpenMenu(false);
-                      navigate(`/${role}/settings`);
-                    }}
-                  >
-                    <i className="bi bi-gear"></i>
-                    Settings
-                  </button>
 
                   <button type="button" onClick={logout}>
                     <i className="bi bi-box-arrow-left"></i>
