@@ -1402,7 +1402,7 @@ textarea.login-input{
     0 0 40px rgba(91,91,255,.22),
     0 0 90px rgba(217,28,141,.18);
 
-
+}
 /* =========================
    ABOUT / PROMOTE / CONTACT
 ========================= */
@@ -1944,5 +1944,4 @@ textarea.login-input{
   width: 42px;
   height: 42px;
   object-fit: contain;
-}
 }
