@@ -1,62 +1,80 @@
-import React, { useEffect } from "react"
-import { Link } from "react-router-dom";
+import React from "react";
 import Carolina from "../assets/img/Carolina.jpg";
-import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
 export const AboutUs = () => {
+  const team = [
+    {
+      name: "Carolina Naranjo",
+      role: "Full Stack Developer",
+      image: Carolina,
+      github: "https://github.com/CarolinaNFeria",
+      linkedin: "https://www.linkedin.com/in/carolina-naranjo-feria-793132295/",
+      initials: "CN",
+    },
+    {
+      name: "Kristhiam Altamiranda",
+      role: "Full Stack Developer",
+      image: null,
+      github: "#",
+      linkedin: "#",
+      initials: "KA",
+    },
+    {
+      name: "Matias Otero Sarra",
+      role: "Full Stack Developer",
+      image: null,
+      github: "https://github.com/MatOtS",
+      linkedin: "https://www.linkedin.com/in/oterosarramatias/",
+      initials: "MO",
+    },
+  ];
+
   return (
-    <section className="about py-5" id="about">
-      <div className="container">
-        <div className="row align-items-center">
-          <h2 className="section-title">¿Quienes somos?</h2>
+    <section className="about-us-page eh-inner-section" id="about">
+      <div className="eh-page-glow eh-page-glow-one"></div>
+      <div className="eh-page-glow eh-page-glow-two"></div>
 
-          <div class="card-group gap-5">
-            <div class="card rounded">
-              <img src={Carolina} class="card-img-top rounded-top" alt="..." />
-              <div class="card-body">
-                <h5 class="card-title">Carolina Naranjo</h5>
-                <div className="d-flex justify-content-around">
-                  <a href="https://github.com/CarolinaNFeria" className="fs-3 text-light">
-                    <i class="fa-brands fa-github"></i>
-                  </a>
-                  <a href="https://www.linkedin.com/in/carolina-naranjo-feria-793132295/" className="fs-3 text-light">
-                    <i class="fa-brands fa-linkedin"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="card rounded">
-              <img src="..." class="card-img-top rounded-top" alt="..."/>
-              <div class="card-body">
-                <h5 class="card-title">Kristhiam Altamiranda</h5>
-                <div className="d-flex justify-content-around">
-                  <a href="" className="fs-3 text-light">
-                    <i class="fa-brands fa-github"></i>
-                  </a>
-                  <a href="" className="fs-3 text-light">
-                    <i class="fa-brands fa-linkedin"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="card rounded">
-              <img src="..." class="card-img-top rounded-top" alt="..." />
-              <div class="card-body">
-                <h5 class="card-title">Matias Otero Sarra</h5>
-                <div className="d-flex justify-content-around">
-                  <a href="https://github.com/MatOtS" className="fs-3 text-light">
-                    <i class="fa-brands fa-github"></i>
-                  </a>
-                  <a href="https://www.linkedin.com/in/oterosarramatias/" className="fs-3 text-light">
-                    <i class="fa-brands fa-linkedin"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div className="container position-relative">
+        <div className="eh-inner-header text-center">
+          <span className="section-kicker">Equipo Event Hub</span>
+          <h2 className="section-title">¿Quiénes somos?</h2>
+          <p className="section-description mx-auto">
+            Somos un equipo construyendo una plataforma para descubrir eventos,
+            conectar personas y crear experiencias sociales reales.
+          </p>
+        </div>
 
+        <div className="row g-4 justify-content-center">
+          {team.map((member) => (
+            <div className="col-md-6 col-lg-4" key={member.name}>
+              <div className="team-card-pro">
+                <div className="team-card-top">
+                  {member.image ? (
+                    <img src={member.image} className="team-img-pro" alt={member.name} />
+                  ) : (
+                    <div className="team-placeholder-pro">{member.initials}</div>
+                  )}
+                </div>
+
+                <div className="team-body-pro">
+                  <span className="team-role">{member.role}</span>
+                  <h5>{member.name}</h5>
+
+                  <div className="team-links-pro">
+                    <a href={member.github} target="_blank" rel="noreferrer" aria-label="GitHub">
+                      <i className="fa-brands fa-github"></i>
+                    </a>
+
+                    <a href={member.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn">
+                      <i className="fa-brands fa-linkedin"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
-  )
-}; 
+  );
+};
