@@ -7,21 +7,17 @@ import { StoreProvider } from './hooks/useGlobalReducer';  // Import the StorePr
 import { BackendURL } from './components/BackendURL';
 import "bootstrap-icons/font/bootstrap-icons.css";
 const Main = () => {
-    
-    if(! import.meta.env.VITE_BACKEND_URL ||  import.meta.env.VITE_BACKEND_URL == "") return (
-        <React.StrictMode>
-              <BackendURL/ >
-        </React.StrictMode>
-        );
+
+    if (! import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_BACKEND_URL == "") return (
+        <BackendURL />
+
+    );
     return (
-        <React.StrictMode>  
-            {/* Provide global state to all components */}
-            <StoreProvider> 
-                {/* Set up routing for the application */} 
-                <RouterProvider router={router}>
-                </RouterProvider>
-            </StoreProvider>
-        </React.StrictMode>
+        <StoreProvider>
+            {/* Set up routing for the application */}
+            <RouterProvider router={router}>
+            </RouterProvider>
+        </StoreProvider>
     );
 }
 
