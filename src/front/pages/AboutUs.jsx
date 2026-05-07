@@ -15,8 +15,8 @@ export const AboutUs = () => {
       name: "Kristhiam Altamiranda",
       role: "Full Stack Developer",
       image: null,
-      github: "#",
-      linkedin: "#",
+      github: "https://github.com/akristhiam93",
+      linkedin: "https://www.linkedin.com/in/kristhiam-altamiranda-5a5b76230/",
       initials: "KA",
     },
     {
