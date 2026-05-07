@@ -2,6 +2,7 @@ import { Link, useNavigate, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import EventHubHeroImage from "../../assets/img/EventHubHeroImage.png";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import FestivalPromotor from "../../assets/img/FestivalPromotor.jpg";
 
 export const PromotorSignUp = () => {
   const { store, dispatch } = useGlobalReducer()
@@ -87,50 +88,246 @@ export const PromotorSignUp = () => {
   }, [])
 
   return (
-    <div style={{ background: `linear-gradient(rgba(10, 10, 15, 0.75), rgba(10, 10, 15, 0.85)), url(${EventHubHeroImage}) center/cover no-repeat`}}>
-      {store.promotorAuth === "true" ?
-        <Navigate to="/promotor/private" />
-        :
-        null }
-      <div className="container row mx-auto mt-5">
-        <div className="pt-4 w-50 mx-auto forms">
-          <h2 className="d-flex justify-content-center mb-5">Register to EventHub</h2>
-          <form onSubmit={signUpPromotor}>
-            <div className="mb-3">
-              <label htmlFor="name" className="form-label">Name</label>
-              <input type="name" className="form-control" id="name" aria-describedby="name" onChange={(e) => setName(e.target.value)} value={name} required/>
+
+    <div
+        className="login-page"
+        style={{
+            background: `
+            linear-gradient(rgba(5, 8, 22, 0.82), rgba(5, 8, 22, 0.94)),
+            url(${FestivalPromotor})
+            center/cover no-repeat`
+        }}
+    >
+
+        {store.promotorAuth === "true"
+            ? <Navigate to="/promotor/private" />
+            : null
+        }
+
+        <div className="container-fluid">
+
+            <div className="row min-vh-100 align-items-center">
+
+                {/* LEFT SIDE */}
+
+                <div className="col-lg-6 d-none d-lg-flex flex-column justify-content-center px-5">
+
+                    <div className="branding-content">
+
+                        <h1 className="brand-title">
+                            EVENT HUB PRO
+                        </h1>
+
+                        <h2 className="hero-text">
+                            Lleva tus
+                            <br />
+                            eventos al
+                            <br />
+                            siguiente nivel.
+                        </h2>
+
+                        <p className="hero-subtext">
+                            Gestiona conciertos, festivales y experiencias
+                            masivas desde una sola plataforma.
+                        </p>
+
+                        <div className="stats-container mt-5">
+
+                            <div>
+                                <h3>+500</h3>
+                                <p>Eventos</p>
+                            </div>
+
+                            <div>
+                                <h3>+20K</h3>
+                                <p>Asistentes</p>
+                            </div>
+
+                            <div>
+                                <h3>24/7</h3>
+                                <p>Producción</p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {/* RIGHT SIDE */}
+
+                <div className="col-lg-6 d-flex justify-content-center align-items-center py-5">
+
+                    <div className="login-card register-card promoter-card">
+
+                        <Link to="/" className="back-link">
+                            ← Volver
+                        </Link>
+
+                        <h1 className="login-title">
+                            Registro Promotor
+                        </h1>
+
+                        <p className="login-subtitle">
+                            Crea tu cuenta y comienza a gestionar eventos.
+                        </p>
+
+                        <form onSubmit={signUpPromotor}>
+
+                            <div className="mb-3">
+
+                                <label className="form-label login-label">
+                                    Nombre
+                                </label>
+
+                                <input
+                                    type="text"
+                                    className="form-control login-input"
+                                    placeholder="Nombre de empresa o promotor"
+                                    onChange={(e) => setName(e.target.value)}
+                                    value={name}
+                                    required
+                                />
+
+                            </div>
+
+                            <div className="mb-3">
+
+                                <label className="form-label login-label">
+                                    Correo electrónico
+                                </label>
+
+                                <input
+                                    type="email"
+                                    className="form-control login-input"
+                                    placeholder="Ingresa tu correo"
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={email}
+                                    required
+                                />
+
+                            </div>
+
+                            <div className="mb-3">
+
+                                <label className="form-label login-label">
+                                    Contraseña
+                                </label>
+
+                                <input
+                                    type="password"
+                                    className="form-control login-input"
+                                    placeholder="Crea una contraseña"
+                                    onChange={(e) => setPw(e.target.value)}
+                                    value={pw}
+                                    required
+                                />
+
+                            </div>
+
+                            <div className="row">
+
+                                <div className="col-md-6 mb-3">
+
+                                    <label className="form-label login-label">
+                                        Ubicación
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        className="form-control login-input"
+                                        placeholder="Ciudad"
+                                        onChange={(e) => setLocation(e.target.value)}
+                                        value={location}
+                                        required
+                                    />
+
+                                </div>
+
+                                <div className="col-md-6 mb-3">
+
+                                    <label className="form-label login-label">
+                                        Teléfono
+                                    </label>
+
+                                    <input
+                                        type="tel"
+                                        className="form-control login-input"
+                                        placeholder="912223344"
+                                        onChange={(e) => setPhone(e.target.value)}
+                                        value={phone}
+                                        required
+                                    />
+
+                                </div>
+
+                            </div>
+
+                            <div className="mb-4">
+
+                                <label className="form-label login-label">
+                                    Página web
+                                </label>
+
+                                <input
+                                    type="text"
+                                    className="form-control login-input"
+                                    placeholder="https://tuweb.com"
+                                    onChange={(e) => setWebPage(e.target.value)}
+                                    value={webPage}
+                                    required
+                                />
+
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="btn login-btn w-100"
+                            >
+                                Crear cuenta
+                            </button>
+
+                        </form>
+
+                        <div className="signup-container">
+
+                            <p>
+                                ¿Ya tienes cuenta?
+                            </p>
+
+                            <Link
+                                to="/promotor/login"
+                                className="signup-link"
+                            >
+                                Inicia sesión
+                            </Link>
+
+                        </div>
+
+                        <div className="promoter-container">
+
+                            <p className="promoter-text">
+                                ¿Buscas eventos?
+                            </p>
+
+                            <Link
+                                to="/user/register"
+                                className="promoter-link"
+                            >
+                                Crear cuenta de usuario
+                            </Link>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
-            <div className="mb-3">
-              <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
-              <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" onChange={(e) => setEmail(e.target.value)} value={email} required/>
-              <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
-            </div>
-            <div className="mb-3">
-              <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
-              <input type="password" className="form-control" id="exampleInputPassword1" onChange={(e) => setPw(e.target.value)} value={pw} required/>
-            </div>
-            <div className="mb-3">
-              <label htmlFor="location" className="form-label">Location</label>
-              <input type="text" className="form-control" id="location" onChange={(e) => setLocation(e.target.value)} value={location} required/>
-            </div>
-            <div className="mb-3">
-              <label htmlFor="phone" className="form-label">Phone</label>
-              <input type="tel" inputMode="numeric" minLength={9} maxLength={9} placeholder="912-22-33-44" className="form-control" id="phone" onChange={(e) => setPhone(e.target.value)} value={phone} required/>
-            </div>
-            <div className="mb-3">
-              <label htmlFor="webPage" className="form-label">Your Web Page</label>
-              <input type="text" className="form-control" id="webPage" onChange={(e) => setWebPage(e.target.value)} value={webPage} required/>
-            </div>
-            <button type="submit" className="btn btn-primary d-grid gap-2 col-6 mx-auto">Sign Up</button>
-          </form>
-          <div className="d-flex p-3 gap-4 align-items-center" style={{ justifySelf: "center" }}>
-            <p>Already have an accout?</p>
-            <Link to="/promotor/login">
-              <button className="btn btn-primary">Login</button>
-            </Link>
-          </div>
+
         </div>
-      </div>
+
     </div>
-  );
-};
+);
+
+}
