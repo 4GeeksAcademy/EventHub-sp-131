@@ -1,6 +1,7 @@
 import React from "react";
 import Carolina from "../assets/img/Carolina.jpg";
 import Matias from "../assets/img/Matias.jpeg"
+import Kristhiam from "../assets/img/Kristhiam.jpeg"
 
 export const AboutUs = () => {
   const team = [
@@ -15,7 +16,7 @@ export const AboutUs = () => {
     {
       name: "Kristhiam Altamiranda",
       role: "Full Stack Developer",
-      image: null,
+      image: Kristhiam,
       github: "https://github.com/akristhiam93",
       linkedin: "https://www.linkedin.com/in/kristhiam-altamiranda-5a5b76230/",
       initials: "KA",
