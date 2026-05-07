@@ -19,9 +19,9 @@ export const Home = () => {
                 <span className="eh-kicker">Plataforma de eventos sociales</span>
 
                 <h1>
-                  Descubre.
-                  <br />
                   Conecta.
+                  <br />
+                  Descubre.
                   <br />
                   <span>Vive.</span>
                 </h1>
