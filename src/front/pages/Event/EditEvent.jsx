@@ -24,7 +24,7 @@ export const EditEvent = () => {
 
     const navigate = useNavigate();
     const { id } = useParams();
-    
+
 
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
@@ -41,8 +41,9 @@ export const EditEvent = () => {
     const [eventCat, setEventCat] = useState(null);
     const [categories, setCategories] = useState(null);
     const [imgFromApi, setImgFromApi] = useState("");
-    console.log(media);
     const authApiA = import.meta.env.VITE_BACKEND_URL
+    console.log(latitude);
+    console.log(longitude);
 
     const {
         artistQuery,
@@ -146,6 +147,8 @@ export const EditEvent = () => {
             setDescription(e.description || "");
             setCapacity(e.capacity || "");
             setMedia(e.media || "");
+            if (e.latitude) setLatitude(e.latitude);
+            if (e.longitude) setLongitude(e.longitude);
 
             if (e.date_event) setDateEvent(e.date_event.slice(0, 16));
             if (e.location) getCurrentEventLoc(e.location);
@@ -155,6 +158,8 @@ export const EditEvent = () => {
     }
 
     async function geoloc(lat, lng) {
+        setLatitude(lat);
+        setLongitude(lng);
         try {
             const resp = await fetch(
                 `https://geocode.googleapis.com/v4/geocode/location/${lat},${lng}?key=${geoApiKey}`
@@ -253,10 +258,10 @@ export const EditEvent = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        const finalMedia = publicId ? publicId : imgFromApi;
-        console.log(media);
+        console.log(latitude);
+        console.log(longitude);
 
+        const finalMedia = publicId || imgFromApi || media;;
         try {
             const resp = await fetch(`${backendUrl}/api/${urlApi}/${id}`, {
                 method: "PUT",
@@ -264,7 +269,7 @@ export const EditEvent = () => {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${localStorage.getItem("token")}`
                 },
-                body: JSON.stringify({ name, location, description, date_event, capacity: Number(capacity), media: finalMedia })
+                body: JSON.stringify({ name, location, description, date_event, capacity: Number(capacity), media: finalMedia, latitude: parseFloat(latitude), longitude: parseFloat(longitude) })
             });
             if (!resp.ok) throw new Error("Error actualizando evento");
         } catch (err) {
@@ -276,9 +281,9 @@ export const EditEvent = () => {
             : navigate(`/${props.type}/private`);
     };
 
-/*     if (!store.adminAuth) {
-        return <Navigate to="/admin/login" />;
-    } */
+    /*     if (!store.adminAuth) {
+            return <Navigate to="/admin/login" />;
+        } */
 
     return (
         <div className="container my-4">
@@ -375,6 +380,8 @@ export const EditEvent = () => {
                                 markerPosition={markerPosition}
                                 setMarkerPosition={setMarkerPosition}
                                 onLocationChange={geoloc}
+                                setLatitude={setLatitude}
+                                setLongitude={setLongitude}
                                 defZoom={defZoom}
                                 setDefZoom={setDefZoom}
                                 height={"400px"}

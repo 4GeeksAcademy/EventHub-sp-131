@@ -210,11 +210,11 @@ def update_event(promotor_id, event_id):
     if "location" in body:
         event.location = body["location"]
 
-    if "lat" in body:
-        event.lat = body["lat"]
+    if "latitude" in body:
+        event.lat = body["latitude"]
     
-    if "lng" in body:
-        event.lng = body["lng"]
+    if "longitude" in body:
+        event.lng = body["longitude"]
 
     if "description" in body:
         event.description = body["description"]

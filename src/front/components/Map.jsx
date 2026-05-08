@@ -5,9 +5,7 @@ const geoApiKey = import.meta.env.VITE_GEOCODING_API_KEY
 
 export const Map = ({ location, mapCenter, setMapCenter, markerPosition, setMarkerPosition, onLocationChange, defZoom, setDefZoom, setLatitude, setLongitude, events, selectedEvent, setSelectedEvent, height, infoWindowEvent, setInfoWindowEvent }) => {
     const autocompleteRef = useRef(null)
-    console.log(infoWindowEvent);
-    
-    
+
 
     useEffect(() => {
         const autocomplete = autocompleteRef.current
@@ -46,6 +44,8 @@ export const Map = ({ location, mapCenter, setMapCenter, markerPosition, setMark
         setMapCenter(newCenter)
         onLocationChange(newCenter.lat, newCenter.lng)
         setDefZoom(13)
+        if (setLatitude) setLatitude(newPosition.lat);
+        if (setLongitude) setLongitude(newPosition.lng);
     }
 
     return (
@@ -86,7 +86,7 @@ export const Map = ({ location, mapCenter, setMapCenter, markerPosition, setMark
                                     onMouseEnter={() => setSelectedEvent(event)}
                                     onMouseLeave={() => setSelectedEvent(null)}
                                     style={{ border: event.id === selectedEvent?.id ? "1px solid black" : "" }}
-                                    >
+                                >
                                     <div className="fs-6 badge text-bg-light border shadow p-2 bg-body-ligth rounded">
                                         {event.name}
                                     </div>
