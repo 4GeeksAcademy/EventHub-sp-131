@@ -1,11 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { Navigate ,useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
 import { EventList } from "../../components/Event/EventList";
 import { usePromotorAuth } from "../../hooks/usePromotorAuth";
 
 export const PromotorEvents = () => {
     const navigate = useNavigate();
-    const { profileInfo, loading } = usePromotorAuth();
+    const { profileInfo, loading, isAuthorized } = usePromotorAuth();
 
     if (loading) {
         return (
@@ -21,6 +21,8 @@ export const PromotorEvents = () => {
             </DashboardLayout>
         );
     }
+
+    if (isAuthorized === false) return <Navigate to="/promotor/login" replace />;
 
     return (
         <DashboardLayout
@@ -39,7 +41,7 @@ export const PromotorEvents = () => {
                         </div>
                         <button
                             className="eventhub-main-btn"
-                            onClick={() => navigate("/promotor/private/create-event")}
+                            onClick={() => navigate("/promotor/create-event")}
                         >
                             + Crear evento
                         </button>
