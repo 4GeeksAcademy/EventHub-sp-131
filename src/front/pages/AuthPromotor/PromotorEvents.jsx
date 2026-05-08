@@ -41,7 +41,7 @@ export const PromotorEvents = () => {
                         </div>
                         <button
                             className="eventhub-main-btn"
-                            onClick={() => navigate("/promotor/private/create-event")}
+                            onClick={() => navigate("/promotor/create-event")}
                         >
                             + Crear evento
                         </button>
