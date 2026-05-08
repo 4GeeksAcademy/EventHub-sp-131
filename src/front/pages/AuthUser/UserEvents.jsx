@@ -16,7 +16,7 @@ export const UserEvents = () => {
     const [categories, setCategories] = useState(null)
     const [categoryFilter, setCategoryFilter] = useState(null)
     const [dateFilter, setDateFilter] = useState("")
-    const [distanceFilter, setDistanceFiler] = useState(100)
+    const [distanceFilter, setDistanceFiler] = useState(10)
     const [artistFilter, setArtistFilter] = useState("")
     const navigate = useNavigate();
     const [selectedEvent, setSelectedEvent] = useState(null)
@@ -25,7 +25,7 @@ export const UserEvents = () => {
     console.log("userloc ", userLocation);
 
     const [searchLocation, setSearchLocation] = useState(null);
-    const [defZoom, setDefZoom] = useState(12)
+    const [defZoom, setDefZoom] = useState(15)
     const [mapCenter, setMapCenter] = useState({ lat: 40.4168, lng: -3.7038 });
     console.log(mapCenter);
 

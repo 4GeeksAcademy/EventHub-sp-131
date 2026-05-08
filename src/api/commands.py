@@ -1,3 +1,6 @@
+import json
+import os
+from datetime import datetime
 import math
 import click
 import random
@@ -164,14 +167,15 @@ def setup_commands(app):
 
         for x in range(start_id, start_id + int(count)):
             try:
-                lat, lng = generate_random_point_in_circle(CENTER_LAT, CENTER_LNG, RADIUS_KM)
+                lat, lng = generate_random_point_in_circle(
+                    CENTER_LAT, CENTER_LNG, RADIUS_KM)
 
                 event = Event()
                 event.name = f"Evento {x} - {random.choice(['Concierto', 'Festival', 'Partido', 'Obra de Teatro', 'Conferencia'])}"
                 event.location = "Arena"
                 event.description = f"Description of Event number {x}"
                 event.capacity = random.randint(50, 5000)
-                event.date_event = f"2026-{random.randint(4,12):02d}-{random.randint(1,28):02d}T{random.randint(10,23):02d}:{random.randint(0,59):02d}:00"
+                event.date_event = f"2026-{random.randint(4, 12):02d}-{random.randint(1, 28):02d}T{random.randint(10, 23):02d}:{random.randint(0, 59):02d}:00"
                 event.lat = round(lat, 6)
                 event.lng = round(lng, 6)
                 db.session.add(event)
@@ -574,6 +578,45 @@ def setup_commands(app):
                 db.session.rollback()
                 print(f"Error creating EventAssistUser ({u_id}, {e_id}): {e}")
         print(f"Done. {created} event-assist-user(s) created.")
+
+    # ── Import JSON data ──────────────────────────────────────────────────────
+
+    @app.cli.command("load-events")
+    def load_events():
+        """Carga eventos desde un archivo JSON"""
+        json_path = os.path.join(os.path.dirname(
+            __file__), '../data/events.json')
+
+        if not os.path.exists(json_path):
+            print(f"❌ Archivo no encontrado: {json_path}")
+            print("   Crea la carpeta 'data' y el archivo events.json")
+            return
+
+        try:
+            with open(json_path, 'r', encoding='utf-8') as f:
+                events_data = json.load(f)
+            count = 0
+            for event_data in events_data:
+                event = Event(
+                    name=event_data.get('name'),
+                    description=event_data.get('description'),
+                    lat=event_data.get("latitude"),
+                    lng=event_data.get("longitude"),
+                    date_event=datetime.fromisoformat(
+                        event_data.get('date_event').replace('Z', '+00:00')),
+                    location=event_data.get('location'),
+                    media=event_data.get('media'),
+                    capacity=event_data.get('capacity'),
+                )
+                db.session.add(event)
+                count += 1
+
+            db.session.commit()
+            print(f"✅ {count} eventos cargados correctamente desde JSON")
+
+        except Exception as e:
+            db.session.rollback()
+            print(f"❌ Error al cargar eventos: {str(e)}")
 
     # ── Master command ────────────────────────────────────────────────────────
 
