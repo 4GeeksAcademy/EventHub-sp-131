@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 export const GroupEventList = () => {
 	const [relations, setRelations] = useState([]);
@@ -16,7 +17,7 @@ export const GroupEventList = () => {
 			.then((resp) => resp.json())
 			.then((data) => setRelations(Array.isArray(data) ? data : []))
 			.catch((error) => {
-				console.log(error);
+				devLog.error(error);
 				setRelations([]);
 			});
 	};
@@ -26,7 +27,7 @@ export const GroupEventList = () => {
 			.then((resp) => resp.json())
 			.then((data) => setGroups(Array.isArray(data) ? data : []))
 			.catch((error) => {
-				console.log(error);
+				devLog.error(error);
 				setGroups([]);
 			});
 	};
@@ -36,7 +37,7 @@ export const GroupEventList = () => {
 			.then((resp) => resp.json())
 			.then((data) => setEvents(Array.isArray(data) ? data : []))
 			.catch((error) => {
-				console.log(error);
+				devLog.error(error);
 				setEvents([]);
 			});
 	};
@@ -53,7 +54,7 @@ export const GroupEventList = () => {
 		})
 			.then((resp) => resp.json())
 			.then(() => getRelations())
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	const getGroupName = (id) => {

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import PropTypes from "prop-types";
 
 export const ChatWindow = ({ selectedChat, messages, onSendMessage, role = "user" }) => {
   const [text, setText] = useState("");
@@ -122,4 +123,11 @@ export const ChatWindow = ({ selectedChat, messages, onSendMessage, role = "user
       </div>
     </div>
   );
+};
+
+ChatWindow.propTypes = {
+  selectedChat: PropTypes.object,
+  messages: PropTypes.array.isRequired,
+  onSendMessage: PropTypes.func.isRequired,
+  role: PropTypes.string
 };

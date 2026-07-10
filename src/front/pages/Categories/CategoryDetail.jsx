@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 export const CategoryDetail = () => {
 	const { id } = useParams();
@@ -11,7 +12,7 @@ export const CategoryDetail = () => {
 		fetch(import.meta.env.VITE_BACKEND_URL + "/api/categories/" + id)
 			.then((resp) => resp.json())
 			.then((data) => setCategory(data))
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	}, [id]);
 
 	if (!category) {

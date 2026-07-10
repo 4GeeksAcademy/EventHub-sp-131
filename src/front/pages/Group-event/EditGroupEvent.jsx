@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 export const EditGroupEvent = () => {
 	const { id } = useParams();
@@ -19,7 +20,7 @@ export const EditGroupEvent = () => {
 			.then((resp) => resp.json())
 			.then((data) => setGroups(Array.isArray(data) ? data : []))
 			.catch((error) => {
-				console.log(error);
+				devLog.error(error);
 				setGroups([]);
 			});
 	};
@@ -29,7 +30,7 @@ export const EditGroupEvent = () => {
 			.then((resp) => resp.json())
 			.then((data) => setEvents(Array.isArray(data) ? data : []))
 			.catch((error) => {
-				console.log(error);
+				devLog.error(error);
 				setEvents([]);
 			});
 	};
@@ -41,7 +42,7 @@ export const EditGroupEvent = () => {
 				setGroupId(data.group_id?.toString() || "");
 				setEventId(data.event_id?.toString() || "");
 			})
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	useEffect(() => {
@@ -65,7 +66,7 @@ export const EditGroupEvent = () => {
 		})
 			.then((resp) => resp.json())
 			.then(() => navigate("/group-event"))
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	if (!store.adminAuth) {

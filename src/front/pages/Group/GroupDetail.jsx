@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 export const GroupDetail = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -14,19 +15,19 @@ export const GroupDetail = () => {
         try {
             const response = await fetch(`${backendUrl}/api/group/${theId}`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
-            setGroup(data)
-            return response
+            });
+            const data = await response.json();
+            setGroup(data);
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
     useEffect(() => {
-        getGroupById(theId)
-    }, [])
+        getGroupById(theId);
+    }, []);
 
     if (!store.adminAuth) {
     return <Navigate to="/admin/login" />;

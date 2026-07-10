@@ -3,17 +3,18 @@ import { useState, useEffect } from "react";
 import EventHubHeroImage from "../../assets/img/EventHubHeroImage.png";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import FestivalPromotor from "../../assets/img/FestivalPromotor.jpg";
+import devLog from "../../utils/devLogger";
 
 export const PromotorSignUp = () => {
-  const { store, dispatch } = useGlobalReducer()
-  const urlApi = import.meta.env.VITE_BACKEND_URL
-  const [email, setEmail] = useState("")
-  const [pw, setPw] = useState("")
-  const [name, setName] = useState("")
-  const [location, setLocation] = useState("")
-  const [phone, setPhone] = useState("")
-  const [webPage, setWebPage] = useState("")
-  const navigate = useNavigate()
+  const { store, dispatch } = useGlobalReducer();
+  const urlApi = import.meta.env.VITE_BACKEND_URL;
+  const [email, setEmail] = useState("");
+  const [pw, setPw] = useState("");
+  const [name, setName] = useState("");
+  const [location, setLocation] = useState("");
+  const [phone, setPhone] = useState("");
+  const [webPage, setWebPage] = useState("");
+  const navigate = useNavigate();
 
   async function loginUser(e) {
     e.preventDefault();
@@ -21,32 +22,32 @@ export const PromotorSignUp = () => {
       const response = await fetch(`${urlApi}/api/promotor/login/`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           "email": email,
           "password": pw
         })
-      })
+      });
 
       if (!response.ok) {
-        const resp = await response.json()
-        setErrorMsg(resp.msg)
-        throw new Error("Error on post fetch, status: ", response.status)
+        const resp = await response.json();
+        setErrorMsg(resp.msg);
+        throw new Error("Error on post fetch, status: ", response.status);
       }
-      const token = (await response.json()).access_token
-      localStorage.setItem("token", token)
-      dispatch({ type: "ADD_TOKEN_PROMOTOR", payload: token })
+      const token = (await response.json()).access_token;
+      localStorage.setItem("token", token);
+      dispatch({ type: "ADD_TOKEN_PROMOTOR", payload: token });
       setTimeout(() => {
         if (response.ok) {
           navigate('/promotor/private');
         }
       }, 1000);
-    }
+        }
 
-    catch (error) {
-      console.log("Error on fetch: ", error.message)
-    }
+        catch (error) {
+            devLog.error("Error on fetch: ", error.message);
+        }
   }
 
   async function signUpPromotor(e) {
@@ -55,7 +56,7 @@ export const PromotorSignUp = () => {
       const response = await fetch(`${urlApi}/api/promotor/sign-in`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           "email": email,
@@ -65,27 +66,27 @@ export const PromotorSignUp = () => {
           "phone": phone,
           "web_page": webPage
         })
-      })
+      });
       if (!response.ok) {
-        throw new Error("Error on post fetch, status: ", response.status)
+        throw new Error("Error on post fetch, status: ", response.status);
       }
-      loginUser(e)
+      loginUser(e);
       /*setTimeout(() => {
          if (response.ok) {
           navigate('/promotor/private');
         }
       }, 1000); */
-    }
-    catch (error) {
-      console.log("Error on fetch: ", error.message)
-    }
+        }
+        catch (error) {
+            devLog.error("Error on fetch: ", error.message);
+        }
   }
 
   useEffect(() => {
     if (localStorage.getItem("promotorAuth") === "true") {
-      dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: localStorage.getItem("promotorAuth") })
+      dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: localStorage.getItem("promotorAuth") });
     }
-  }, [])
+  }, []);
 
   return (
 
@@ -330,4 +331,4 @@ export const PromotorSignUp = () => {
     </div>
 );
 
-}
+};

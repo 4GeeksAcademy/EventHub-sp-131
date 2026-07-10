@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 export const GroupCategoryList = () => {
 	const [relations, setRelations] = useState([]);
@@ -12,7 +13,7 @@ export const GroupCategoryList = () => {
 			.then((data) => {
 				setRelations(data);
 			})
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	const deleteRelation = (id) => {
@@ -23,7 +24,7 @@ export const GroupCategoryList = () => {
 			.then(() => {
 				getRelations();
 			})
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	useEffect(() => {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 export const SavedEventDetail = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -8,13 +9,13 @@ export const SavedEventDetail = () => {
     const { store } = useGlobalReducer();
 
     const [saved_event, setSavedEvent] = useState(null);
-    console.log(saved_event);
+    devLog.log(saved_event);
     
-    const [userData, setUserData] = useState()
-    console.log("userData ",userData);
+    const [userData, setUserData] = useState();
+    devLog.log("userData ",userData);
     
-    const [eventData, setGroupData] = useState()
-    console.log("GroupData", eventData);
+    const [eventData, setGroupData] = useState();
+    devLog.log("GroupData", eventData);
 
 
 
@@ -22,13 +23,13 @@ export const SavedEventDetail = () => {
         try {
             const response = await fetch(`${backendUrl}/api/saved_event/${theId}`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
-            setSavedEvent(data)
-            return response
+            });
+            const data = await response.json();
+            setSavedEvent(data);
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -36,31 +37,31 @@ export const SavedEventDetail = () => {
         try {
             const response = await fetch(`${backendUrl}/api/${str}/${theId}`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
+            });
+            const data = await response.json();
             if (str === "users") {
-                setUserData(data)
+                setUserData(data);
             }
             if (str === "events") {
-                setGroupData(data)
+                setGroupData(data);
             }
-            return response
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
     useEffect(() => {
-        getSavedEventById(theId)
-    }, [])
+        getSavedEventById(theId);
+    }, []);
 
     useEffect(() => {
         if (saved_event) {
-            getDataById(saved_event.user_id, "users")
-            getDataById(saved_event.event_id, "events")
+            getDataById(saved_event.user_id, "users");
+            getDataById(saved_event.event_id, "events");
         }
-    }, [saved_event])
+    }, [saved_event]);
 
     if (!store.adminAuth) {
     return <Navigate to="/admin/login" />;

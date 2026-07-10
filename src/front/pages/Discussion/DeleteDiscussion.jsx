@@ -1,11 +1,12 @@
 import { Link, useNavigate, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
+import devLog from "../../utils/devLogger";
 
 export const DeleteDiscussion = () => {
 
-    const urlAPI = import.meta.env.VITE_BACKEND_URL
-    const { theId } = useParams()
-    const navigate = useNavigate()
+    const urlAPI = import.meta.env.VITE_BACKEND_URL;
+    const { theId } = useParams();
+    const navigate = useNavigate();
     const { store } = useGlobalReducer();
 
     async function deleteDiscussion(id) {
@@ -13,14 +14,14 @@ export const DeleteDiscussion = () => {
             const response = await fetch(`${urlAPI}/api/discussion/${id}`, {
                 "method": "DELETE",
                 "Content-Type": "application/json"
-            })
+            });
             if (!response.ok) {
-                throw new Error("Error on post fetch, status: ", response.status)
+                throw new Error("Error on post fetch, status: ", response.status);
             }
-            navigate("/discussion")
+            navigate("/discussion");
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -39,4 +40,4 @@ export const DeleteDiscussion = () => {
             </div>
         </div>
     );
-}
+};

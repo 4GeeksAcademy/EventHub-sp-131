@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import PropTypes from "prop-types";
 
 export const PromotorCategoryForm = ({
     promotors,
@@ -120,4 +121,14 @@ export const PromotorCategoryForm = ({
             </div>
         </div>
     );
+};
+
+PromotorCategoryForm.propTypes = {
+    promotors: PropTypes.array.isRequired,
+    categories: PropTypes.array.isRequired,
+    relations: PropTypes.array,
+    formData: PropTypes.object.isRequired,
+    handleChange: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+    submitText: PropTypes.string
 };

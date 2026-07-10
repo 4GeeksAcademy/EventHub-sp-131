@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const EventCard = ({ event }) => {
   return (
     <div className="card home-visual-card">
@@ -17,3 +19,12 @@ const EventCard = ({ event }) => {
 };
 
 export default EventCard;
+
+EventCard.propTypes = {
+  event: PropTypes.shape({
+    media: PropTypes.string,
+    name: PropTypes.string,
+    location: PropTypes.string,
+    date_event: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)])
+  }).isRequired
+};

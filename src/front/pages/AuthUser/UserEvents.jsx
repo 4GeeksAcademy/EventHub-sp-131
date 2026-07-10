@@ -4,30 +4,31 @@ import { Map } from "../../components/Map";
 import { artisticFilter } from "@cloudinary/url-gen/actions/effect";
 import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../utils/devLogger";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
-const geoApiKey = import.meta.env.VITE_GEOCODING_API_KEY
+const geoApiKey = import.meta.env.VITE_GEOCODING_API_KEY;
 
 export const UserEvents = () => {
     const { store, dispatch } = useGlobalReducer();
     const [events, setEvents] = useState([]);
-    const [filteredEvents, setFilteredEvents] = useState([])
+    const [filteredEvents, setFilteredEvents] = useState([]);
     const [message, setMessage] = useState("");
-    const [categories, setCategories] = useState(null)
-    const [categoryFilter, setCategoryFilter] = useState(null)
-    const [dateFilter, setDateFilter] = useState("")
-    const [distanceFilter, setDistanceFiler] = useState(10)
-    const [artistFilter, setArtistFilter] = useState("")
+    const [categories, setCategories] = useState(null);
+    const [categoryFilter, setCategoryFilter] = useState(null);
+    const [dateFilter, setDateFilter] = useState("");
+    const [distanceFilter, setDistanceFiler] = useState(10);
+    const [artistFilter, setArtistFilter] = useState("");
     const navigate = useNavigate();
-    const [selectedEvent, setSelectedEvent] = useState(null)
+    const [selectedEvent, setSelectedEvent] = useState(null);
     const [userLocation, setUserLocation] = useState(null);
     const [infoWindowEvent, setInfoWindowEvent] = useState(null);
-    console.log("userloc ", userLocation);
+    devLog.log("userloc ", userLocation);
 
     const [searchLocation, setSearchLocation] = useState(null);
-    const [defZoom, setDefZoom] = useState(15)
+    const [defZoom, setDefZoom] = useState(15);
     const [mapCenter, setMapCenter] = useState({ lat: 40.4168, lng: -3.7038 });
-    console.log(mapCenter);
+    devLog.log(mapCenter);
 
     const [markerPosition, setMarkerPosition] = useState({ lat: 40.4168, lng: -3.7038 });
 
@@ -62,7 +63,7 @@ export const UserEvents = () => {
 
     useEffect(() => {
         getEvents();
-        getCategories()
+        getCategories();
     }, []);
 
     useEffect(() => {
@@ -86,7 +87,7 @@ export const UserEvents = () => {
             const data = await resp.json();
             setCategories(data);
         } catch (err) {
-            console.error("Error cargando categorías:", err);
+            devLog.error("Error cargando categorías:", err);
         }
     }
 
@@ -115,7 +116,7 @@ export const UserEvents = () => {
     }
 
     useEffect(() => {
-        let filtered = [...events]
+        let filtered = [...events];
 
         const locationToUse = searchLocation || userLocation;
 
@@ -130,13 +131,13 @@ export const UserEvents = () => {
                 return { ...event, distance };
             })
                 .filter(event => event.distance <= distanceFilter)
-                .sort((a, b) => a.distance - b.distance)
+                .sort((a, b) => a.distance - b.distance);
         }
 
         if (categoryFilter) {
             filtered = filtered.filter(event => event.categories.some((cat) => {
-                return cat.name === categoryFilter
-            }))
+                return cat.name === categoryFilter;
+            }));
         }
 
         if (artistFilter) {
@@ -145,31 +146,31 @@ export const UserEvents = () => {
             );
         }
 
-        if (dateFilter) {
+                if (dateFilter) {
             filtered = filtered.filter(event => {
-                console.log(!event.date_event);
-                console.log(!dateFilter);
+                devLog.log(!event.date_event);
+                devLog.log(!dateFilter);
 
-                if (!event.date_event || !dateFilter) return false
-                console.log("entra");
+                if (!event.date_event || !dateFilter) return false;
+                devLog.log("entra");
 
-                const eventDate = new Date(event.date_event)
-                const formattedEventDate = eventDate.toISOString().split('T')[0]
-                console.log(formattedEventDate);
+                const eventDate = new Date(event.date_event);
+                const formattedEventDate = eventDate.toISOString().split('T')[0];
+                devLog.log(formattedEventDate);
 
-                return formattedEventDate === dateFilter
+                return formattedEventDate === dateFilter;
             }
-            )
+            );
         }
-        setFilteredEvents(filtered)
-    }, [userLocation, events, distanceFilter, categoryFilter, artistFilter, dateFilter, searchLocation])
+        setFilteredEvents(filtered);
+    }, [userLocation, events, distanceFilter, categoryFilter, artistFilter, dateFilter, searchLocation]);
 
     useEffect(() => {
-        setSearchLocation(mapCenter)
-    }, [mapCenter])
+        setSearchLocation(mapCenter);
+    }, [mapCenter]);
 
     async function geoloc(lat, lng) {
-        console.log("lat ", lat, " long ", lng);
+        devLog.log("lat ", lat, " long ", lng);
         try {
             const resp = await fetch(
                 `https://geocode.googleapis.com/v4/geocode/location/${lat},${lng}?key=${geoApiKey}`
@@ -179,7 +180,7 @@ export const UserEvents = () => {
                 setUserLocation({ "address": data.results[0].formattedAddress, lat: lat, lng: lng });
             }
         } catch (err) {
-            console.error("Error obteniendo dirección:", err);
+            devLog.error("Error obteniendo dirección:", err);
         }
     }
 
@@ -304,7 +305,7 @@ export const UserEvents = () => {
                                                 <div className="d-flex justify-content-between">
                                                     <h5 className="card-title fw-bold text-white">{event.name}</h5>
                                                     <div className="d-flex gap-2">
-                                                        <i class="fa-regular fa-bookmark" onClick={(e) => { e.stopPropagation(); handleSave(event.id); }} style={{ cursor: "pointer"}}></i>
+                                                        <i className="fa-regular fa-bookmark" onClick={(e) => { e.stopPropagation(); handleSave(event.id); }} style={{ cursor: "pointer"}}></i>
                                                     </div>
                                                 </div>
 

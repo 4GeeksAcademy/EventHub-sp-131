@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -15,7 +16,7 @@ export const CreateEventPromotor = () => {
 
   const [promotores, setPromotores] = useState([]);
   const [eventos, setEventos] = useState([]);
-  console.log(eventos)
+  devLog.log(eventos);
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -36,7 +37,7 @@ export const CreateEventPromotor = () => {
         setPromotores(promData);
         setEventos(eventData);
       } catch (error) {
-        console.error("Error cargando datos:", error);
+        devLog.error("Error cargando datos:", error);
       }
     };
 
@@ -61,10 +62,10 @@ export const CreateEventPromotor = () => {
       if (response.ok) {
         navigate("/event-promotor");
       } else {
-        console.error("Error al crear event-promotor");
+        devLog.error("Error al crear event-promotor");
       }
     } catch (error) {
-      console.error("Error en la petición:", error);
+      devLog.error("Error en la petición:", error);
     }
   };
 

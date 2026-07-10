@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 export const FriendDetail = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -9,12 +10,12 @@ export const FriendDetail = () => {
 
     const [friend, setFriend] = useState(null);
     const [message, setMessage] = useState("");
-    console.log("Esto es friend", friend);
-    const [userData, setUserData] = useState()
-    console.log("UserData", userData);
+    devLog.log("Esto es friend", friend);
+    const [userData, setUserData] = useState();
+    devLog.log("UserData", userData);
 
-    const [friendData, setFriendData] = useState()
-    console.log("FriendData", friendData);
+    const [friendData, setFriendData] = useState();
+    devLog.log("FriendData", friendData);
 
 
 
@@ -22,13 +23,13 @@ export const FriendDetail = () => {
         try {
             const response = await fetch(`${backendUrl}/api/friend/${theId}`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
-            setFriend(data)
-            return response
+            });
+            const data = await response.json();
+            setFriend(data);
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -36,32 +37,32 @@ export const FriendDetail = () => {
         try {
             const response = await fetch(`${backendUrl}/api/users/${theId}`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
+            });
+            const data = await response.json();
 
             if (str === "user") {
-                setUserData(data.results)
+                setUserData(data.results);
             }
             if (str === "friend") {
-                setFriendData(data.results)
+                setFriendData(data.results);
             }
-            return response
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
     useEffect(() => {
-        getFriendById(theId)
-    }, [])
+        getFriendById(theId);
+    }, []);
 
     useEffect(() => {
         if (friend) {
-            getUserById(friend.user_id, "user")
-            getUserById(friend.friend_id, "friend")
+            getUserById(friend.user_id, "user");
+            getUserById(friend.friend_id, "friend");
         }
-    }, [friend])
+    }, [friend]);
 
     if (!store.adminAuth) {
     return <Navigate to="/admin/login" />;

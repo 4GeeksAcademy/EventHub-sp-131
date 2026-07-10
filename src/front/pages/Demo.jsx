@@ -4,7 +4,7 @@ import useGlobalReducer from "../hooks/useGlobalReducer";  // Custom hook for ac
 
 export const Demo = () => {
   // Access the global state and dispatch function using the useGlobalReducer hook.
-  const { store, dispatch } = useGlobalReducer()
+  const { store, dispatch } = useGlobalReducer();
 
   return (
     <div className="container">

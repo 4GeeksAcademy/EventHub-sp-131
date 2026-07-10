@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 import { PromotorCategoryForm } from "../../components/PromotorCategoryForm";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL || "/api";
@@ -41,7 +42,7 @@ export const EditPromotorCategory = () => {
                     setMessage(singleRelation.msg);
                 }
             })
-            .catch((error) => console.log(error));
+            .catch((error) => devLog.error(error));
     };
 
     useEffect(() => {
@@ -81,7 +82,7 @@ export const EditPromotorCategory = () => {
                 navigate("/promotor-category/list");
             })
             .catch((error) => {
-                console.log(error);
+                devLog.error(error);
                 setMessage("Hubo un error actualizando la relación.");
             });
     };

@@ -1,34 +1,35 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
+import devLog from "../../utils/devLogger";
 
 export const EditGroup = () => {
 
-    const urlAPI = import.meta.env.VITE_BACKEND_URL
-    const { store, dispatch } = useGlobalReducer()
-    const [name, setName] = useState("")
-    const [media, setMedia] = useState("")
-    const [location, setLocation] = useState("")
-    const [description, setDescription] = useState("")
-    const { theId } = useParams()
+    const urlAPI = import.meta.env.VITE_BACKEND_URL;
+    const { store, dispatch } = useGlobalReducer();
+    const [name, setName] = useState("");
+    const [media, setMedia] = useState("");
+    const [location, setLocation] = useState("");
+    const [description, setDescription] = useState("");
+    const { theId } = useParams();
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     async function getGroup(id) {
         try {
             const response = await fetch(`${urlAPI}/api/group/${id}`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
-            setName(data.name)
-            setMedia(data.media)
-            setLocation(data.location)
-            setDescription(data.description)
+            });
+            const data = await response.json();
+            setName(data.name);
+            setMedia(data.media);
+            setLocation(data.location);
+            setDescription(data.description);
 
-            return response
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -36,25 +37,25 @@ export const EditGroup = () => {
         e.preventDefault();
         switch (e.target.id) {
             case 'name':
-                setName(e.target.value)
+                setName(e.target.value);
                 break;
             case 'location':
-                setLocation(e.target.value)
+                setLocation(e.target.value);
                 break;
             case 'media':
-                setMedia(e.target.value)
+                setMedia(e.target.value);
                 break;
             case 'description':
-                setDescription(e.target.value)
+                setDescription(e.target.value);
                 break;
             default:
                 break;
         }
-    }
+    };
 
     useEffect(() => {
-        getGroup(theId)
-    }, [])
+        getGroup(theId);
+    }, []);
 
     if (!store.adminAuth) {
         return <Navigate to="/admin/login" />;
@@ -65,7 +66,7 @@ export const EditGroup = () => {
             const response = await fetch(`${urlAPI}/api/group/${id}`, {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     "name": name,
@@ -73,14 +74,14 @@ export const EditGroup = () => {
                     "location": location,
                     "description": description
                 })
-            })
+            });
             if (!response.ok) {
-                throw new Error("Error on post fetch, status: ", response.status)
+                throw new Error("Error on post fetch, status: ", response.status);
             }
-            navigate("/group")
+            navigate("/group");
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
     return (
@@ -106,4 +107,4 @@ export const EditGroup = () => {
             </div>
         </div>
     );
-}
+};

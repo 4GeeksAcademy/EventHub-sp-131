@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export const ChatSidebar = ({ chats, selectedChat, onSelectChat, role = "user" }) => {
   return (
@@ -58,4 +59,11 @@ export const ChatSidebar = ({ chats, selectedChat, onSelectChat, role = "user" }
       </div>
     </div>
   );
+};
+
+ChatSidebar.propTypes = {
+  chats: PropTypes.array.isRequired,
+  selectedChat: PropTypes.object,
+  onSelectChat: PropTypes.func.isRequired,
+  role: PropTypes.string
 };

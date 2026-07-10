@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams, Link, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -15,7 +16,7 @@ export const DeleteComment = () => {
         fetch(`${backendUrl}/api/comments/${id}`)
             .then(res => res.json())
             .then(data => setComment(data))
-            .catch(err => console.log(err));
+            .catch(err => devLog.error(err));
     }, [id]);
 
     const handleDelete = async () => {
@@ -31,7 +32,7 @@ export const DeleteComment = () => {
             }
 
         } catch (error) {
-            console.error(error);
+            devLog.error(error);
         }
     };
 

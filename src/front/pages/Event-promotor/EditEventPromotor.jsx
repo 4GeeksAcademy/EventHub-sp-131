@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -63,7 +64,7 @@ export const EditEventPromotor = () => {
     if (resp.ok) {
       navigate("/event-promotor");
     } else {
-      console.error("Error actualizando");
+      devLog.error("Error actualizando");
     }
   };
 

@@ -1,52 +1,54 @@
-import { useRef, useEffect, useState } from "react"
-import { AdvancedMarker, APIProvider, Map as GoogleMap, InfoWindow, Pin } from '@vis.gl/react-google-maps'
+import { useRef, useEffect, useState } from "react";
+import { AdvancedMarker, APIProvider, Map as GoogleMap, InfoWindow, Pin } from '@vis.gl/react-google-maps';
+import PropTypes from "prop-types";
+import devLog from "../utils/devLogger";
 
-const geoApiKey = import.meta.env.VITE_GEOCODING_API_KEY
+const geoApiKey = import.meta.env.VITE_GEOCODING_API_KEY;
 
 export const Map = ({ location, mapCenter, setMapCenter, markerPosition, setMarkerPosition, onLocationChange, defZoom, setDefZoom, setLatitude, setLongitude, events, selectedEvent, setSelectedEvent, height, infoWindowEvent, setInfoWindowEvent }) => {
-    const autocompleteRef = useRef(null)
+    const autocompleteRef = useRef(null);
 
 
     useEffect(() => {
-        const autocomplete = autocompleteRef.current
-        if (!autocomplete) return
+        const autocomplete = autocompleteRef.current;
+        if (!autocomplete) return;
 
         const handlePlaceSelect = async (event) => {
-            const place = event.placePrediction?.toPlace() ?? event.place ?? null
-            if (!place) return
+            const place = event.placePrediction?.toPlace() ?? event.place ?? null;
+            if (!place) return;
             try {
-                await place.fetchFields({ fields: ["location", "formattedAddress", "displayName", "viewport"] })
+                await place.fetchFields({ fields: ["location", "formattedAddress", "displayName", "viewport"] });
                 if (place.location) {
-                    const newCenter = { lat: place.location.lat(), lng: place.location.lng() }
-                    setMarkerPosition(newCenter)
-                    setMapCenter(newCenter)
+                    const newCenter = { lat: place.location.lat(), lng: place.location.lng() };
+                    setMarkerPosition(newCenter);
+                    setMapCenter(newCenter);
                     if (setLatitude) {
-                        setLatitude(newCenter.lat)
+                        setLatitude(newCenter.lat);
                     }
                     if (setLongitude) {
-                        setLongitude(newCenter.lng)
+                        setLongitude(newCenter.lng);
                     }
-                    onLocationChange(newCenter.lat, newCenter.lng)
-                    setDefZoom(13)
+                    onLocationChange(newCenter.lat, newCenter.lng);
+                    setDefZoom(13);
                 }
             } catch (err) {
-                console.error("Error obteniendo datos del place:", err)
+                devLog.error("Error obteniendo datos del place:", err);
             }
-        }
+        };
 
-        autocomplete.addEventListener("gmp-select", handlePlaceSelect)
-        return () => autocomplete.removeEventListener("gmp-select", handlePlaceSelect)
-    }, [])
+        autocomplete.addEventListener("gmp-select", handlePlaceSelect);
+        return () => autocomplete.removeEventListener("gmp-select", handlePlaceSelect);
+    }, []);
 
     const handleDragEnd = (e) => {
-        const newCenter = { lat: e.latLng.lat(), lng: e.latLng.lng() }
-        setMarkerPosition(newCenter)
-        setMapCenter(newCenter)
-        onLocationChange(newCenter.lat, newCenter.lng)
-        setDefZoom(13)
-        if (setLatitude) setLatitude(newPosition.lat);
-        if (setLongitude) setLongitude(newPosition.lng);
-    }
+        const newCenter = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+        setMarkerPosition(newCenter);
+        setMapCenter(newCenter);
+        onLocationChange(newCenter.lat, newCenter.lng);
+        setDefZoom(13);
+        if (setLatitude) setLatitude(newCenter.lat);
+        if (setLongitude) setLongitude(newCenter.lng);
+    };
 
     return (
         <APIProvider apiKey={geoApiKey} version='beta' libraries={['marker', 'places']}>
@@ -66,7 +68,7 @@ export const Map = ({ location, mapCenter, setMapCenter, markerPosition, setMark
                 center={mapCenter}
                 onCameraChanged={(ev) => {
                     setMapCenter(ev.detail.center),
-                        setDefZoom(ev.detail.zoom)
+                        setDefZoom(ev.detail.zoom);
                 }}
             >
                 <AdvancedMarker
@@ -91,7 +93,7 @@ export const Map = ({ location, mapCenter, setMapCenter, markerPosition, setMark
                                         {event.name}
                                     </div>
                                 </AdvancedMarker>
-                            )
+                            );
                         })}
                     {infoWindowEvent && (
                         <InfoWindow position={{ lat: infoWindowEvent.latitude, lng: infoWindowEvent.longitude }}
@@ -107,5 +109,24 @@ export const Map = ({ location, mapCenter, setMapCenter, markerPosition, setMark
                 </div>
             </GoogleMap>
         </APIProvider>
-    )
-}
+    );
+};
+
+Map.propTypes = {
+    location: PropTypes.string,
+    mapCenter: PropTypes.object,
+    setMapCenter: PropTypes.func,
+    markerPosition: PropTypes.object,
+    setMarkerPosition: PropTypes.func,
+    onLocationChange: PropTypes.func,
+    defZoom: PropTypes.number,
+    setDefZoom: PropTypes.func,
+    setLatitude: PropTypes.func,
+    setLongitude: PropTypes.func,
+    events: PropTypes.array,
+    selectedEvent: PropTypes.object,
+    setSelectedEvent: PropTypes.func,
+    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    infoWindowEvent: PropTypes.object,
+    setInfoWindowEvent: PropTypes.func
+};

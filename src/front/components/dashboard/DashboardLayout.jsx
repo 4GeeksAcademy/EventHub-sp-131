@@ -1,5 +1,6 @@
 import { NavLink, useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
+import PropTypes from "prop-types";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 export const DashboardLayout = ({
@@ -8,7 +9,7 @@ export const DashboardLayout = ({
   subtitle,
   userName,
   children,
-  onCreateEvent,
+  onCreateEvent
 }) => {
   const navigate = useNavigate();
   const [openMenu, setOpenMenu] = useState(false);
@@ -23,13 +24,13 @@ export const DashboardLayout = ({
       { label: "Asistencias", to: "/user/assisting-events", icon: "bi bi-check-circle" },
       { label: "Grupos", to: "/user/groups", icon: "bi bi-people" },
       { label: "Perfiles", to: "/user/profiles", icon: "bi bi-person-lines-fill" },
-      { label: "MatchEvents", to: "/discover", icon: "bi bi-fire" },
+      { label: "MatchEvents", to: "/discover", icon: "bi bi-fire" }
     ],
 
     promotor: [
       { label: "Dashboard", to: "/promotor/private", icon: "bi bi-grid" },
       { label: "Mis eventos", to: "/promotor/events", icon: "bi bi-calendar-event" },
-      { label: "Crear evento", icon: "bi bi-plus-circle", to: "/promotor/create-event" },
+      { label: "Crear evento", icon: "bi bi-plus-circle", to: "/promotor/create-event" }
     ],
 
     admin: [
@@ -38,8 +39,8 @@ export const DashboardLayout = ({
       { label: "Promotores", to: "/promotor", icon: "bi bi-megaphone" },
       { label: "Usuarios", to: "/user", icon: "bi bi-people" },
       { label: "Eventos", to: "/events", icon: "bi bi-calendar-event" },
-      { label: "Categorías", to: "/category-panel", icon: "bi bi-tags" },
-    ],
+      { label: "Categorías", to: "/category-panel", icon: "bi bi-tags" }
+    ]
   };
 
   const logout = () => {
@@ -54,8 +55,8 @@ export const DashboardLayout = ({
       localStorage.removeItem("token");
       localStorage.removeItem("tokenPromotor");
       localStorage.removeItem("promotorAuth");
-      dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: false })
-      dispatch({ type: "ADD_TOKEN_PROMOTOR", payload: null })
+      dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: false });
+      dispatch({ type: "ADD_TOKEN_PROMOTOR", payload: null });
       navigate("/promotor/login");
       return;
     }
@@ -236,4 +237,13 @@ export const DashboardLayout = ({
       </main>
     </div>
   );
+};
+
+DashboardLayout.propTypes = {
+  role: PropTypes.string.isRequired,
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+  userName: PropTypes.string,
+  children: PropTypes.node,
+  onCreateEvent: PropTypes.func
 };

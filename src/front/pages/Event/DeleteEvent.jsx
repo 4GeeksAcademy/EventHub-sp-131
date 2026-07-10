@@ -1,5 +1,6 @@
 import { useParams, useNavigate, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -22,7 +23,7 @@ export const DeleteEvent = () => {
             navigate("/events");
 
         } catch (error) {
-            console.error(error);
+            devLog.error(error);
             alert("No se pudo eliminar el evento");
         }
     };

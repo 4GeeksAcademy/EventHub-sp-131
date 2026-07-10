@@ -1,11 +1,12 @@
 import { Link, useNavigate, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
+import devLog from "../../utils/devLogger";
 
 export const DeleteEventCategory = () => {
 
-    const urlAPI = import.meta.env.VITE_BACKEND_URL
-    const { theId } = useParams()
-    const navigate = useNavigate()
+    const urlAPI = import.meta.env.VITE_BACKEND_URL;
+    const { theId } = useParams();
+    const navigate = useNavigate();
     const { store } = useGlobalReducer();
 
     async function deleteEventCategroy(id) {
@@ -13,14 +14,14 @@ export const DeleteEventCategory = () => {
             const response = await fetch(`${urlAPI}/api/event_category/${id}`, {
                 "method": "DELETE",
                 "Content-Type": "application/json"
-            })
+            });
             if (!response.ok) {
-                throw new Error("Error on post fetch, status: ", response.status)
+                throw new Error("Error on post fetch, status: ", response.status);
             }
-            navigate("/event-category")
+            navigate("/event-category");
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -39,4 +40,4 @@ export const DeleteEventCategory = () => {
             </div>
         </div>
     );
-}
+};

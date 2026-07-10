@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import devLog from "../utils/devLogger";
 
 export const SearchByImage = () => {
     const [image, setImage] = useState(null);
@@ -47,8 +48,8 @@ export const SearchByImage = () => {
         setKeywords([]);
 
         uploadToCloudinary()
-            .then((cloudinaryData) => {
-                console.log("Respuesta Cloudinary:", cloudinaryData);
+                .then((cloudinaryData) => {
+                devLog.log("Respuesta Cloudinary:", cloudinaryData);
 
                 const imageUrl = cloudinaryData.secure_url || cloudinaryData.url;
 
@@ -75,7 +76,7 @@ export const SearchByImage = () => {
                 }))
             )
             .then(({ ok, status, data }) => {
-                console.log("Respuesta backend:", data);
+                devLog.log("Respuesta backend:", data);
 
                 if (!ok) {
                     setMessage(data.message || `Error del backend: ${status}`);
@@ -100,7 +101,7 @@ export const SearchByImage = () => {
                 setMessage(`Se encontraron ${data.events.length} eventos relacionados.`);
             })
             .catch((error) => {
-                console.error("Error buscando eventos por imagen:", error);
+                devLog.error("Error buscando eventos por imagen:", error);
                 setMessage("Hubo un error buscando eventos por imagen.");
             })
             .finally(() => {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 
 const CreateEventAssist = () => {
@@ -14,17 +15,17 @@ const CreateEventAssist = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("users state:", users);
-    console.log("events state:", events);
+    devLog.log("users state:", users);
+    devLog.log("events state:", events);
     fetch(`${backendUrl}/api/users`)
       .then((res) => res.json())
       .then((data) => setUsers(data))
-      .catch(console.error);
+      .catch((err) => devLog.error(err));
 
     fetch(`${backendUrl}/api/events`)
       .then((res) => res.json())
       .then((data) => setEvents(data))
-      .catch(console.error);
+      .catch((err) => devLog.error(err));
   }, []);
 
   const handleSubmit = async (e) => {
@@ -38,12 +39,12 @@ const CreateEventAssist = () => {
     const res = await fetch(`${backendUrl}/api/event-assists`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         user_id: parseInt(userId),
-        event_id: parseInt(eventId),
-      }),
+        event_id: parseInt(eventId)
+      })
     });
 
     if (res.ok) {

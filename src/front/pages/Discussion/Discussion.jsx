@@ -1,29 +1,30 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
+import devLog from "../../utils/devLogger";
 import { Link, Navigate } from "react-router-dom";
 
 export const Discussion = () => {
-    const { store, dispatch } = useGlobalReducer()
-    const urlAPI = import.meta.env.VITE_BACKEND_URL
-    const [allDiscussions, setAllDiscussions] = useState([])
+    const { store, dispatch } = useGlobalReducer();
+    const urlAPI = import.meta.env.VITE_BACKEND_URL;
+    const [allDiscussions, setAllDiscussions] = useState([]);
 
     async function getDiscussions() {
         try {
             const response = await fetch(`${urlAPI}/api/discussion`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
-            setAllDiscussions(data)
-            return response
+            });
+            const data = await response.json();
+            setAllDiscussions(data);
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
     useEffect(() => {
-        getDiscussions()
-    }, [])
+        getDiscussions();
+    }, []);
 
     if (!store.adminAuth) {
     return <Navigate to="/admin/login" />;
@@ -69,7 +70,7 @@ export const Discussion = () => {
                                             </div>
                                         </div>
                                     </div>
-                                )
+                                );
                             })
                             : null
                     }

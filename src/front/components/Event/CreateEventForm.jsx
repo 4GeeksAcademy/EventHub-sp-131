@@ -1,5 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import devLog from "../../utils/devLogger";
 import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage } from "@cloudinary/react";
 import { Resize } from "@cloudinary/url-gen/actions";
@@ -18,7 +20,7 @@ export const CreateEventForm = (props) => {
 
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
-    const [lat, setLatitude] = useState("")
+    const [lat, setLatitude] = useState("");
     const [lng, setLongitude]= useState("");
     const [description, setDescription] = useState("");
     const [date_event, setDateEvent] = useState("");
@@ -26,7 +28,7 @@ export const CreateEventForm = (props) => {
     const [publicId, setPublicId] = useState("");
     const [imgFromApi, setImgFromApi] = useState("");
     const [mapCenter, setMapCenter] = useState({ lat: 39.9514572, lng: -4.3435391 });
-    const [defZoom, setDefZoom] = useState(3)
+    const [defZoom, setDefZoom] = useState(3);
     const [markerPosition, setMarkerPosition] = useState(null);
 
     const {
@@ -36,7 +38,7 @@ export const CreateEventForm = (props) => {
         isDropdownOpen,
         containerRef,
         selectArtist,
-        selectedArtist,
+        selectedArtist
     } = useArtistSearch();
 
     const urlApi = props.type === undefined
@@ -47,7 +49,7 @@ export const CreateEventForm = (props) => {
     const uwConfig = useMemo(() => ({ cloudName, uploadPreset }), []);
 
     async function geoloc(lat, lng) {
-        console.log("lat ",lat," long ",lng);
+        devLog.log("lat ",lat," long ",lng);
         try {
             const resp = await fetch(
                 `https://geocode.googleapis.com/v4/geocode/location/${lat},${lng}?key=${geoApiKey}`
@@ -57,7 +59,7 @@ export const CreateEventForm = (props) => {
                 setLocation(data.results[0].formattedAddress);
             }
         } catch (err) {
-            console.error("Error obteniendo dirección:", err);
+            devLog.error("Error obteniendo dirección:", err);
         }
     }
 
@@ -76,7 +78,6 @@ export const CreateEventForm = (props) => {
         }
     }, [selectedArtist]);
 
-    //console.log(selectedArtist);
     
 
     const handleInputChange = (e) => {
@@ -88,21 +89,21 @@ export const CreateEventForm = (props) => {
     const handleSuggestionSelected = (item) => {
         selectArtist(item);
         setName(item?.name);
-        setLocation(`${item?._embedded.venues[0].name} ${item?._embedded.venues[0].address.line1} ${item?._embedded.venues[0].city.name} ${item?._embedded.venues[0].country.name}`)
-        setLatitude(parseFloat(item?._embedded.venues[0].location.latitude) ?? mapCenter.lat)
-        setLongitude(parseFloat(item?._embedded.venues[0].location.longitude)?? mapCenter.lng)
-        setDateEvent(item?.dates.start.dateTime.slice(0, 16))
-        setImgFromApi(item?.images[0].url)
-        setDescription(item?.description)
-        setMapCenter({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) })
-        setMarkerPosition({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) })
-        setDefZoom(13)
+        setLocation(`${item?._embedded.venues[0].name} ${item?._embedded.venues[0].address.line1} ${item?._embedded.venues[0].city.name} ${item?._embedded.venues[0].country.name}`);
+        setLatitude(parseFloat(item?._embedded.venues[0].location.latitude) ?? mapCenter.lat);
+        setLongitude(parseFloat(item?._embedded.venues[0].location.longitude)?? mapCenter.lng);
+        setDateEvent(item?.dates.start.dateTime.slice(0, 16));
+        setImgFromApi(item?.images[0].url);
+        setDescription(item?.description);
+        setMapCenter({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) });
+        setMarkerPosition({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) });
+        setDefZoom(13);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        const finalImg = publicId ? publicId : imgFromApi
+        const finalImg = publicId ? publicId : imgFromApi;
         const resp = await fetch(`${backendUrl}/api/${urlApi}`, {
             method: "POST",
             headers: {
@@ -126,13 +127,13 @@ export const CreateEventForm = (props) => {
             setLocation("");
             setDateEvent("");
             setImgFromApi("");
-            setDescription("")
+            setDescription("");
             setMapCenter({ lat: 39.9514572, lng: -4.3435391 });
             setMarkerPosition(null);
             setDefZoom(3);
             props.onSuccess?.();
         } else {
-            console.error("Error creando evento");
+            devLog.error("Error creando evento");
         }
     };
 
@@ -256,4 +257,10 @@ export const CreateEventForm = (props) => {
             </div>
         </div>
     );
+};
+
+CreateEventForm.propTypes = {
+    type: PropTypes.string,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    onSuccess: PropTypes.func
 };

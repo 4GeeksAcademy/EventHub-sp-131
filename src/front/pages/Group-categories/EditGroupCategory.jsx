@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 export const EditGroupCategory = () => {
 	const { id } = useParams();
@@ -20,7 +21,7 @@ export const EditGroupCategory = () => {
 			.then((data) => {
 				setGroups(data);
 			})
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	const getCategories = () => {
@@ -29,7 +30,7 @@ export const EditGroupCategory = () => {
 			.then((data) => {
 				setCategories(data);
 			})
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	const getOneRelation = () => {
@@ -41,7 +42,7 @@ export const EditGroupCategory = () => {
 					category_id: String(data.category_id)
 				});
 			})
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	useEffect(() => {
@@ -74,7 +75,7 @@ export const EditGroupCategory = () => {
 			.then(() => {
 				navigate("/group-category");
 			})
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	if (!store.adminAuth) {

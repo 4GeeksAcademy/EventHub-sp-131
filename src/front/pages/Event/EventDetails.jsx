@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, Navigate } from "react-router-dom";
 import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -38,7 +39,7 @@ export const EventDetails = () => {
                     setPromotorId(data.relations[0].promotor_id);
                 }
             })
-            .catch(() => console.log("No se pudo cargar el promotor del evento"));
+            .catch(() => devLog.log("No se pudo cargar el promotor del evento"));
     };
 
     const handleComment = (e) => {

@@ -1,57 +1,58 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react";
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
+import devLog from "../../utils/devLogger";
 import { useNavigate, Navigate } from "react-router-dom";
 
 export const CreateFriend = () => {
 
-    const urlAPI = import.meta.env.VITE_BACKEND_URL
-    const [selectedIDUser, setSelectedIDUser] = useState("")
-    const [selectedIDFriend, setSelectedIDFriend] = useState("")
-    const [allFriends, setAllFriends] = useState([])
+    const urlAPI = import.meta.env.VITE_BACKEND_URL;
+    const [selectedIDUser, setSelectedIDUser] = useState("");
+    const [selectedIDFriend, setSelectedIDFriend] = useState("");
+    const [allFriends, setAllFriends] = useState([]);
     const [message, setMessage] = useState("");
     const { store } = useGlobalReducer();
     
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
 
     const handleInput = e => {
         e.preventDefault();        
         switch (e.target.id) {
             case 'userId':
-                setSelectedIDUser(e.target.value)
+                setSelectedIDUser(e.target.value);
                 break;
             case 'friendId':
-                setSelectedIDFriend(e.target.value)
+                setSelectedIDFriend(e.target.value);
                 break;
             default:
                 break;
         }
-    }
+    };
 
     async function createFriend() {
         try {
             const response = await fetch(`${urlAPI}api/friend`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     "user_id": selectedIDUser,
-                    "friend_id": selectedIDFriend,
+                    "friend_id": selectedIDFriend
                 })
-            })
-            const data = await response.json()
+            });
+            const data = await response.json();
             if (!response.ok) {
-                setMessage(data)
-                throw new Error("Error on post fetch, status: ", response.status)
+                setMessage(data);
+                throw new Error("Error on post fetch, status: ", response.status);
             }
             if (response.ok) {
-                navigate("/friend")
+                navigate("/friend");
             }
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -59,19 +60,19 @@ export const CreateFriend = () => {
         try {
             const response = await fetch(`${urlAPI}api/users`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
-            setAllFriends(data)
-            return response
+            });
+            const data = await response.json();
+            setAllFriends(data);
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
     useEffect(() => {
-        getFriends()
-    }, [])
+        getFriends();
+    }, []);
 
     if (!store.adminAuth) {
     return <Navigate to="/admin/login" />;
@@ -90,7 +91,7 @@ export const CreateFriend = () => {
                 {allFriends.map((user) => {
                     return (
                         <option key={user.id} value={user.id} >{user.name}</option>
-                    )
+                    );
                 })}
             </select>
             <select className="form-select mb-3" aria-label="Friend id selector" id="friendId" onChange={handleInput}>
@@ -98,10 +99,10 @@ export const CreateFriend = () => {
                 {allFriends.map((user) => {
                     return (
                         <option key={user.id} value={user.id}>{user.name}</option>
-                    )
+                    );
                 })}
             </select>
             <button type="button" className="btn btn-primary" onClick={createFriend}>Create</button>
         </div>
     );
-}
+};

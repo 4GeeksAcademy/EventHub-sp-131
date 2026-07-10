@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -19,7 +20,7 @@ export const CreateComment = () => {
     fetch(`${backendUrl}/api/users`)
         .then(res => res.json())
         .then(data => setUsers(data))
-        .catch(err => console.log(err));
+        .catch(err => devLog.error(err));
     }, []);
 
 
@@ -28,7 +29,7 @@ export const CreateComment = () => {
     fetch(`${backendUrl}/api/events`)
         .then(res => res.json())
         .then(data => setEvents(data))
-        .catch(err => console.log(err));
+        .catch(err => devLog.error(err));
     }, []);
 
     // 🔹 submit
@@ -60,7 +61,7 @@ export const CreateComment = () => {
             }
 
         } catch (error) {
-            console.error(error);
+            devLog.error(error);
         }
     };
 

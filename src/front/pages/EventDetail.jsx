@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../components/dashboard/DashboardLayout";
 import { usePromotorAuth } from "../hooks/usePromotorAuth";
+import devLog from "../utils/devLogger";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -42,7 +43,7 @@ export const EventDetail = () => {
             const data = await resp.json();
             setEvent(data.event);
         } catch (err) {
-            console.error("Error cargando evento:", err);
+            devLog.error("Error cargando evento:", err);
         }
     }
 
@@ -52,7 +53,7 @@ export const EventDetail = () => {
             const data = await resp.json();
             setEventCat(data.eventCategories);
         } catch (err) {
-            console.error("Error cargando categorías:", err);
+            devLog.error("Error cargando categorías:", err);
         }
     }
 
@@ -65,7 +66,7 @@ export const EventDetail = () => {
             const filtered = data.filter(cat => !eventCat.some(item => item.name === cat.name));
             setCategories(filtered);
         } catch (err) {
-            console.error("Error cargando categorías globales:", err);
+            devLog.error("Error cargando categorías globales:", err);
         }
     }
 
@@ -75,7 +76,7 @@ export const EventDetail = () => {
             const data = await resp.json();
             setEventAssistants(data.relations);
         } catch (err) {
-            console.error("Error cargando asistentes:", err);
+            devLog.error("Error cargando asistentes:", err);
         }
     }
 
@@ -85,7 +86,7 @@ export const EventDetail = () => {
             const data = await resp.json();
             setComments(data.comments);
         } catch (err) {
-            console.error("Error cargando comentarios:", err);
+            devLog.error("Error cargando comentarios:", err);
         }
     }
 
@@ -99,7 +100,7 @@ export const EventDetail = () => {
                 body: JSON.stringify({ event_id: parseInt(id), category_id: addedCategory.id })
             });
         } catch (err) {
-            console.error("Error añadiendo categoría:", err);
+            devLog.error("Error añadiendo categoría:", err);
         }
         getEventCategoryById();
         getCategories();
@@ -112,7 +113,7 @@ export const EventDetail = () => {
                 headers: authHeader
             });
         } catch (err) {
-            console.error("Error eliminando categoría:", err);
+            devLog.error("Error eliminando categoría:", err);
         }
         getEventCategoryById();
         getCategories();

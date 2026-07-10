@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
+import devLog from "../utils/devLogger";
 
 const CloudinaryUploadWidget = ({ uwConfig, setPublicId }) => {
   const uploadWidgetRef = useRef(null);
@@ -12,7 +14,7 @@ const CloudinaryUploadWidget = ({ uwConfig, setPublicId }) => {
           uwConfig,
           (error, result) => {
             if (!error && result && result.event === 'success') {
-              console.log('Upload successful:', result.info);
+              devLog.log('Upload successful:', result.info);
               setPublicId(result.info.public_id);
             }
           }
@@ -51,3 +53,8 @@ const CloudinaryUploadWidget = ({ uwConfig, setPublicId }) => {
 };
 
 export default CloudinaryUploadWidget;
+
+CloudinaryUploadWidget.propTypes = {
+  uwConfig: PropTypes.object.isRequired,
+  setPublicId: PropTypes.func.isRequired
+};

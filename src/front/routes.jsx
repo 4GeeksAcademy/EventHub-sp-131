@@ -1,7 +1,7 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
-  Route,
+  Route
 } from "react-router-dom";
 import { Layout } from "./pages/Layout";
 import { Home } from "./pages/Home";
@@ -15,11 +15,11 @@ import { Admin } from "./pages/Admin/Admin";
 import { CreateAdmin } from "./pages/Admin/CreateAdmin";
 import { EditAdmin } from "./pages/Admin/EditAdmin";
 import { AdminDetails } from "./pages/Admin/AdminDetails";
-import { Promotor } from "./pages/Promotor/Promotor"
-import { PromotorDetail } from "./pages/Promotor/PromotorDetail"
-import { CreatePromotor } from "./pages/Promotor/CreatePromotor"
-import { EditPromotor } from "./pages/Promotor/EditPromotor"
-import { DeletePromotor } from "./pages/Promotor/DeletePromotor"
+import { Promotor } from "./pages/Promotor/Promotor";
+import { PromotorDetail } from "./pages/Promotor/PromotorDetail";
+import { CreatePromotor } from "./pages/Promotor/CreatePromotor";
+import { EditPromotor } from "./pages/Promotor/EditPromotor";
+import { DeletePromotor } from "./pages/Promotor/DeletePromotor";
 import { CategoryPanel } from "./pages/Categories/CategoryPanel";
 import { CategoriesList } from "./pages/Categories/CategoriesList";
 import { CategoryCreate } from "./pages/Categories/CategoryCreate";
@@ -30,16 +30,16 @@ import { CreateEvent } from "./pages/Event/CreateEvent";
 import { EditEvent } from "./pages/Event/EditEvent";
 import { DeleteEvent } from "./pages/Event/DeleteEvent";
 import { Group } from "./pages/Group/Group";
-import { CreateGroup } from "./pages/Group/CreateGroup"
-import { EditGroup } from "./pages/Group/EditGroup"
-import { DeleteGroup } from "./pages/Group/DeleteGroup"
-import { GroupDetail } from "./pages/Group/GroupDetail"
+import { CreateGroup } from "./pages/Group/CreateGroup";
+import { EditGroup } from "./pages/Group/EditGroup";
+import { DeleteGroup } from "./pages/Group/DeleteGroup";
+import { GroupDetail } from "./pages/Group/GroupDetail";
 import { Comments } from "./pages/Comments/Comments";
 import { CreateComment } from "./pages/Comments/CreateComment";
 import { EditComment } from "./pages/Comments/EditComment";
 import { DeleteComment } from "./pages/Comments/DeleteComment";
-import { Friend } from "./pages/Friend/Friend"
-import { FriendDetail } from "./pages/Friend/FriendDetail"
+import { Friend } from "./pages/Friend/Friend";
+import { FriendDetail } from "./pages/Friend/FriendDetail";
 import { CreateFriend } from "./pages/Friend/CreateFriend";
 import { DeleteFriend } from "./pages/Friend/DeleteFriend";
 import { CreatePromotorCategory } from "./pages/Promotor-categories/CreatePromotorCategory";
@@ -64,7 +64,7 @@ import { GroupEventList } from "./pages/Group-event/GroupEventList";
 import { CreateGroupEvent } from "./pages/Group-event/CreateGroupEvent";
 import { EditGroupEvent } from "./pages/Group-event/EditGroupEvent";
 import { EventCategory } from "./pages/EventCategory/EventCategory";
-import { EventCategoryDetail } from "./pages/EventCategory/EventCategoryDetails"
+import { EventCategoryDetail } from "./pages/EventCategory/EventCategoryDetails";
 import { DeleteEventCategory } from "./pages/EventCategory/DeleteEventCategory";
 import { CreateEventCategory } from "./pages/EventCategory/CreateEventCategory";
 import EventAssistUser from "./pages/EventAssist/EventAssistUser";
@@ -73,7 +73,7 @@ import DeleteEventAssist from "./pages/EventAssist/DeleteEventAssist";
 import { LoginUser } from "./pages/AuthUser/LoginUser";
 import { PrivateUser } from "./pages/AuthUser/PrivateUser";
 import { LoginPromotor } from "./pages/AuthPromotor/LoginPromotor";
-import { PromotorSignUp } from "./pages/AuthPromotor/SignUpPromotor.jsx"
+import { PromotorSignUp } from "./pages/AuthPromotor/SignUpPromotor.jsx";
 import { PrivatePromotor } from "./pages/AuthPromotor/PrivatePromotor";
 import { EventPromotor } from "./pages/Event-promotor/EventPromotor";
 import { CreateEventPromotor } from "./pages/Event-promotor/CreateEventPromotor";
@@ -95,7 +95,7 @@ import { ChatPromotor } from "./pages/ChatPromotor.jsx";
 import { SearchByImage } from "./pages/SearchByImage.jsx";
 import { AboutUs } from "./pages/AboutUs.jsx";
 import { Contact } from "./pages/Contact.jsx";
-import { PromotingAnEvent } from "./pages/PromotingAnEvent.jsx"
+import { PromotingAnEvent } from "./pages/PromotingAnEvent.jsx";
 import { Discover } from "./pages/SwipeEvent/Discover";
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
 import { PromotorEvents } from "./pages/AuthPromotor/PromotorEvents.jsx";

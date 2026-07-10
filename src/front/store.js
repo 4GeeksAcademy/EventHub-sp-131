@@ -6,7 +6,7 @@ export const initialStore = () => {
     userAuth: localStorage.getItem("userAuth") === "true",
     privateUser: null,
     tokenAdmin: localStorage.getItem("tokenAdmin") || "",
-    adminAuth: localStorage.getItem("adminAuth") === "true",
+    adminAuth: localStorage.getItem("adminAuth") === "true"
   };
 };
 
@@ -15,36 +15,36 @@ export default function storeReducer(store, action = {}) {
     case "ADD_TOKEN_PROMOTOR":
       return {
         ...store,
-        tokenPromotor: action.payload,
+        tokenPromotor: action.payload
       };
     case "ADD_LOGIN_STATUS_PROMOTOR":
       return {
         ...store,
-        promotorAuth: action.payload,
+        promotorAuth: action.payload
       };
     case "PROMOTOR_LOGOUT":
       return {
         ...store,
         tokenPromotor: "",
-        promotorAuth: false,
+        promotorAuth: false
       };
       
      case "ADD_TOKEN_USER":
       return {
         ...store,
-        tokenUser: action.payload,
+        tokenUser: action.payload
       };
 
     case "ADD_LOGIN_STATUS_USER":
       return {
         ...store,
-        userAuth: action.payload,
+        userAuth: action.payload
       };
 
     case "GET_PRIVATE_USER":
       return {
         ...store,
-        privateUser: action.payload,
+        privateUser: action.payload
       };
 
     case "USER_LOGOUT":
@@ -52,26 +52,26 @@ export default function storeReducer(store, action = {}) {
         ...store,
         tokenUser: "",
         userAuth: false,
-        privateUser: null,
+        privateUser: null
       };
 
     case "ADD_TOKEN_ADMIN":
       return {
         ...store,
-        tokenAdmin: action.payload,
+        tokenAdmin: action.payload
       };
 
     case "ADD_LOGIN_STATUS_ADMIN":
       return {
         ...store,
-        adminAuth: action.payload,
+        adminAuth: action.payload
       };
 
     case "ADMIN_LOGOUT":
       return {
         ...store,
         tokenAdmin: "",
-        adminAuth: false,
+        adminAuth: false
       };
 
     default:

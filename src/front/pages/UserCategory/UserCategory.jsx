@@ -1,29 +1,30 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
+import devLog from "../../utils/devLogger";
 import { Link, Navigate } from "react-router-dom";
 
 export const UserCategory = () => {
-    const { store, dispatch } = useGlobalReducer()
-    const urlAPI = import.meta.env.VITE_BACKEND_URL
-    const [allUserCategories, setAllUserCategories] = useState([])
+    const { store, dispatch } = useGlobalReducer();
+    const urlAPI = import.meta.env.VITE_BACKEND_URL;
+    const [allUserCategories, setAllUserCategories] = useState([]);
 
     async function getUserCategories() {
         try {
             const response = await fetch(`${urlAPI}/api/user_category`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
-            setAllUserCategories(data)
-            return response
+            });
+            const data = await response.json();
+            setAllUserCategories(data);
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
     useEffect(() => {
-        getUserCategories()
-    }, [])
+        getUserCategories();
+    }, []);
 
     if (!store.adminAuth) {
         return <Navigate to="/admin/login" />;
@@ -69,7 +70,7 @@ export const UserCategory = () => {
                                             </div>
                                         </div>
                                     </div>
-                                )
+                                );
                             })
                             : null
                     }

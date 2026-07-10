@@ -1,12 +1,13 @@
 import { Link, useNavigate, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 
 export const DeleteFriend = () => {
 
-    const urlAPI = import.meta.env.VITE_BACKEND_URL
-    const { theId } = useParams()
-    const navigate = useNavigate()
+    const urlAPI = import.meta.env.VITE_BACKEND_URL;
+    const { theId } = useParams();
+    const navigate = useNavigate();
     const { store } = useGlobalReducer();
     
 
@@ -15,14 +16,14 @@ export const DeleteFriend = () => {
             const response = await fetch(`${urlAPI}/api/friend/${id}`, {
                 "method": "DELETE",
                 "Content-Type": "application/json"
-            })
+            });
             if (!response.ok) {
-                throw new Error("Error on post fetch, status: ", response.status)
+                throw new Error("Error on post fetch, status: ", response.status);
             }
-            navigate("/friend")
+            navigate("/friend");
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -41,4 +42,4 @@ export const DeleteFriend = () => {
             </div>
         </div>
     );
-}
+};

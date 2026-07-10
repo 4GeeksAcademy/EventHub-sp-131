@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import { CreateEventForm } from "../../components/Event/CreateEventForm";
+import devLog from "../../utils/devLogger";
 
 
 export const CreateEvent = () => {
@@ -36,7 +37,7 @@ export const CreateEvent = () => {
         if (resp.ok) {
             navigate("/events");
         } else {
-            console.error("Error creando evento");
+            devLog.error("Error creando evento");
         }
     };
 

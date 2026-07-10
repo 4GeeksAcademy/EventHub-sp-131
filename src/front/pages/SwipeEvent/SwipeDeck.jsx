@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import TinderCard from "react-tinder-card";
 import EventCard from "./EventCard";
+import devLog from "../../utils/devLogger";
 
 const  SwipeDeck = () => {
   const [events, setEvents] = useState([]);
@@ -10,14 +11,14 @@ const  SwipeDeck = () => {
 
   useEffect(() => {
     if (!token) {
-      console.error("No token found");
+      devLog.error("No token found");
       return;
     }
 
     fetch(`${backendUrl}/api/events`, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then(async (res) => {
         if (!res.ok) {
@@ -27,7 +28,7 @@ const  SwipeDeck = () => {
         return res.json();
       })
       .then((data) => setEvents(data))
-      .catch((err) => console.error("Error fetching events:", err));
+      .catch((err) => devLog.error("Error fetching events:", err));
   }, [backendUrl, token]);
 
   // 👉 swipe handler
@@ -39,17 +40,17 @@ const  SwipeDeck = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
           event_id: event.id,
-          liked: liked,
-        }),
+          liked: liked
+        })
       });
 
-      if (!res.ok) {
+        if (!res.ok) {
         const errorText = await res.text();
-        console.error("Error backend:", errorText);
+        devLog.error("Error backend:", errorText);
         return;
       }
 
@@ -57,7 +58,7 @@ const  SwipeDeck = () => {
       setEvents((prev) => prev.filter((e) => e.id !== event.id));
 
     } catch (error) {
-      console.error("Error swipe:", error);
+      devLog.error("Error swipe:", error);
     }
   };
 

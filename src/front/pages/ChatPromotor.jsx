@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { io } from "socket.io-client";
+import devLog from "../utils/devLogger";
 import { ChatSidebar } from "../components/chat/ChatSidebar";
 import { ChatWindow } from "../components/chat/ChatWindow";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 const socket = io(API_URL, {
-  transports: ["websocket", "polling"],
+  transports: ["websocket", "polling"]
 });
 
 export const ChatPromotor = () => {
@@ -41,8 +42,8 @@ export const ChatPromotor = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
+        Authorization: "Bearer " + localStorage.getItem("token")
+      }
     })
       .then((res) => {
         if (!res.ok) throw new Error("No se pudieron cargar los chats");
@@ -50,7 +51,7 @@ export const ChatPromotor = () => {
       })
       .then((data) => setChats(Array.isArray(data) ? data : []))
       .catch((error) => {
-        console.log("Error cargando chats:", error);
+        devLog.error("Error cargando chats:", error);
         setChats([]);
       });
   };
@@ -62,8 +63,8 @@ export const ChatPromotor = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
+        Authorization: "Bearer " + localStorage.getItem("token")
+      }
     })
       .then((res) => {
         if (!res.ok) throw new Error("No se pudieron cargar los mensajes");
@@ -71,7 +72,7 @@ export const ChatPromotor = () => {
       })
       .then((data) => setMessages(Array.isArray(data) ? data : []))
       .catch((error) => {
-        console.log("Error cargando mensajes:", error);
+        devLog.error("Error cargando mensajes:", error);
         setMessages([]);
       });
   };
@@ -79,14 +80,14 @@ export const ChatPromotor = () => {
   const handleSelectChat = (chat) => {
     if (selectedChatRef.current) {
       socket.emit("leave_chat", {
-        chat_id: selectedChatRef.current.id,
+        chat_id: selectedChatRef.current.id
       });
     }
 
     setSelectedChat(chat);
 
     socket.emit("join_chat", {
-      chat_id: chat.id,
+      chat_id: chat.id
     });
 
     getMessages(chat.id);
@@ -104,11 +105,11 @@ export const ChatPromotor = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("token"),
+        Authorization: "Bearer " + localStorage.getItem("token")
       },
       body: JSON.stringify({
-        text: messageText,
-      }),
+        text: messageText
+      })
     })
       .then((res) => {
         if (!res.ok) throw new Error("No se pudo enviar el mensaje");
@@ -117,7 +118,7 @@ export const ChatPromotor = () => {
       .then((data) => {
          const messageWithChatId = {
           ...data,
-      chat_id: selectedChat.id,
+      chat_id: selectedChat.id
       };
 
       setMessages((prevMessages) => {
@@ -128,13 +129,13 @@ export const ChatPromotor = () => {
 
       socket.emit("send_message", {
         chat_id: selectedChat.id,
-        message: messageWithChatId,
+        message: messageWithChatId
       });
 
       getChats();
     })
       .catch((error) => {
-        console.log("Error enviando mensaje:", error);
+        devLog.error("Error enviando mensaje:", error);
         alert("No se pudo enviar el mensaje");
       });
   };

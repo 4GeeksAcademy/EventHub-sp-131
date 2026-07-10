@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import devLog from "../../utils/devLogger";
 
 export const PromotorDetail = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -12,13 +13,13 @@ export const PromotorDetail = () => {
         try {
             const response = await fetch(`${backendUrl}/api/promotor/${theId}`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
-            setPromot(data)
-            return response
+            });
+            const data = await response.json();
+            setPromot(data);
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -28,8 +29,8 @@ export const PromotorDetail = () => {
                 navigate("/admin/login");
             }
         
-        getPromotorById(theId)
-    }, [])
+        getPromotorById(theId);
+    }, []);
 
     return (
         <div className="container py-5">

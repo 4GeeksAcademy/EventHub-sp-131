@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
@@ -15,7 +16,7 @@ export const PromotorCategoryList = () => {
             .then((data) => {
                 setRelations(Array.isArray(data) ? data : []);
             })
-            .catch((error) => console.log(error));
+            .catch((error) => devLog.error(error));
     };
 
     useEffect(() => {
@@ -37,7 +38,7 @@ export const PromotorCategoryList = () => {
                 loadRelations();
             })
             .catch((error) => {
-                console.log(error);
+                devLog.error(error);
                 setMessage("Hubo un error eliminando la relación.");
             });
     };

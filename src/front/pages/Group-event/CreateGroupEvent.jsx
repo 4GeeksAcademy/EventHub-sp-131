@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 export const CreateGroupEvent = () => {
 	const navigate = useNavigate();
@@ -18,7 +19,7 @@ export const CreateGroupEvent = () => {
 			.then((resp) => resp.json())
 			.then((data) => setGroups(Array.isArray(data) ? data : []))
 			.catch((error) => {
-				console.log(error);
+				devLog.error(error);
 				setGroups([]);
 			});
 	};
@@ -28,7 +29,7 @@ export const CreateGroupEvent = () => {
 			.then((resp) => resp.json())
 			.then((data) => setEvents(Array.isArray(data) ? data : []))
 			.catch((error) => {
-				console.log(error);
+				devLog.error(error);
 				setEvents([]);
 			});
 	};
@@ -53,7 +54,7 @@ export const CreateGroupEvent = () => {
 		})
 			.then((resp) => resp.json())
 			.then(() => navigate("/group-event"))
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	if (!store.adminAuth) {

@@ -1,5 +1,7 @@
 import { useEffect, useState, forwardRef, useImperativeHandle, useCallback } from "react";
-import { Link, } from "react-router-dom";
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import devLog from "../../utils/devLogger";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -11,7 +13,7 @@ export const EventList = forwardRef((props, ref) => {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${localStorage.getItem("token")}`
-            },
+            }
         });
 
         if (!resp.ok) {
@@ -36,7 +38,7 @@ export const EventList = forwardRef((props, ref) => {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${localStorage.getItem("token")}`
-                },
+                }
             });
 
             if (!response.ok) {
@@ -46,7 +48,7 @@ export const EventList = forwardRef((props, ref) => {
 
 
         } catch (error) {
-            console.error(error);
+            devLog.error(error);
             alert("No se pudo eliminar el evento");
         }
         const modalElement = document.getElementById(`deleteEvent-${idToDelete}`);
@@ -122,7 +124,7 @@ export const EventList = forwardRef((props, ref) => {
                                                 </div>
                                                 <div className="modal-footer">
                                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                    <button className="btn btn-danger" onClick={() => { handleDelete(e.id) }}>Sí, eliminar</button>
+                                                    <button className="btn btn-danger" onClick={() => { handleDelete(e.id); }}>Sí, eliminar</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -136,3 +138,10 @@ export const EventList = forwardRef((props, ref) => {
         </div>
     );
 });
+
+EventList.propTypes = {
+    type: PropTypes.string.isRequired,
+    profile: PropTypes.object.isRequired
+};
+
+EventList.displayName = 'EventList';

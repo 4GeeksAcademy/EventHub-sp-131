@@ -1,45 +1,46 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react";
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
+import devLog from "../../utils/devLogger";
 import { useNavigate } from "react-router-dom";
 
 export const CreatePromotor = () => {
 
-    const urlAPI = import.meta.env.VITE_BACKEND_URL
-    const [name, setName] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [location, setLocation] = useState("")
-    const [phone, setPhone] = useState("")
-    const [webPage, setWebPage] = useState("")
+    const urlAPI = import.meta.env.VITE_BACKEND_URL;
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [location, setLocation] = useState("");
+    const [phone, setPhone] = useState("");
+    const [webPage, setWebPage] = useState("");
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
 
     const handleInput = e => {
         e.preventDefault();
         switch (e.target.id) {
             case 'name':
-                setName(e.target.value)
+                setName(e.target.value);
                 break;
             case 'email':
-                setEmail(e.target.value)
+                setEmail(e.target.value);
                 break;
             case 'phone':
-                setPhone(e.target.value)
+                setPhone(e.target.value);
                 break;
             case 'location':
-                setLocation(e.target.value)
+                setLocation(e.target.value);
                 break;
             case 'password':
-                setPassword(e.target.value)
+                setPassword(e.target.value);
                 break;
             case 'webPage':
-                setWebPage(e.target.value)
+                setWebPage(e.target.value);
                 break;
             default:
                 break;
         }
-    }
+    };
 
     async function createPromotor() {
         try {
@@ -47,7 +48,7 @@ export const CreatePromotor = () => {
             const response = await fetch(`${urlAPI}/api/promotor`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     "name": name,
@@ -57,14 +58,14 @@ export const CreatePromotor = () => {
                     "location": location,
                     "web_page": webPage
                 })
-            })
+            });
             if (!response.ok) {
-                throw new Error("Error on post fetch, status: ", response.status)
+                throw new Error("Error on post fetch, status: ", response.status);
             }
-            navigate("/promotor")
+            navigate("/promotor");
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -72,7 +73,7 @@ export const CreatePromotor = () => {
             if (!localStorage.getItem("adminAuth")) {
                 navigate("/admin/login");
             }
-        }, [])
+        }, []);
 
     return (
         <div style={{ "width": "60%", "margin": "auto", marginTop: "4rem" }}>
@@ -98,4 +99,4 @@ export const CreatePromotor = () => {
             <button type="button" className="btn btn-primary" onClick={createPromotor}>Create</button>
         </div>
     );
-}
+};

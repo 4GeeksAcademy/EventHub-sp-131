@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import useGlobalReducer from "./useGlobalReducer";
+import devLog from "../utils/devLogger";
 
 const urlApi = import.meta.env.VITE_BACKEND_URL;
 
@@ -24,8 +25,8 @@ export function usePromotorAuth() {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
+                    Authorization: `Bearer ${token}`
+                }
             });
 
             if (!response.ok) {
@@ -41,7 +42,7 @@ export function usePromotorAuth() {
             setProfileInfo(data.promotor);
             setIsAuthorized(true);
         } catch (error) {
-            console.error("Error on auth:", error.message);
+            devLog.error("Error on auth:", error.message);
             dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: false });
             setIsAuthorized(false);
         } finally {

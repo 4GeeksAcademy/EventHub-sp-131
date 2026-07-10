@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 
 export const AddGroupCategory = () => {
@@ -21,7 +22,7 @@ export const AddGroupCategory = () => {
 			.then((data) => {
 				setGroups(data);
 			})
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	const getCategories = () => {
@@ -30,7 +31,7 @@ export const AddGroupCategory = () => {
 			.then((data) => {
 				setCategories(data);
 			})
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	useEffect(() => {
@@ -62,7 +63,7 @@ export const AddGroupCategory = () => {
 			.then(() => {
 				navigate("/group-category");
 			})
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	if (!store.adminAuth) {

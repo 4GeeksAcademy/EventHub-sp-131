@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 export const DiscussionDetail = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -8,9 +9,9 @@ export const DiscussionDetail = () => {
     const { store } = useGlobalReducer();
 
     const [discussion, setDiscussion] = useState(null);
-    const [userData, setUserData] = useState()
-    const [groupData, setGroupData] = useState()
-    console.log("GroupData", groupData);
+    const [userData, setUserData] = useState();
+    const [groupData, setGroupData] = useState();
+    devLog.log("GroupData", groupData);
 
 
 
@@ -18,13 +19,13 @@ export const DiscussionDetail = () => {
         try {
             const response = await fetch(`${backendUrl}/api/discussion/${theId}`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
-            setDiscussion(data)
-            return response
+            });
+            const data = await response.json();
+            setDiscussion(data);
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -32,32 +33,32 @@ export const DiscussionDetail = () => {
         try {
             const response = await fetch(`${backendUrl}/api/${str}/${theId}`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
+            });
+            const data = await response.json();
 
             if (str === "users") {
-                setUserData(data.results)
+                setUserData(data.results);
             }
             if (str === "group") {
-                setGroupData(data)
+                setGroupData(data);
             }
-            return response
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
     useEffect(() => {
-        getDiscussionById(theId)
-    }, [])
+        getDiscussionById(theId);
+    }, []);
 
     useEffect(() => {
         if (discussion) {
-            getDataById(discussion.user_id, "users")
-            getDataById(discussion.group_id, "group")
+            getDataById(discussion.user_id, "users");
+            getDataById(discussion.group_id, "group");
         }
-    }, [discussion])
+    }, [discussion]);
 
     if (!store.adminAuth) {
     return <Navigate to="/admin/login" />;

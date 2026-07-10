@@ -1,37 +1,38 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import devLog from "../../utils/devLogger";
 
 export const EditPromotor = () => {
 
-    const urlAPI = import.meta.env.VITE_BACKEND_URL
-    const [name, setName] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [location, setLocation] = useState("")
-    const [phone, setPhone] = useState("")
-    const [webPage, setWebPage] = useState("")
+    const urlAPI = import.meta.env.VITE_BACKEND_URL;
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [location, setLocation] = useState("");
+    const [phone, setPhone] = useState("");
+    const [webPage, setWebPage] = useState("");
 
-    const { theId } = useParams("")
+    const { theId } = useParams("");
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     async function getPromotor(id) {
         try {
             const response = await fetch(`${urlAPI}/api/promotor/${id}`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
-            setName(data.name ?? "")
-            setEmail(data.email ?? "")
-            setPassword(data.password ?? "")
-            setLocation(data.location ?? "")
-            setPhone(data.phone ?? "")
-            setWebPage(data.web_page ?? "")
+            });
+            const data = await response.json();
+            setName(data.name ?? "");
+            setEmail(data.email ?? "");
+            setPassword(data.password ?? "");
+            setLocation(data.location ?? "");
+            setPhone(data.phone ?? "");
+            setWebPage(data.web_page ?? "");
 
-            return response
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -39,27 +40,27 @@ export const EditPromotor = () => {
         e.preventDefault();
         switch (e.target.id) {
             case 'name':
-                setName(e.target.value)
+                setName(e.target.value);
                 break;
             case 'email':
-                setEmail(e.target.value)
+                setEmail(e.target.value);
                 break;
             case 'phone':
-                setPhone(e.target.value)
+                setPhone(e.target.value);
                 break;
             case 'location':
-                setLocation(e.target.value)
+                setLocation(e.target.value);
                 break;
             case 'password':
-                setPassword(e.target.value)
+                setPassword(e.target.value);
                 break;
             case 'webPage':
-                setWebPage(e.target.value)
+                setWebPage(e.target.value);
                 break;
             default:
                 break;
         }
-    }
+    };
 
     useEffect(() => {
         
@@ -67,15 +68,15 @@ export const EditPromotor = () => {
                 navigate("/admin/login");
             }
        
-        getPromotor(theId)
-    }, [])
+        getPromotor(theId);
+    }, []);
 
     async function editPromotor(id) {
         try {
             const response = await fetch(`${urlAPI}/api/promotor/${id}`, {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     "name": name,
@@ -85,14 +86,14 @@ export const EditPromotor = () => {
                     "location": location,
                     "web_page": webPage
                 })
-            })
+            });
             if (!response.ok) {
-                throw new Error("Error on post fetch, status: ", response.status)
+                throw new Error("Error on post fetch, status: ", response.status);
             }
-            navigate("/promotor")
+            navigate("/promotor");
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
     return (
@@ -125,4 +126,4 @@ export const EditPromotor = () => {
             </div>
         </div>
     );
-}
+};

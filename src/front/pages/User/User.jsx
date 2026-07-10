@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 
 export const User = () => {
@@ -14,8 +15,8 @@ export const User = () => {
             const resp = await fetch(`${backendUrl}/api/users`);
             const data = await resp.json();
             setUsers(data || []);
-        } catch {
-            console.log("Error cargando usuarios");
+        } catch (err) {
+            devLog.error("Error cargando usuarios", err);
         }
     };
 
@@ -70,4 +71,4 @@ export const User = () => {
     );
 };
 
-export default User
+export default User;

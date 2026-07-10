@@ -1,45 +1,46 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
+import devLog from "../../utils/devLogger";
 import { useNavigate, Navigate } from "react-router-dom";
 
 export const CreateGroup = () => {
 
-    const urlAPI = import.meta.env.VITE_BACKEND_URL
-    const [name, setName] = useState("")
-    const [media, setMedia] = useState("")
-    const [location, setLocation] = useState("")
-    const [description, setDescription] = useState("")
+    const urlAPI = import.meta.env.VITE_BACKEND_URL;
+    const [name, setName] = useState("");
+    const [media, setMedia] = useState("");
+    const [location, setLocation] = useState("");
+    const [description, setDescription] = useState("");
     const { store } = useGlobalReducer();
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
 
     const handleInput = e => {
         e.preventDefault();
         switch (e.target.id) {
             case 'name':
-                setName(e.target.value)
+                setName(e.target.value);
                 break;
             case 'location':
-                setLocation(e.target.value)
+                setLocation(e.target.value);
                 break;
             case 'media':
-                setMedia(e.target.value)
+                setMedia(e.target.value);
                 break;
             case 'description':
-                setDescription(e.target.value)
+                setDescription(e.target.value);
                 break;
             default:
                 break;
         }
-    }
+    };
 
     async function createGroup() {
         try {
             const response = await fetch(`${urlAPI}/api/group`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     "name": name,
@@ -47,14 +48,14 @@ export const CreateGroup = () => {
                     "location": location,
                     "description": description
                 })
-            })
+            });
             if (!response.ok) {
-                throw new Error("Error on post fetch, status: ", response.status)
+                throw new Error("Error on post fetch, status: ", response.status);
             }
-            navigate("/group")
+            navigate("/group");
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -79,4 +80,4 @@ export const CreateGroup = () => {
             <button type="button" className="btn btn-primary" onClick={createGroup}>Create</button>
         </div>
     );
-}
+};

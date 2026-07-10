@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
 
 export const PrivateUser = () => {
@@ -19,8 +20,8 @@ export const PrivateUser = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
+        Authorization: "Bearer " + token
+      }
     })
       .then((resp) => resp.json().then((data) => ({ ok: resp.ok, data })))
       .then(({ ok, data }) => {
@@ -39,7 +40,7 @@ export const PrivateUser = () => {
         dispatch({ type: "GET_PRIVATE_USER", payload: data.user || data });
       })
       .catch((error) => {
-        console.log("ERROR PRIVATE USER:", error);
+        devLog.error("ERROR PRIVATE USER:", error);
       });
   }, []);
 

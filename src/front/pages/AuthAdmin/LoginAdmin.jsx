@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import devLog from "../../utils/devLogger";
 
 export const LoginAdmin = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ export const LoginAdmin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-    console.log("URL BACKEND:", urlApi);
+    devLog.log("URL BACKEND:", urlApi);
 
     try {
       const res = await fetch(`${urlApi}api/admin/login`, {
@@ -25,13 +26,13 @@ export const LoginAdmin = () => {
       });
 
       const data = await res.json();
-      console.log("RESPUESTA LOGIN:", data);
+      devLog.log("RESPUESTA LOGIN:", data);
       if (!res.ok) {
         throw new Error(data.msg || "Error en login");
       }
 
       localStorage.setItem("tokenAdmin", data.token);
-      console.log("TOKEN GUARDADO:", data.token);
+      devLog.log("TOKEN GUARDADO:", data.token);
       localStorage.setItem("adminAuth", "true");
 
       navigate("/admin/private");

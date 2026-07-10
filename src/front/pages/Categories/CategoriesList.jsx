@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 export const CategoriesList = () => {
 	const [categories, setCategories] = useState([]);
@@ -10,7 +11,7 @@ export const CategoriesList = () => {
 		fetch(import.meta.env.VITE_BACKEND_URL + "/api/categories")
 			.then((resp) => resp.json())
 			.then((data) => setCategories(data))
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	const deleteCategory = (id) => {
@@ -19,7 +20,7 @@ export const CategoriesList = () => {
 		})
 			.then((resp) => resp.json())
 			.then(() => loadCategories())
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	useEffect(() => {

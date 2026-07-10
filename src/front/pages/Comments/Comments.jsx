@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -12,7 +13,7 @@ export const Comments = () => {
         fetch(`${backendUrl}/api/comments`)
             .then(res => res.json())
             .then(data => setComments(data))
-            .catch(err => console.error(err));
+            .catch(err => devLog.error(err));
     }, []);
 
     if (!store.adminAuth) {

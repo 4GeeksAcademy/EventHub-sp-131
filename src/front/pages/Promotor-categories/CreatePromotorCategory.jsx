@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 import { PromotorCategoryForm } from "../../components/PromotorCategoryForm";
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || "/api"
+const API_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 export const CreatePromotorCategory = () => {
     const [promotors, setPromotors] = useState([]);
@@ -28,7 +29,7 @@ export const CreatePromotorCategory = () => {
                 setCategories(Array.isArray(categoriesData) ? categoriesData : []);
                 setRelations(Array.isArray(relationsData) ? relationsData : []);
             })
-            .catch((error) => console.log(error));
+            .catch((error) => devLog.error(error));
     };
 
     useEffect(() => {
@@ -73,7 +74,7 @@ export const CreatePromotorCategory = () => {
                 loadData();
             })
             .catch((error) => {
-                console.log(error);
+                devLog.error(error);
                 setMessage("Hubo un error creando la relación.");
             });
     };

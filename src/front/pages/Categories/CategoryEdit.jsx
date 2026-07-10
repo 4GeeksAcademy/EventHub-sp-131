@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 export const CategoryEdit = () => {
 	const { id } = useParams();
@@ -12,7 +13,7 @@ export const CategoryEdit = () => {
 		fetch(import.meta.env.VITE_BACKEND_URL + "/api/categories/" + id)
 			.then((resp) => resp.json())
 			.then((data) => setName(data.name))
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	}, [id]);
 
 	const handleSubmit = (e) => {
@@ -27,7 +28,7 @@ export const CategoryEdit = () => {
 		})
 			.then((resp) => resp.json())
 			.then(() => navigate("/categories"))
-			.catch((error) => console.log(error));
+			.catch((error) => devLog.error(error));
 	};
 
 	if (!store.adminAuth) {

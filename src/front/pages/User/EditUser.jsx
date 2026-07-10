@@ -65,4 +65,4 @@ export const EditUser = () => {
         </div>
     );
 };
-export default EditUser
+export default EditUser;

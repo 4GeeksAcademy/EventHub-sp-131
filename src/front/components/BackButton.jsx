@@ -1,12 +1,13 @@
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export const BackButton = ({ fallback = "/" , where}) => {
     const navigate = useNavigate();
 
     const goBack = () => {
         if (where) {
-            navigate(where)
-            return
+            navigate(where);
+            return;
         }
         if (localStorage.getItem("tokenUser")) {
             navigate("/user/private");
@@ -31,4 +32,9 @@ export const BackButton = ({ fallback = "/" , where}) => {
             ← Volver
         </button>
     );
+};
+
+BackButton.propTypes = {
+    fallback: PropTypes.string,
+    where: PropTypes.string
 };

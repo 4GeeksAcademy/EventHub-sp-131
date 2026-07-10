@@ -1,4 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
+import PropTypes from "prop-types";
+import devLog from "../../utils/devLogger";
 import { useNavigate, useParams, useLocation, Navigate } from "react-router-dom";
 import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage } from "@cloudinary/react";
@@ -15,9 +17,9 @@ const cloudName = 'dxv6ytl25';
 const uploadPreset = 'ml_default';
 
 export const EditEvent = () => {
-    const { store, dispatch } = useGlobalReducer()
+    const { store, dispatch } = useGlobalReducer();
     const fromData = useLocation()?.state?.from?.split("/");
-    const props = {
+    const routeProps = {
         type: fromData ? fromData[1] : undefined,
         id: fromData ? fromData[2] : undefined
     };
@@ -28,7 +30,7 @@ export const EditEvent = () => {
 
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
-    const [latitude, setLatitude] = useState("")
+    const [latitude, setLatitude] = useState("");
     const [longitude, setLongitude] = useState("");
     const [description, setDescription] = useState("");
     const [date_event, setDateEvent] = useState("");
@@ -37,13 +39,13 @@ export const EditEvent = () => {
     const [media, setMedia] = useState("");
     const [mapCenter, setMapCenter] = useState({ lat: 39.9514572, lng: -4.3435391 });
     const [markerPosition, setMarkerPosition] = useState(null);
-    const [defZoom, setDefZoom] = useState(3)
+    const [defZoom, setDefZoom] = useState(3);
     const [eventCat, setEventCat] = useState(null);
     const [categories, setCategories] = useState(null);
     const [imgFromApi, setImgFromApi] = useState("");
-    const authApiA = import.meta.env.VITE_BACKEND_URL
-    console.log(latitude);
-    console.log(longitude);
+    const authApiA = import.meta.env.VITE_BACKEND_URL;
+    devLog.log(latitude);
+    devLog.log(longitude);
 
     const {
         artistQuery,
@@ -52,22 +54,22 @@ export const EditEvent = () => {
         isDropdownOpen,
         containerRef,
         selectArtist,
-        selectedArtist,
+        selectedArtist
     } = useArtistSearch();
 
-    const urlApi = props.type === undefined
+    const urlApi = routeProps.type === undefined
         ? "events"
-        : `${props.type}/${props.id}/events`;
+        : `${routeProps.type}/${routeProps.id}/events`;
 
     const cld = useMemo(() => new Cloudinary({ cloud: { cloudName, uploadPreset } }), []);
     const uwConfig = useMemo(() => ({ cloudName, uploadPreset }), []);
 
     useEffect(() => {
         if (localStorage.getItem("promotorAuth") == true) {
-            setIsLogged(localStorage.getItem("promotorAuth"))
+            setIsLogged(localStorage.getItem("promotorAuth"));
         }
         authUser(localStorage.getItem("token"));
-    }, [])
+    }, []);
 
     async function authUser(token) {
         try {
@@ -76,19 +78,19 @@ export const EditEvent = () => {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
-                },
-            })
+                }
+            });
 
             if (!response.ok) {
-                navigate('/promotor/login')
+                navigate('/promotor/login');
             }
-            dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: response.ok })
-            localStorage.setItem("promotorAuth", response.ok)
-            const data = await response.json()
+            dispatch({ type: "ADD_LOGIN_STATUS_PROMOTOR", payload: response.ok });
+            localStorage.setItem("promotorAuth", response.ok);
+            const data = await response.json();
         }
 
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -101,7 +103,7 @@ export const EditEvent = () => {
             setLongitude("");
             setDateEvent("");
             setImgFromApi("");
-            setDescription("")
+            setDescription("");
             setMapCenter({ lat: 39.9514572, lng: -4.3435391 });
             setMarkerPosition(null);
             setDefZoom(3);
@@ -117,15 +119,15 @@ export const EditEvent = () => {
     const handleSuggestionSelected = (item) => {
         selectArtist(item);
         setName(item?.name);
-        setLocation(`${item?._embedded.venues[0].name} ${item?._embedded.venues[0].address.line1} ${item?._embedded.venues[0].city.name} ${item?._embedded.venues[0].country.name}`)
-        setDateEvent(item?.dates.start.dateTime.slice(0, 16))
-        setLatitude(parseFloat(item?._embedded.venues[0].location.latitude))
-        setLongitude(parseFloat(item?._embedded.venues[0].location.longitude))
-        setImgFromApi(item?.images[0].url)
-        setDescription(item?.description)
-        setMapCenter({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) })
-        setMarkerPosition({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) })
-        setDefZoom(13)
+        setLocation(`${item?._embedded.venues[0].name} ${item?._embedded.venues[0].address.line1} ${item?._embedded.venues[0].city.name} ${item?._embedded.venues[0].country.name}`);
+        setDateEvent(item?.dates.start.dateTime.slice(0, 16));
+        setLatitude(parseFloat(item?._embedded.venues[0].location.latitude));
+        setLongitude(parseFloat(item?._embedded.venues[0].location.longitude));
+        setImgFromApi(item?.images[0].url);
+        setDescription(item?.description);
+        setMapCenter({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) });
+        setMarkerPosition({ lat: parseFloat(item?._embedded.venues[0].location.latitude), lng: parseFloat(item?._embedded.venues[0].location.longitude) });
+        setDefZoom(13);
     };
 
     useEffect(() => {
@@ -141,7 +143,7 @@ export const EditEvent = () => {
         try {
             const resp = await fetch(`${backendUrl}/api/${urlApi}/${id}`);
             const data = await resp.json();
-            const e = props.type !== undefined ? data.event : data;
+            const e = routeProps.type !== undefined ? data.event : data;
             setName(e.name || "");
             setLocation(e.location || "");
             setDescription(e.description || "");
@@ -153,7 +155,7 @@ export const EditEvent = () => {
             if (e.date_event) setDateEvent(e.date_event.slice(0, 16));
             if (e.location) getCurrentEventLoc(e.location);
         } catch (err) {
-            console.error("Error cargando evento:", err);
+            devLog.error("Error cargando evento:", err);
         }
     }
 
@@ -169,7 +171,7 @@ export const EditEvent = () => {
                 setLocation(data.results[0].formattedAddress);
             }
         } catch (err) {
-            console.error("Error obteniendo dirección:", err);
+            devLog.error("Error obteniendo dirección:", err);
         }
     }
 
@@ -189,7 +191,7 @@ export const EditEvent = () => {
             setMarkerPosition(newCenter);
             setDefZoom(13);
         } catch (err) {
-            console.error("Error al obtener ubicación del evento:", err);
+            devLog.error("Error al obtener ubicación del evento:", err);
         }
     }
 
@@ -204,7 +206,7 @@ export const EditEvent = () => {
             const data = await resp.json();
             setEventCat(data.eventCategories);
         } catch (err) {
-            console.error("Error cargando categorías del evento:", err);
+            devLog.error("Error cargando categorías del evento:", err);
         }
     }
 
@@ -217,7 +219,7 @@ export const EditEvent = () => {
             const filtered = data.filter(cat => !eventCat.some(item => item.name === cat.name));
             setCategories(filtered);
         } catch (err) {
-            console.error("Error cargando categorías:", err);
+            devLog.error("Error cargando categorías:", err);
         }
     }
 
@@ -234,7 +236,7 @@ export const EditEvent = () => {
                 body: JSON.stringify({ event_id: parseInt(id), category_id: addedCategory.id })
             });
         } catch (err) {
-            console.error("Error añadiendo categoría:", err);
+            devLog.error("Error añadiendo categoría:", err);
         }
         getEventCategoryById();
         getCategories();
@@ -250,7 +252,7 @@ export const EditEvent = () => {
                 }
             });
         } catch (err) {
-            console.error("Error eliminando categoría:", err);
+            devLog.error("Error eliminando categoría:", err);
         }
         getEventCategoryById();
         getCategories();
@@ -258,8 +260,8 @@ export const EditEvent = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(latitude);
-        console.log(longitude);
+        devLog.log(latitude);
+        devLog.log(longitude);
 
         const finalMedia = publicId || imgFromApi || media;;
         try {
@@ -273,12 +275,12 @@ export const EditEvent = () => {
             });
             if (!resp.ok) throw new Error("Error actualizando evento");
         } catch (err) {
-            console.error(err);
+            devLog.error(err);
         }
 
-        props.type === undefined
+        routeProps.type === undefined
             ? navigate("/events")
-            : navigate(`/${props.type}/private`);
+            : navigate(`/${routeProps.type}/private`);
     };
 
     /*     if (!store.adminAuth) {
@@ -435,4 +437,9 @@ export const EditEvent = () => {
             </div>
         </div>
     );
+};
+
+EditEvent.propTypes = {
+    type: PropTypes.string,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };

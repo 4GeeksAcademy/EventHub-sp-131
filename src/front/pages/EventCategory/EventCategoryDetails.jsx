@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
+import devLog from "../../utils/devLogger";
 
 export const EventCategoryDetail = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -8,20 +9,20 @@ export const EventCategoryDetail = () => {
     const { store } = useGlobalReducer();
 
     const [event_category, setEventCategroy] = useState(null);
-    const [eventData, setEventData] = useState()    
-    const [categroyData, setCategroyData] = useState()
+    const [eventData, setEventData] = useState();    
+    const [categroyData, setCategroyData] = useState();
 
     async function getEventCategroyById(theId) {
         try {
             const response = await fetch(`${backendUrl}/api/event_category/${theId}`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
-            setEventCategroy(data)
-            return response
+            });
+            const data = await response.json();
+            setEventCategroy(data);
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -29,31 +30,31 @@ export const EventCategoryDetail = () => {
         try {
             const response = await fetch(`${backendUrl}/api/${str}/${theId}`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
+            });
+            const data = await response.json();
             if (str === "events") {
-                setEventData(data)
+                setEventData(data);
             }
             if (str === "categories") {
-                setCategroyData(data)
+                setCategroyData(data);
             }
-            return response
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
     useEffect(() => {
-        getEventCategroyById(theId)
-    }, [])
+        getEventCategroyById(theId);
+    }, []);
 
     useEffect(() => {
         if (event_category) {
-            getDataById(event_category.event_id, "events")
-            getDataById(event_category.category_id, "categories")
+            getDataById(event_category.event_id, "events");
+            getDataById(event_category.category_id, "categories");
         }
-    }, [event_category])
+    }, [event_category]);
 
     if (!store.adminAuth) {
     return <Navigate to="/admin/login" />;

@@ -1,7 +1,7 @@
 import React from "react";
 import Carolina from "../assets/img/Carolina.jpg";
-import Matias from "../assets/img/Matias.jpeg"
-import Kristhiam from "../assets/img/Kristhiam.jpeg"
+import Matias from "../assets/img/Matias.jpeg";
+import Kristhiam from "../assets/img/Kristhiam.jpeg";
 
 export const AboutUs = () => {
   const team = [
@@ -11,7 +11,7 @@ export const AboutUs = () => {
       image: Carolina,
       github: "https://github.com/CarolinaNFeria",
       linkedin: "https://www.linkedin.com/in/carolina-naranjo-feria-793132295/",
-      initials: "CN",
+      initials: "CN"
     },
     {
       name: "Kristhiam Altamiranda",
@@ -19,7 +19,7 @@ export const AboutUs = () => {
       image: Kristhiam,
       github: "https://github.com/akristhiam93",
       linkedin: "https://www.linkedin.com/in/kristhiam-altamiranda-5a5b76230/",
-      initials: "KA",
+      initials: "KA"
     },
     {
       name: "Matias Otero Sarra",
@@ -27,8 +27,8 @@ export const AboutUs = () => {
       image: Matias,
       github: "https://github.com/MatOtS",
       linkedin: "https://www.linkedin.com/in/oterosarramatias/",
-      initials: "MO",
-    },
+      initials: "MO"
+    }
   ];
 
   return (

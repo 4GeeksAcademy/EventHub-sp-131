@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import devLog from "../../utils/devLogger";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
 
@@ -7,7 +8,7 @@ import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const UserGroups = () => {
-    console.log("ENTRÉ A USER GROUPS");
+    devLog.log("ENTRÉ A USER GROUPS");
     const [groups, setGroups] = useState([]);
     const navigate = useNavigate();
     const { store, dispatch } = useGlobalReducer();

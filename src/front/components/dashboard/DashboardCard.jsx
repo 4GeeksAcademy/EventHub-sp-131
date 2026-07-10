@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export const DashboardCard = ({ title, text, to, icon, variant = "primary" }) => {
   return (
@@ -19,4 +20,12 @@ export const DashboardCard = ({ title, text, to, icon, variant = "primary" }) =>
       
     </div>
   );
+};
+
+DashboardCard.propTypes = {
+  title: PropTypes.string,
+  text: PropTypes.string,
+  to: PropTypes.string,
+  icon: PropTypes.string,
+  variant: PropTypes.string
 };

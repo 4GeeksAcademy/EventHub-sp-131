@@ -1,57 +1,58 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react";
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
+import devLog from "../../utils/devLogger";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import { use } from "react";
 
 export const CreateUserCategory = () => {
 
-    const urlAPI = import.meta.env.VITE_BACKEND_URL
-    const [selectedIDUser, setSelectedIDUser] = useState("")
-    const [selectedIDCategory, setSelectedIDCategory] = useState("")
-    const [allUsers, setAllUsers] = useState([])
-    const [allCategory, setAllCategory] = useState([])
+    const urlAPI = import.meta.env.VITE_BACKEND_URL;
+    const [selectedIDUser, setSelectedIDUser] = useState("");
+    const [selectedIDCategory, setSelectedIDCategory] = useState("");
+    const [allUsers, setAllUsers] = useState([]);
+    const [allCategory, setAllCategory] = useState([]);
     const [message, setMessage] = useState("");
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const { store } = useGlobalReducer();
 
     const handleInput = e => {
         e.preventDefault();
         switch (e.target.id) {
             case 'userId':
-                setSelectedIDUser(e.target.value)
+                setSelectedIDUser(e.target.value);
                 break;
             case 'categroyId':
-                setSelectedIDCategory(e.target.value)
+                setSelectedIDCategory(e.target.value);
                 break;
             default:
                 break;
         }
-    }
+    };
 
     async function createUserCategory() {
         try {
             const response = await fetch(`${urlAPI}api/user_category`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     "user_id": selectedIDUser,
-                    "category_id": selectedIDCategory,
+                    "category_id": selectedIDCategory
                 })
-            })
-            const data = await response.json()
+            });
+            const data = await response.json();
             if (!response.ok) {
-                setMessage(data)
-                throw new Error("Error on post fetch, status: ", response.status)
+                setMessage(data);
+                throw new Error("Error on post fetch, status: ", response.status);
             }
             if (response.ok) {
-                navigate("/user-category")
+                navigate("/user-category");
             }
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -59,25 +60,25 @@ export const CreateUserCategory = () => {
         try {
             const response = await fetch(`${urlAPI}api/${str}`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
+            });
+            const data = await response.json();
             if (str === "users") {
-                setAllUsers(data)
+                setAllUsers(data);
             }
             if (str === "categories") {
-                setAllCategory(data)
+                setAllCategory(data);
             }
-            return response
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
     useEffect(() => {
-        getData("users")
-        getData("categories")
-    }, [])
+        getData("users");
+        getData("categories");
+    }, []);
 
     if (!store.adminAuth) {
     return <Navigate to="/admin/login" />;
@@ -99,7 +100,7 @@ export const CreateUserCategory = () => {
                 {allUsers.map((user) => {
                     return (
                         <option key={user.id} value={user.id} >{user.name}</option>
-                    )
+                    );
                 })}
             </select>
             <select className="form-select mb-3" aria-label="Category id selector" id="categroyId" onChange={handleInput}>
@@ -107,10 +108,10 @@ export const CreateUserCategory = () => {
                 {allCategory.map((categroy) => {
                     return (
                         <option key={categroy.id} value={categroy.id}>{categroy.name}</option>
-                    )
+                    );
                 })}
             </select>
             <button type="button" className="btn btn-primary" onClick={createUserCategory}>Create</button>
         </div>
     );
-}
+};

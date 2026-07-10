@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
+import devLog from "../../utils/devLogger";
 
 export const UserCategoryDetail = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -8,20 +9,20 @@ export const UserCategoryDetail = () => {
     const { store } = useGlobalReducer();
 
     const [user_category, setUserCategory] = useState(null);
-    const [userData, setUserData] = useState()
-    const [categroyData, setCategoryData] = useState()
+    const [userData, setUserData] = useState();
+    const [categroyData, setCategoryData] = useState();
 
     async function getUserCategoryById(theId) {
         try {
             const response = await fetch(`${backendUrl}/api/user_category/${theId}`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
-            setUserCategory(data)
-            return response
+            });
+            const data = await response.json();
+            setUserCategory(data);
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -29,31 +30,31 @@ export const UserCategoryDetail = () => {
         try {
             const response = await fetch(`${backendUrl}/api/${str}/${theId}`, {
                 "Content-Type": "application/json"
-            })
-            const data = await response.json()
+            });
+            const data = await response.json();
             if (str === "users") {
-                setUserData(data)
+                setUserData(data);
             }
             if (str === "categories") {
-                setCategoryData(data)
+                setCategoryData(data);
             }
-            return response
+            return response;
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
     useEffect(() => {
-        getUserCategoryById(theId)
-    }, [])
+        getUserCategoryById(theId);
+    }, []);
 
     useEffect(() => {
         if (user_category) {
-            getDataById(user_category.user_id, "users")
-            getDataById(user_category.category_id, "categories")
+            getDataById(user_category.user_id, "users");
+            getDataById(user_category.category_id, "categories");
         }
-    }, [user_category])
+    }, [user_category]);
 
     if (!store.adminAuth) {
             return <Navigate to="/admin/login" />;

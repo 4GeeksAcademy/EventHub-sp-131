@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { io } from "socket.io-client";
+import devLog from "../utils/devLogger";
 import { ChatSidebar } from "../components/chat/ChatSidebar";
 import { ChatWindow } from "../components/chat/ChatWindow";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 const socket = io(API_URL, {
-  transports: ["polling", "websocket"],
+  transports: ["polling", "websocket"]
 });
 
 export const Chat = () => {
@@ -42,13 +43,13 @@ export const Chat = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("tokenUser"),
-      },
+        Authorization: "Bearer " + localStorage.getItem("tokenUser")
+      }
     })
       .then((res) => res.json())
       .then((data) => setChats(Array.isArray(data) ? data : []))
       .catch((error) => {
-        console.log("Error cargando chats:", error);
+        devLog.error("Error cargando chats:", error);
         setChats([]);
       });
   };
@@ -60,13 +61,13 @@ export const Chat = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("tokenUser"),
-      },
+        Authorization: "Bearer " + localStorage.getItem("tokenUser")
+      }
     })
       .then((res) => res.json())
       .then((data) => setMessages(Array.isArray(data) ? data : []))
       .catch((error) => {
-        console.log("Error cargando mensajes:", error);
+        devLog.error("Error cargando mensajes:", error);
         setMessages([]);
       });
   };
@@ -74,14 +75,14 @@ export const Chat = () => {
   const handleSelectChat = (chat) => {
     if (selectedChatRef.current) {
       socket.emit("leave_chat", {
-        chat_id: selectedChatRef.current.id,
+        chat_id: selectedChatRef.current.id
       });
     }
 
     setSelectedChat(chat);
 
     socket.emit("join_chat", {
-      chat_id: chat.id,
+      chat_id: chat.id
     });
 
     getMessages(chat.id);
@@ -99,11 +100,11 @@ export const Chat = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("tokenUser"),
+        Authorization: "Bearer " + localStorage.getItem("tokenUser")
       },
       body: JSON.stringify({
-        text: messageText,
-      }),
+        text: messageText
+      })
     })
      .then((res) => {
         if (!res.ok) throw new Error("No se pudo enviar el mensaje");
@@ -112,7 +113,7 @@ export const Chat = () => {
       .then((data) => {
          const messageWithChatId = {
          ...data,
-         chat_id: selectedChat.id,
+         chat_id: selectedChat.id
       };
 
       setMessages((prevMessages) => {
@@ -123,13 +124,13 @@ export const Chat = () => {
 
       socket.emit("send_message", {
         chat_id: selectedChat.id,
-        message: messageWithChatId,
+        message: messageWithChatId
       });
 
       getChats();
      })
       .catch((error) => {
-        console.log("Error enviando mensaje:", error);
+        devLog.error("Error enviando mensaje:", error);
         alert("No se pudo enviar el mensaje");
       });
   };
@@ -169,13 +170,13 @@ export const Chat = () => {
       const chat = {
         id: location.state.chatId,
         promotor_id: location.state?.promotorId || null,
-        promotor_name: location.state?.promotorName || null,
+        promotor_name: location.state?.promotorName || null
       };
 
       setSelectedChat(chat);
 
       socket.emit("join_chat", {
-        chat_id: chat.id,
+        chat_id: chat.id
       });
 
       getMessages(chat.id);

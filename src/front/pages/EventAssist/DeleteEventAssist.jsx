@@ -10,7 +10,7 @@ const DeleteEventAssist = () => {
 
   const handleDelete = async () => {
     const res = await fetch(`${backendUrl}/api/event-assists/${id}`, {
-      method: "DELETE",
+      method: "DELETE"
     });
 
     if (res.ok) {

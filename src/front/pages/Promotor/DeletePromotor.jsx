@@ -1,25 +1,26 @@
 import React, { useEffect } from "react";
+import devLog from "../../utils/devLogger";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 export const DeletePromotor = () => {
 
-    const urlAPI = import.meta.env.VITE_BACKEND_URL
-    const { theId } = useParams()
-    const navigate = useNavigate()
+    const urlAPI = import.meta.env.VITE_BACKEND_URL;
+    const { theId } = useParams();
+    const navigate = useNavigate();
 
     async function deletePromotor(id) {
         try {
             const response = await fetch(`${urlAPI}/api/promotor/${id}`, {
                 "method": "DELETE",
                 "Content-Type": "application/json"
-            })
+            });
             if (!response.ok) {
-                throw new Error("Error on post fetch, status: ", response.status)
+                throw new Error("Error on post fetch, status: ", response.status);
             }
-            navigate("/promotor")
+            navigate("/promotor");
         }
         catch (error) {
-            console.log("Error on fetch: ", error.message)
+            devLog.error("Error on fetch: ", error.message);
         }
     }
 
@@ -27,7 +28,7 @@ export const DeletePromotor = () => {
             if (!localStorage.getItem("adminAuth")) {
                 navigate("/admin/login");
             }
-        }, [])
+        }, []);
 
     return (
         <div>
@@ -40,4 +41,4 @@ export const DeletePromotor = () => {
             </div>
         </div>
     );
-}
+};
